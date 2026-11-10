@@ -1,0 +1,22 @@
+{
+  "schema_version": "klipot.uncertainty.v1",
+  "repository": "bboroski/NUN",
+  "items": [
+    {
+      "id": "NUN.boot-architecture",
+      "domain": "kernel",
+      "statement": "CPU architecture, entry protocol, privilege model and memory map require explicit selection and target qualification.",
+      "feature": "Versioned boot-information validator for architecture, address ranges, overlap and entry point",
+      "resolution_mode": "explicit-config",
+      "unknown_behavior": "Reject malformed or unknown handoff metadata; do not infer physical platform support from a recognized ID.",
+      "verification": [
+        "ABI magic, version and structure size are validated.",
+        "Memory range overflow and overlap are rejected.",
+        "Kernel region and entry point must agree.",
+        "A real boot path remains disabled until linker, entry and emulator evidence exist."
+      ],
+      "implementation_status": "implemented",
+      "status": "open"
+    }
+  ]
+}
