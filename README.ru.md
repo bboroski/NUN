@@ -1,50 +1,51 @@
-# NUN — Minimal Kernel Substrate
+<p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="Duck mark" width="104" /></p>
+<h1 align="center">NUN</h1>
+<p align="center"><strong>Minimal Kernel Substrate</strong></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111" /></p>
+<p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
+<hr />
 
-**Спецификационный репозиторий минимального системного ядра.**
+**Спецификационная основа минимального системного ядра: границы архитектуры, памяти, выполнения и передачи управления.**
 
-Текущий статус: **только архитектурная документация; реализации ядра нет**. В репозитории находятся README на трёх языках и технические спецификации. Исходного кода ядра, boot path, linker script, системы сборки, драйверов и тестов пока нет. Документы описывают планируемую архитектуру и не выдают запланированные компоненты за реализованные.
+## Позиционирование
 
-[Українська](README.md) · [English](README.en.md) · [Русский](README.ru.md) · [Репозиторий](https://github.com/bboroski/NUN)
+NUN фиксирует технический контракт будущего минимального ядра до появления полноценной реализации. Это общая точка согласования для системных разработчиков: обязанности kernel core, данные от bootstrap-уровня и доказательства, которые потребуются для проверки архитектуры.
 
 ## Предлагаемые границы системы
 
 - **Boot contract:** формат handoff от загрузчика, карта памяти и версия ABI.
-- **Architecture layer:** CPU entry, переходы между уровнями привилегий, векторы исключений и прерываний.
+- **Architecture layer:** CPU entry, privilege transition, exception и interrupt vectors.
 - **Memory layer:** физические страницы, ранний allocator, виртуальная адресация и защита.
 - **Execution layer:** task/context model и явная модель синхронизации.
-- **Device boundary:** документированные bus/driver interfaces без предположений о конкретной плате.
-- **Capability composition layer:** реестр возможностей, проверка совместимости, граф композиций, изолированное подключение и атомарный откат.
+- **Device boundary:** описанные bus/driver interfaces без предположений о конкретной плате.
+- **Diagnostics:** ранний serial/framebuffer output и структурированный panic record.
 
-## Объединение и поглощение возможностей
+## Текущий статус
 
-В архитектуре NUN предусматривается **Capability Composition & Assimilation** — системный механизм для приёма новых модулей, проверки их контрактов и зависимостей, объединения совместимых возможностей в составные возможности и повторного использования таких композиций как обычных модулей.
+<badge>SPECIFICATION ONLY</badge>
 
-Это не бесконтрольное слияние исполняемого кода. У каждой возможности есть версионируемый манифест, стабильный идентификатор, ABI, объявленные интерфейсы и минимально необходимые разрешения. Подключение проходит через карантин, проверку, разрешение зависимостей и конфликтов, изолированную стадию тестирования и транзакционную активацию.
-
-- [Архитектура Capability Composition & Assimilation](docs/architecture/capability-composition.md)
-- [JSON Schema манифеста возможности](spec/capability-manifest.schema.json)
+В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. Бренд-ресурс README не является runtime-кодом. NUN не является bootable OS и не предназначен для загрузки на физическое оборудование.
 
 ## Инженерные требования
 
-Каждая аппаратно-зависимая операция должна быть привязана к конкретной архитектуре и boot protocol. ABI, границы памяти, alignment, privilege level и interrupt policy должны быть документированы. Host-тесты не заменяют эмуляцию или проверку целевой платформы.
+Каждое аппаратно-зависимое действие должно быть привязано к конкретной архитектуре и boot protocol. ABI, границы памяти, alignment, privilege level и interrupt policy необходимо документировать явно. Host-тесты не заменяют эмуляцию или проверку на целевой платформе.
 
-Для системы композиций также обязательны детерминированное разрешение зависимостей, запрет циклических зависимостей, изоляция модулей, принцип минимальных привилегий, происхождение артефактов, атомарная активация и проверенный rollback.
+## Управление проектом и readiness gates
 
-## Текущий статус проверок
+| Этап | Требуемое доказательство |
+|---|---|
+| Architecture baseline | Выбрана CPU architecture и определена модель привилегий |
+| Boot contract | Версионируемый handoff, memory map и правила проверки |
+| Reproducible build | Сборка, linker map и проверка образа воспроизводимы |
+| Emulator validation | Serial smoke test, exception/interrupt и memory tests |
+| Target qualification | Физическое оборудование и конкретный board port проверены отдельно |
 
-Сборки и тестов ядра пока нет: реализация не начата. Спецификация композиции — архитектурный контракт, а не работающий runtime. Первый этап разработки должен добавить воспроизводимую сборку, linker map, serial smoke test, проверку образа и отдельные host-тесты реестра и resolver.
+Первый этап реализации должен добавить воспроизводимую сборку, linker map, serial smoke test и автоматическую проверку образа. До этого проект остаётся спецификационным каркасом.
 
-## Техническая идентичность
+## Контракт с NUNLauncher
 
-**NUN** — каноническое техническое имя минимального kernel substrate. GitHub-путь оставлен только как адрес репозитория.
+[NUNLauncher](https://github.com/bboroski/NUNLauncher) должен проверять kernel image и handoff-данные. NUN обязан независимо проверять полученный контекст перед инициализацией. Управление памятью, scheduler и драйверы относятся к ядру, а не к launcher-уровню.
 
-## Статус
+## Экосистема
 
-Не считать репозиторий загружаемой ОС и не загружать его на физическое оборудование: реализации ядра пока нет.
-
-## Академический биологический словарь
-
-- [500 академических терминов EN–RU](data/biology/academic_terms_500.tsv)
-- [Контракт данных и границы использования](docs/BIOLOGY_DOMAIN_PACK.md)
-
-Автономный справочный набор для обучения и метаданных; он не управляет системами, устройствами или диагностикой.
+[SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUNLauncher](https://github.com/bboroski/NUNLauncher).
