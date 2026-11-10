@@ -22,7 +22,7 @@ def validate_profile(document: Any) -> list[str]:
         errors.append("unsupported schema_version")
     if not isinstance(document.get("profile_id"), str) or not document["profile_id"].strip():
         errors.append("profile_id must be a non-empty string")
-    if document.get("profile_status") not in {"specification", "prototype", "implementation"}:
+    if document.get("profile_status") not in ("specification", "prototype", "implementation"): 
         errors.append("profile_status is invalid")
     capabilities = document.get("capabilities")
     if not isinstance(capabilities, list) or not capabilities:
