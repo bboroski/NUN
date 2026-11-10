@@ -56,3 +56,8 @@ NUN фіксує технічний контракт майбутнього мі
 
 - [Project-specific architecture mapping](docs/REAPER_DOMAIN_INTEGRATION.md)
 - [Canonical 50-pattern catalogue in SAMBU](https://github.com/bboroski/SAMBU/blob/main/data/reaper/engineering_patterns_50.tsv)
+
+## Closed-domain metric and boundary model
+
+- [Project-specific boundary and invariant mapping](docs/CLOSED_DOMAIN_METRIC_INTEGRATION.md)
+- [Canonical CDM-1 specification and validator](https://github.com/bboroski/SAMBU/blob/main/docs/CLOSED_DOMAIN_METRIC.md)
