@@ -46,6 +46,26 @@ The first implementation milestone should add a reproducible build, linker map, 
 
 [NUNLauncher](https://github.com/bboroski/NUNLauncher) is intended to validate the kernel image and handoff data. NUN must independently validate the received context before initialization. Memory management, scheduling, and drivers belong to the kernel, not the launcher layer.
 
+## Windows game compatibility
+
+NUN defines a future user-mode compatibility environment for Windows games: a PE32/PE32+ loader, Win32/NT runtime, Direct3D-to-Vulkan graphics adapters, audio, input, isolated per-game profiles, and diagnostics.
+
+**Status: SPECIFICATION ONLY.** This specification, JSON schema, and capability matrix do not launch `.exe` files. NUN still has no kernel, process manager, PE loader, Win32 API implementation, Vulkan driver, or bootable image. Validating a profile is not the same as running a game.
+
+- [Windows Game Compatibility architecture](docs/architecture/windows-game-compatibility.md)
+- [Game profile schema](spec/windows-game-profile.schema.json)
+- [Capability matrix and readiness gates](data/compatibility/windows-game-capability-matrix.tsv)
+
+Validate planning metadata with: `python tools/validate_windows_game_compatibility.py`.
+
+
+The first testable Stage 1 component is a host-side PE inspector. It reads PE32/PE32+ headers, architecture, subsystem, sections and imported DLL names, but never executes the file and is not the NUN loader.
+
+```sh
+python tools/inspect_windows_pe.py path/to/game.exe --json
+python -m unittest discover -s tests -v
+```
+
 ## Ecosystem
 
 [SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUNLauncher](https://github.com/bboroski/NUNLauncher).

@@ -1,0 +1,15 @@
+capability_id	feature_group	initial_scope	required_nun_contract	acceptance_evidence	implementation_status
+nun.game.center	game_library	profile_discovery_launch_stop	process_supervisor;filesystem;settings	Per-game launch-stop-recovery integration tests	not_implemented
+nun.windows.pe-inspector	pe_format	Host-side_PE32_PE32+_metadata_inspector;NUN_process_loader_pending	read-only_filesystem;digest_service	7_synthetic_unit_tests_pass;fuzzing_still_required	in_progress
+nun.windows.pe-loader	process_loading	PE_sections_relocations_imports_TLS	virtual_memory;process;thread;loader_ABI	Known PE test programs start with correct section protections	not_implemented
+nun.windows.nt-runtime	win32_nt_api	base_process_memory_sync_file_APIs	process;memory;handles;IPC;clock;filesystem	API conformance tests and deterministic process lifecycle	not_implemented
+nun.windows.windowing	window_system	USER32_GDI32_messages_DPI_focus	window_server;input;display	Window-message and display-mode regression tests	not_implemented
+nun.windows.graphics.vulkan	graphics_backend	Vulkan_loader_and_driver_contract	GPU_driver;memory_mapping;sync;display	Vulkan conformance and feature negotiation tests	not_implemented
+nun.windows.graphics.dxvk	graphics_translation	Direct3D_9_10_11_to_Vulkan	Vulkan_backend;Win32_runtime	Named D3D9-D3D11 game scenes pass repeatable GPU tests	not_implemented
+nun.windows.graphics.vkd3d	graphics_translation	Direct3D_12_to_Vulkan	Vulkan_backend;Win32_runtime	Named D3D12 workloads pass feature and rendering tests	not_implemented
+nun.windows.audio	audio	XAudio2_WASAPI_DirectSound_WinMM	Audio_service;clock;IPC	Playback_latency_device-loss_suspend-resume tests	not_implemented
+nun.windows.input	input	XInput_DirectInput_RawInput_HID	Input_service;HID;window_focus	Controller mapping hotplug and focus regression tests	not_implemented
+nun.windows.storage	storage	Drive_mapping_registry_file_semantics	Filesystem;settings;permissions	Path-sharing-locking-and-prefix-isolation tests	not_implemented
+nun.windows.network	networking	Winsock_DNS_TLS_policy	Socket_service;resolver;trust_store	Network-policy and socket conformance tests	not_implemented
+nun.windows.cpu-translation	cpu_translation	x86_x64_on_non_native_architecture	Instruction_translator;process_ABI	Instruction and exception conformance suite	not_implemented
+nun.windows.security-policy	security	Process_sandbox_no_kernel_driver_loading	Process_isolation;capability_policy;audit	Kernel-driver rejection and permission-boundary tests	not_implemented

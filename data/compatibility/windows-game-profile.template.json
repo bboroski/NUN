@@ -1,0 +1,34 @@
+{
+  "profile_version": 1,
+  "id": "example.game",
+  "display_name": "Example Windows Game",
+  "executable": {
+    "path": "C:/Games/Example/Example.exe",
+    "arguments": [],
+    "working_directory": "C:/Games/Example"
+  },
+  "machine": "x86_64",
+  "subsystem": "windows_gui",
+  "windows_compatibility_target": "to-be-qualified",
+  "graphics": {
+    "apis": ["direct3d11"],
+    "translation_backend": "auto",
+    "required_features": []
+  },
+  "audio": {
+    "apis": ["xaudio2", "wasapi"]
+  },
+  "input": {
+    "apis": ["xinput", "keyboard_mouse"],
+    "hotplug_required": true
+  },
+  "dependencies": [],
+  "security": {
+    "anti_cheat": "unknown",
+    "kernel_driver_required": false,
+    "network_access": "prompt",
+    "external_device_access": "prompt"
+  },
+  "support_tier": "not_tested",
+  "evidence": []
+}

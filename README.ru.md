@@ -46,6 +46,26 @@ NUN фиксирует технический контракт будущего 
 
 [NUNLauncher](https://github.com/bboroski/NUNLauncher) должен проверять kernel image и handoff-данные. NUN обязан независимо проверять полученный контекст перед инициализацией. Управление памятью, scheduler и драйверы относятся к ядру, а не к launcher-уровню.
 
+## Совместимость с Windows-играми
+
+NUN закладывает будущую пользовательскую среду совместимости с Windows-играми: PE32/PE32+ loader, Win32/NT runtime, графические адаптеры Direct3D → Vulkan, звук, ввод, изолированные профили каждой игры и диагностику.
+
+**Статус: SPECIFICATION ONLY.** Эта спецификация, JSON-схема и матрица возможностей пока не запускают файлы `.exe`. В NUN ещё нет ядра, менеджера процессов, PE-загрузчика, реализации Win32 API, Vulkan-драйвера или загрузочного образа. Проверка игрового профиля не означает, что игра запускается.
+
+- [Архитектура Windows Game Compatibility](docs/architecture/windows-game-compatibility.md)
+- [Схема игрового профиля](spec/windows-game-profile.schema.json)
+- [Матрица возможностей и этапы готовности](data/compatibility/windows-game-capability-matrix.tsv)
+
+Проверка метаданных: `python tools/validate_windows_game_compatibility.py`.
+
+
+Первый проверяемый компонент этапа 1 — host-side PE-инспектор. Он читает заголовки PE32/PE32+, архитектуру, подсистему, секции и импортируемые DLL, но не исполняет файл и не является загрузчиком NUN.
+
+```sh
+python tools/inspect_windows_pe.py path/to/game.exe --json
+python -m unittest discover -s tests -v
+```
+
 ## Экосистема
 
 [SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUNLauncher](https://github.com/bboroski/NUNLauncher).
