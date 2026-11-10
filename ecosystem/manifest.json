@@ -1,5 +1,5 @@
 {
-  "project_id": "nun-kernel",
+  "project_id": "nun",
   "schema_version": 1,
   "contract_major": 1,
   "role": "kernel-substrate-specification",
