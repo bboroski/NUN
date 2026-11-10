@@ -52,6 +52,12 @@ NUN фіксує технічний контракт майбутнього мі
 
 
 
+## Reaper-inspired engineering integration
+
+- [Project-specific architecture mapping](docs/REAPER_DOMAIN_INTEGRATION.md)
+- [Canonical 50-pattern catalogue in SAMBU](https://github.com/bboroski/SAMBU/blob/main/data/reaper/engineering_patterns_50.tsv)
+
+
 ## Verified AI-assisted engineering
 
 This repository's model-assisted review boundary and acceptance rules are documented in [AI capability admission](docs/architecture/ai-capability-admission.md). AI output remains advisory until independently validated.
