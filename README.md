@@ -56,3 +56,7 @@ NUN фіксує технічний контракт майбутнього мі
 
 - [Project-specific architecture mapping](docs/REAPER_DOMAIN_INTEGRATION.md)
 - [Canonical 50-pattern catalogue in SAMBU](https://github.com/bboroski/SAMBU/blob/main/data/reaper/engineering_patterns_50.tsv)
+
+## Reaper cycle architecture model
+
+[CPU boundary and workload contract](docs/architecture/reaper-cycle-model.md) — a bounded test workload, not a new ISA or a bootable kernel component.
