@@ -1,0 +1,21 @@
+name: C11 host contract checks
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  host-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure host build
+        run: cmake -S . -B build -DBUILD_TESTING=ON
+      - name: Build contracts
+        run: cmake --build build --parallel
+      - name: Run contract tests
+        run: ctest --test-dir build --output-on-failure
+      - name: Run one-command project check
+        run: python3 one.py check
