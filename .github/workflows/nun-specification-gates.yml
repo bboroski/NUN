@@ -1,0 +1,34 @@
+name: NUN gates
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  specification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate documentation and JSON contracts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          required = ["README.md","docs/MULTISTAGE_KERNEL_CONTRACT.md","spec/capability-manifest.schema.json"]
+          for name in required:
+              path = Path(name)
+              assert path.is_file(), f"missing required contract: {name}"
+              assert path.stat().st_size > 0, f"empty required contract: {name}"
+          for path in Path('.').rglob('*.json'):
+              if '.git' not in path.parts:
+                  json.loads(path.read_text(encoding='utf-8'))
+          readme = Path('README.md').read_text(encoding='utf-8')
+          assert readme.lstrip().startswith('# '), 'README must begin with a project heading'
+          print('Specification gates passed.')
+          PY
+      - name: Check whitespace errors
+        run: git diff --check
