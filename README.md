@@ -50,3 +50,8 @@ NUN фіксує технічний контракт майбутнього мі
 
 [SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUNLauncher](https://github.com/bboroski/NUNLauncher).
 
+
+
+## Verified AI-assisted engineering
+
+This repository's model-assisted review boundary and acceptance rules are documented in [AI capability admission](docs/architecture/ai-capability-admission.md). AI output remains advisory until independently validated.
