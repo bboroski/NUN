@@ -41,3 +41,10 @@ NUN має отримати **Capability Composition & Assimilation** — сис
 ## Статус
 
 Не використовувати як bootable OS і не завантажувати на фізичне обладнання: реалізованого ядра ще немає.
+
+
+## UI foundation
+
+The repository includes a standalone engineering desktop preview in `ui/`. Open `ui/index.html` in a modern browser. Its mineral, evergreen graphite, copper and jade design is intentionally distinct from the mobile-first NUNLauncher. The interface includes a system blueprint, project activity overview, component inventory and responsive engineering navigation.
+
+The UI is a presentation prototype only. It does not implement the kernel or Capability Composition & Assimilation runtime; project graphs and statuses are illustrative metadata, not live telemetry.
