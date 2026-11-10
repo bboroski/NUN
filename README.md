@@ -22,7 +22,7 @@ NUN фіксує технічний контракт майбутнього мі
 
 ## Поточний стан
 
-<badge>SPECIFICATION ONLY</badge>
+**Current status: SPECIFICATION ONLY**
 
 У репозиторії поки немає вихідного коду ядра, boot path, linker script, build system, драйверів або тестів. Доданий бренд-ресурс README не є частиною runtime. NUN не є bootable OS і не призначений для завантаження на фізичне обладнання.
 
