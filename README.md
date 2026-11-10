@@ -1,9 +1,18 @@
-<p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="Duck mark" width="104" /></p>
+<p align="center"><img src="assets/amber-obsidian-mark.svg" alt="Duck mark" width="104" /></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
 <p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111" /></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 <hr />
+
+## Візуальна система · Amber–Obsidian v2
+
+Власна візуальна мова **NUN** з палітрою обсидіану, графітовими шарами та сигнальним бурштином. Макет підкреслює ключові контракти проєкту й окремо маркує стани `PASSED`, `UNKNOWN`, `FAULT` та `NOT IMPLEMENTED`.
+
+<p align="center"><img src="assets/amber-obsidian-preview.svg" alt="NUN interface concept preview" width="100%"></p>
+
+[Специфікація інтерфейсу та меж реалізації](docs/INTERFACE_DESIGN.md).
+
 
 **Специфікаційна основа мінімального системного ядра: межі архітектури, пам'яті, виконання та передачі керування.**
 
