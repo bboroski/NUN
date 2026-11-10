@@ -61,3 +61,8 @@ NUN фіксує технічний контракт майбутнього мі
 
 - [Project-specific boundary and invariant mapping](docs/CLOSED_DOMAIN_METRIC_INTEGRATION.md)
 - [Canonical CDM-1 specification and validator](https://github.com/bboroski/SAMBU/blob/main/docs/CLOSED_DOMAIN_METRIC.md)
+
+
+## Продуктова система та реєстр можливостей
+
+Єдині правила дизайну Duck, тримовної документації, маркетингових заяв, пріоритетів, життєвого циклу функцій і випусків: [docs/PRODUCT_SYSTEM.md](docs/PRODUCT_SYSTEM.md). Каталог допускає до 10 000 ідентифікаторів можливостей; реалізованими вважаються лише функції з кодом, критеріями приймання та перевірними тестами.
