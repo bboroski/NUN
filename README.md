@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="Duck mark" width="104" /></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111" /></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-C11%20CONTRACT-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/IMPLEMENTATION-HOST%20METADATA%20SLICE-FFD600?style=for-the-badge&labelColor=111111" /></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 <hr />
 
@@ -22,9 +22,9 @@ NUN фіксує технічний контракт майбутнього мі
 
 ## Поточний стан
 
-**Current status: SPECIFICATION ONLY**
+**Поточний стан: додано C11-контракт перевірки boot-інформації; реальне ядро ще не реалізоване.**
 
-У репозиторії поки немає вихідного коду ядра, boot path, linker script, build system, драйверів або тестів. Доданий бренд-ресурс README не є частиною runtime. NUN не є bootable OS і не призначений для завантаження на фізичне обладнання.
+Репозиторій тепер містить функцію nun_boot_info_validate, версійовану структуру handoff, перевірку архітектурного ID, карти пам'яті, переповнення діапазонів, перетинів і entry point, CMake та host-тести (python one.py check). Перевіряються лише метадані на host-платформі. Тут досі немає CPU entry, linker script, page allocator, scheduler, драйверів чи завантажуваного kernel image. NUN не є bootable OS.
 
 ## Інженерні вимоги
 
@@ -40,7 +40,7 @@ NUN фіксує технічний контракт майбутнього мі
 | Emulator validation | Serial smoke test, exception/interrupt та memory tests |
 | Target qualification | Фізичне обладнання й конкретний board port перевірені окремо |
 
-Перший кодовий етап має додати відтворювану збірку, linker map, serial smoke test і автоматизовану перевірку образу. До цього статус проєкту залишається специфікаційним.
+Наступні етапи: architecture entry, linker map, раннє виведення діагностики, фізична/віртуальна пам'ять та окремі емуляторні й target-тести. Host-контракт не замінює жоден із цих етапів.
 
 ## Контракт із NUNLauncher
 
