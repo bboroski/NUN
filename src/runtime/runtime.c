@@ -67,6 +67,7 @@ static int32_t nun_rollback_resources(void *context)
 
     if (runtime == NULL) return NUN_EINVAL;
     pbsc_arena_reset(&runtime->arena);
+    runtime->arena_reserved_bytes = 0u;
     memset(&runtime->budget, 0, sizeof(runtime->budget));
     return 0;
 }
@@ -133,6 +134,7 @@ nun_result_t nun_runtime_init(nun_runtime_t *runtime,
     runtime->lifecycle_hooks = *config->lifecycle_hooks;
     runtime->arena_storage = config->arena_storage;
     runtime->arena_capacity = config->arena_capacity;
+    runtime->arena_reserved_bytes = 0u;
     runtime->memory_limit = config->memory_limit;
     runtime->queue_limit = config->queue_limit;
     runtime->work_limit = config->work_limit;
@@ -315,21 +317,27 @@ void *nun_runtime_allocate(nun_runtime_t *runtime, size_t bytes,
     allocation = pbsc_arena_alloc(&runtime->arena, bytes, alignment);
     if (allocation == NULL) {
         (void)kloz_budget_release_memory(&runtime->budget, bytes);
+        return NULL;
     }
+    /* Account requested payload, not alignment padding in the arena. */
+    if (bytes > SIZE_MAX - runtime->arena_reserved_bytes) {
+        (void)kloz_budget_release_memory(&runtime->budget, bytes);
+        return NULL;
+    }
+    runtime->arena_reserved_bytes += bytes;
     return allocation;
 }
 
 nun_result_t nun_runtime_reset_arena(nun_runtime_t *runtime)
 {
-    size_t used;
-
     if (runtime == NULL || runtime->initialized == 0u) return NUN_ESTATE;
-    used = pbsc_arena_used(&runtime->arena);
-    if (used > 0u &&
-        kloz_budget_release_memory(&runtime->budget, used) != 0) {
+    if (runtime->arena_reserved_bytes > 0u &&
+        kloz_budget_release_memory(&runtime->budget,
+                                   runtime->arena_reserved_bytes) != 0) {
         return NUN_EBUDGET;
     }
     pbsc_arena_reset(&runtime->arena);
+    runtime->arena_reserved_bytes = 0u;
     return NUN_OK;
 }
 
