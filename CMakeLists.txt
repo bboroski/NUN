@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.20)
 project(NUN VERSION 0.1.0 LANGUAGES C)
 
 option(NUN_BUILD_TESTS "Build NUN and imported module tests" ON)
-set(REAPER_BUILD_TESTS ON CACHE BOOL "ReaperCripple host tests" FORCE)
+set(REAPER_BUILD_TESTS ${NUN_BUILD_TESTS} CACHE BOOL "ReaperCripple host tests" FORCE)
+if(NOT NUN_BUILD_TESTS)
+    set(BUILD_TESTING OFF CACHE BOOL "Disable imported module test executables" FORCE)
+endif()
 add_subdirectory(modules/ReaperCripple)
 add_subdirectory(modules/ToolNG)
 
