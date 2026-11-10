@@ -19,7 +19,7 @@ static int32_t nun_read_tick(nun_runtime_t *runtime, uint32_t *tick_out)
         runtime->platform.ticks_read == NULL) {
         return NUN_EINVAL;
     }
-    if (runtime->platform.ticks_read(runtime->platform.context, &ticks) != PBSC_OK) {
+    if (runtime->platform.ticks_read(runtime->platform.context, &ticks) != KLOZ_OK) {
         return NUN_EPLATFORM;
     }
 
@@ -34,8 +34,8 @@ static int32_t nun_boot_platform(void *context)
     uint32_t now = 0u;
 
     if (runtime == NULL ||
-        pbsc_platform_validate(&runtime->platform) != PBSC_OK ||
-        (runtime->platform.capabilities & PBSC_PLATFORM_CAP_MONOTONIC_CLOCK) == 0u) {
+        kloz_platform_validate(&runtime->platform) != KLOZ_OK ||
+        (runtime->platform.capabilities & KLOZ_PLATFORM_CAP_MONOTONIC_CLOCK) == 0u) {
         return NUN_EPLATFORM;
     }
     return nun_read_tick(runtime, &now);
@@ -56,8 +56,8 @@ static int32_t nun_boot_resources(void *context)
                          runtime->queue_limit, runtime->work_limit) != 0) {
         return NUN_EBUDGET;
     }
-    pbsc_arena_init(&runtime->arena, runtime->arena_storage,
-                    runtime->arena_capacity);
+    kloz_arena_init(&runtime->arena, runtime->arena_storage,
+                    runtime->memory_limit);
     return 0;
 }
 
@@ -66,7 +66,7 @@ static int32_t nun_rollback_resources(void *context)
     nun_runtime_t *runtime = (nun_runtime_t *)context;
 
     if (runtime == NULL) return NUN_EINVAL;
-    pbsc_arena_reset(&runtime->arena);
+    kloz_arena_reset(&runtime->arena);
     runtime->arena_reserved_bytes = 0u;
     memset(&runtime->budget, 0, sizeof(runtime->budget));
     return 0;
@@ -77,18 +77,18 @@ static int32_t nun_boot_lifecycle(void *context)
     nun_runtime_t *runtime = (nun_runtime_t *)context;
 
     if (runtime == NULL) return NUN_EINVAL;
-    return dlo_runtime_init(&runtime->lifecycle, &runtime->lifecycle_hooks);
+    return co_runtime_init(&runtime->lifecycle, &runtime->lifecycle_hooks);
 }
 
 static int32_t nun_rollback_lifecycle(void *context)
 {
     nun_runtime_t *runtime = (nun_runtime_t *)context;
-    dlo_result_t result;
+    co_result_t result;
 
     if (runtime == NULL) return NUN_EINVAL;
-    result = dlo_runtime_stop(&runtime->lifecycle);
+    result = co_runtime_stop(&runtime->lifecycle);
     memset(&runtime->lifecycle, 0, sizeof(runtime->lifecycle));
-    return result == DLO_OK ? 0 : (int32_t)result;
+    return result == CO_OK ? 0 : (int32_t)result;
 }
 
 static int32_t nun_boot_assurance(void *context)
@@ -96,8 +96,8 @@ static int32_t nun_boot_assurance(void *context)
     nun_runtime_t *runtime = (nun_runtime_t *)context;
 
     if (runtime == NULL) return NUN_EINVAL;
-    riae_supervisor_init(&runtime->assurance);
-    return riae_register_component(&runtime->assurance,
+    saintsi_supervisor_init(&runtime->assurance);
+    return saintsi_register_component(&runtime->assurance,
                                    NUN_HEALTH_COMPONENT_ID,
                                    runtime->heartbeat_timeout_ticks,
                                    runtime->last_tick);
@@ -141,8 +141,8 @@ nun_result_t nun_runtime_init(nun_runtime_t *runtime,
     runtime->heartbeat_timeout_ticks = config->heartbeat_timeout_ticks;
     runtime->state = NUN_STATE_COLD;
 
-    if (pbsc_platform_validate(&runtime->platform) != PBSC_OK ||
-        (runtime->platform.capabilities & PBSC_PLATFORM_CAP_MONOTONIC_CLOCK) == 0u ||
+    if (kloz_platform_validate(&runtime->platform) != KLOZ_OK ||
+        (runtime->platform.capabilities & KLOZ_PLATFORM_CAP_MONOTONIC_CLOCK) == 0u ||
         runtime->platform.ticks_read == NULL) {
         runtime->state = NUN_STATE_FAULTED;
         return NUN_EPLATFORM;
@@ -189,7 +189,7 @@ nun_result_t nun_runtime_start(nun_runtime_t *runtime)
         return NUN_ESTATE;
     }
 
-    if (dlo_runtime_start(&runtime->lifecycle) != DLO_OK) {
+    if (co_runtime_start(&runtime->lifecycle) != CO_OK) {
         (void)reaper_runtime_transition(&runtime->bootstrap,
                                         REAPER_RUNTIME_EVENT_FAULT,
                                         REAPER_ERR_STATE);
@@ -199,7 +199,7 @@ nun_result_t nun_runtime_start(nun_runtime_t *runtime)
     if (reaper_runtime_transition(&runtime->bootstrap,
                                   REAPER_RUNTIME_EVENT_START,
                                   REAPER_OK) != REAPER_OK) {
-        (void)dlo_runtime_stop(&runtime->lifecycle);
+        (void)co_runtime_stop(&runtime->lifecycle);
         runtime->state = NUN_STATE_FAULTED;
         return NUN_EBOOT;
     }
@@ -211,7 +211,7 @@ nun_result_t nun_runtime_start(nun_runtime_t *runtime)
 nun_result_t nun_runtime_poll(nun_runtime_t *runtime)
 {
     uint32_t now = 0u;
-    riae_health_state_t health_state = RIAE_HEALTHY;
+    saintsi_health_state_t health_state = SAINTSI_HEALTHY;
     uint32_t stale_count = 0u;
     int32_t result;
 
@@ -239,8 +239,8 @@ nun_result_t nun_runtime_poll(nun_runtime_t *runtime)
         return NUN_EPLATFORM;
     }
 
-    result = dlo_runtime_poll(&runtime->lifecycle);
-    if (result != DLO_OK) {
+    result = co_runtime_poll(&runtime->lifecycle);
+    if (result != CO_OK) {
         (void)reaper_runtime_transition(&runtime->bootstrap,
                                         REAPER_RUNTIME_EVENT_FAULT,
                                         result);
@@ -248,10 +248,10 @@ nun_result_t nun_runtime_poll(nun_runtime_t *runtime)
         return NUN_EIO;
     }
 
-    if (riae_heartbeat(&runtime->assurance,
-                       NUN_HEALTH_COMPONENT_ID, now) != RIAE_OK ||
-        riae_health_check(&runtime->assurance, now,
-                          &health_state, &stale_count) != RIAE_OK) {
+    if (saintsi_heartbeat(&runtime->assurance,
+                       NUN_HEALTH_COMPONENT_ID, now) != SAINTSI_OK ||
+        saintsi_health_check(&runtime->assurance, now,
+                          &health_state, &stale_count) != SAINTSI_OK) {
         (void)reaper_runtime_transition(&runtime->bootstrap,
                                         REAPER_RUNTIME_EVENT_FAULT,
                                         NUN_EHEALTH);
@@ -259,7 +259,7 @@ nun_result_t nun_runtime_poll(nun_runtime_t *runtime)
         return NUN_EHEALTH;
     }
 
-    if (health_state == RIAE_DEGRADED || stale_count != 0u) {
+    if (health_state == SAINTSI_DEGRADED || stale_count != 0u) {
         if (runtime->state == NUN_STATE_RUNNING) {
             (void)reaper_runtime_transition(&runtime->bootstrap,
                                             REAPER_RUNTIME_EVENT_DEGRADE,
@@ -314,7 +314,7 @@ void *nun_runtime_allocate(nun_runtime_t *runtime, size_t bytes,
         return NULL;
     }
 
-    allocation = pbsc_arena_alloc(&runtime->arena, bytes, alignment);
+    allocation = kloz_arena_alloc(&runtime->arena, bytes, alignment);
     if (allocation == NULL) {
         (void)kloz_budget_release_memory(&runtime->budget, bytes);
         return NULL;
@@ -336,7 +336,7 @@ nun_result_t nun_runtime_reset_arena(nun_runtime_t *runtime)
                                    runtime->arena_reserved_bytes) != 0) {
         return NUN_EBUDGET;
     }
-    pbsc_arena_reset(&runtime->arena);
+    kloz_arena_reset(&runtime->arena);
     runtime->arena_reserved_bytes = 0u;
     return NUN_OK;
 }
@@ -380,7 +380,7 @@ nun_state_t nun_runtime_state(const nun_runtime_t *runtime)
 }
 
 nun_result_t nun_runtime_health(const nun_runtime_t *runtime,
-                                riae_health_state_t *state_out,
+                                saintsi_health_state_t *state_out,
                                 uint32_t *stale_count_out)
 {
     uint64_t ticks = 0u;
@@ -391,11 +391,11 @@ nun_result_t nun_runtime_health(const nun_runtime_t *runtime,
         return NUN_EINVAL;
     }
     if (runtime->platform.ticks_read(runtime->platform.context,
-                                     &ticks) != PBSC_OK) {
+                                     &ticks) != KLOZ_OK) {
         return NUN_EPLATFORM;
     }
     now = (uint32_t)ticks;
-    return riae_health_check(&runtime->assurance, now,
-                             state_out, stale_count_out) == RIAE_OK
+    return saintsi_health_check(&runtime->assurance, now,
+                             state_out, stale_count_out) == SAINTSI_OK
         ? NUN_OK : NUN_EHEALTH;
 }
