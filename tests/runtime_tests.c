@@ -10,29 +10,29 @@ typedef struct test_context {
     unsigned shutdowns;
 } test_context_t;
 
-static pbsc_status_t read_ticks(void *context, uint64_t *ticks_out)
+static kloz_status_t read_ticks(void *context, uint64_t *ticks_out)
 {
     test_context_t *state = (test_context_t *)context;
-    if (state == NULL || ticks_out == NULL) return PBSC_EINVAL;
+    if (state == NULL || ticks_out == NULL) return KLOZ_EINVAL;
     state->ticks += 1u;
     *ticks_out = state->ticks;
-    return PBSC_OK;
+    return KLOZ_OK;
 }
 
-static dlo_result_t app_init(void *context)
+static co_result_t app_init(void *context)
 {
     test_context_t *state = (test_context_t *)context;
-    if (state == NULL) return DLO_EINVAL;
+    if (state == NULL) return CO_EINVAL;
     state->initialized += 1u;
-    return DLO_OK;
+    return CO_OK;
 }
 
-static dlo_result_t app_step(void *context)
+static co_result_t app_step(void *context)
 {
     test_context_t *state = (test_context_t *)context;
-    if (state == NULL) return DLO_EINVAL;
+    if (state == NULL) return CO_EINVAL;
     state->polls += 1u;
-    return DLO_OK;
+    return CO_OK;
 }
 
 static void app_shutdown(void *context)
@@ -46,11 +46,11 @@ int main(void)
     test_context_t context = {0};
     unsigned char arena_storage[512];
     nun_runtime_t runtime;
-    dlo_hooks_t hooks = { &context, app_init, app_step, app_shutdown };
-    pbsc_platform_ops_t platform = {
-        PBSC_ABI_VERSION,
-        (uint32_t)sizeof(pbsc_platform_ops_t),
-        PBSC_PLATFORM_CAP_MONOTONIC_CLOCK,
+    co_hooks_t hooks = { &context, app_init, app_step, app_shutdown };
+    kloz_platform_ops_t platform = {
+        KLOZ_ABI_VERSION,
+        (uint32_t)sizeof(kloz_platform_ops_t),
+        KLOZ_PLATFORM_CAP_MONOTONIC_CLOCK,
         &context,
         read_ticks,
         NULL,
@@ -68,7 +68,7 @@ int main(void)
         20u
     };
     void *memory;
-    riae_health_state_t health = RIAE_DEGRADED;
+    saintsi_health_state_t health = SAINTSI_DEGRADED;
     uint32_t stale = UINT32_MAX;
 
     assert(nun_runtime_init(&runtime, &config) == NUN_OK);
@@ -84,7 +84,7 @@ int main(void)
     assert(nun_runtime_release_queue_slots(&runtime, 2u) == NUN_OK);
     assert(nun_runtime_reset_arena(&runtime) == NUN_OK);
     assert(nun_runtime_health(&runtime, &health, &stale) == NUN_OK);
-    assert(health == RIAE_HEALTHY);
+    assert(health == SAINTSI_HEALTHY);
     assert(stale == 0u);
 
     assert(nun_runtime_authorize(NUN_ACCESS_READ_LOCAL, NUN_ORIGIN_USER) == 1);
