@@ -1,50 +1,52 @@
-# NUN — Minimal Kernel Substrate
+<p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="Duck mark" width="104" /></p>
+<h1 align="center">NUN</h1>
+<p align="center"><strong>Minimal Kernel Substrate</strong></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111" /></p>
+<p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
+<hr />
 
-**Репозиторій-специфікація мінімального системного ядра.**
+**Специфікаційна основа мінімального системного ядра: межі архітектури, пам'яті, виконання та передачі керування.**
 
-Поточний стан: **архітектурна документація, без реалізації ядра**. Репозиторій містить README трьома мовами та специфікації; вихідного коду ядра, boot path, linker script, системи збірки, драйверів і тестів поки немає. Документи фіксують технічний напрям і не видають заплановані компоненти за реалізовані.
+## Продуктова роль
 
-[Українська](README.md) · [English](README.en.md) · [Русский](README.ru.md) · [Репозиторій](https://github.com/bboroski/NUN)
+NUN фіксує технічний контракт майбутнього мінімального ядра до появи повної реалізації. Це точка узгодження для системних розробників: що саме має робити kernel core, які дані він отримує від bootstrap-рівня та які гарантії мають бути підтверджені тестами.
 
 ## Запропоновані межі системи
 
 - **Boot contract:** формат handoff від завантажувача, карта пам'яті та версія ABI.
-- **Architecture layer:** CPU entry, перехід між рівнями привілеїв, exception та interrupt vectors.
+- **Architecture layer:** CPU entry, privilege transition, exception та interrupt vectors.
 - **Memory layer:** фізичні сторінки, ранній allocator, віртуальна адресація й захист.
-- **Execution layer:** task/context model і явна модель синхронізації.
+- **Execution layer:** task/context model та явна модель синхронізації.
 - **Device boundary:** описані bus/driver interfaces без припущень про конкретну плату.
-- **Capability composition layer:** реєстр можливостей, перевірка сумісності, побудова композицій, ізольоване підключення та атомарне повернення до попереднього стану.
+- **Diagnostics:** ранній serial/framebuffer output і структурований panic record.
 
-## Об'єднання та поглинання можливостей
+## Поточний стан
 
-NUN має отримати **Capability Composition & Assimilation** — системний механізм, який дозволяє приймати нові модулі, перевіряти їхні контракти та залежності, поєднувати сумісні можливості в складені можливості й повторно використовувати ці композиції як звичайні модулі.
+<badge>SPECIFICATION ONLY</badge>
 
-Це не безконтрольне злиття виконуваного коду. Кожна можливість має версіонований маніфест, ідентифікатор, ABI, перелік інтерфейсів і мінімально необхідних дозволів. Підключення проходить через карантин, перевірку, розв'язання конфліктів, ізольоване тестове середовище та транзакційну активацію.
-
-- [Архітектура Capability Composition & Assimilation](docs/architecture/capability-composition.md)
-- [JSON Schema маніфесту можливості](spec/capability-manifest.schema.json)
+У репозиторії поки немає вихідного коду ядра, boot path, linker script, build system, драйверів або тестів. Доданий бренд-ресурс README не є частиною runtime. NUN не є bootable OS і не призначений для завантаження на фізичне обладнання.
 
 ## Інженерні вимоги
 
-Кожна апаратно-залежна дія має бути прив'язана до конкретної архітектури й boot protocol. ABI, межі пам'яті, alignment, privilege level та interrupt policy мають бути задокументовані. Host-тести не можуть замінити емуляцію або перевірку на цільовій платформі.
+Кожна апаратно-залежна дія має бути прив'язана до конкретної архітектури й boot protocol. ABI, межі пам'яті, alignment, privilege level та interrupt policy потрібно документувати явно. Host-тести не можуть замінити емуляцію або перевірку на цільовій платформі.
 
-Для системи композиції додатково обов'язкові: детерміноване розв'язання залежностей, відхилення циклічних залежностей, ізоляція модулів, принцип найменших привілеїв, походження артефактів, атомарна активація та перевірений rollback.
+## Управління розробкою та readiness gates
 
-## Поточна перевірка
+| Етап | Необхідний доказ |
+|---|---|
+| Architecture baseline | Обрана CPU architecture і визначена модель привілеїв |
+| Boot contract | Версійований handoff, memory map та правила валідації |
+| Reproducible build | Збірка, linker map та перевірка образу відтворюються |
+| Emulator validation | Serial smoke test, exception/interrupt та memory tests |
+| Target qualification | Фізичне обладнання й конкретний board port перевірені окремо |
 
-Збірки та тестів ядра поки немає: реалізація не створена. Специфікація композиції також є архітектурним контрактом, а не готовим runtime. Перший кодовий етап має додати відтворювану збірку, linker map, serial smoke test, перевірку образу та окремі host-тести реєстру й resolver.
+Перший кодовий етап має додати відтворювану збірку, linker map, serial smoke test і автоматизовану перевірку образу. До цього статус проєкту залишається специфікаційним.
 
-## Технічна ідентичність
+## Контракт із NUNLauncher
 
-**NUN** — канонічне технічне ім'я мінімального kernel substrate. GitHub-шлях збережено лише як адресу репозиторію.
+[NUNLauncher](https://github.com/bboroski/NUNLauncher) відповідає за майбутню перевірку kernel image та handoff-даних. NUN має незалежно перевіряти отриманий контекст перед ініціалізацією. Керування пам'яттю, scheduler і драйвери належать ядру, а не launcher-рівню.
 
-## Статус
+## Екосистема
 
-Не використовувати як bootable OS і не завантажувати на фізичне обладнання: реалізованого ядра ще немає.
+[SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUNLauncher](https://github.com/bboroski/NUNLauncher).
 
-## Академический биологический словарь
-
-- [500 академических терминов EN–RU](data/biology/academic_terms_500.tsv)
-- [Контракт и правила использования](docs/BIOLOGY_DOMAIN_PACK.md)
-
-Справочный офлайн-набор для обучения и метаданных; он не управляет системами, устройствами и диагностикой.
