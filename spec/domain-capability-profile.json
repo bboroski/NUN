@@ -1,0 +1,63 @@
+{
+  "schema_version": "nun.domain-capabilities.v1",
+  "profile_id": "nun.reference-domain-capabilities",
+  "profile_status": "specification",
+  "capabilities": [
+    {
+      "id": "nun.resource.envelope",
+      "domain": "biosynthetic",
+      "maps_terms": ["biomass extraction", "cellular encapsulation", "homeostasis", "resource budget"],
+      "interface": "nun.resource-envelope.v1",
+      "status": "specified",
+      "permissions": ["observe", "reserve", "release"]
+    },
+    {
+      "id": "nun.simulation.mass-effect",
+      "domain": "physics",
+      "maps_terms": ["element zero", "mass effect field", "quantum fluctuation", "gravitational anomaly"],
+      "interface": "nun.simulation-field.v1",
+      "status": "specified",
+      "permissions": ["simulate", "inspect"]
+    },
+    {
+      "id": "nun.integrity.boundary",
+      "domain": "defense",
+      "maps_terms": ["kinetic barrier", "hull integrity", "sensor disruption", "fault containment"],
+      "interface": "nun.integrity-monitor.v1",
+      "status": "specified",
+      "permissions": ["observe", "report"]
+    },
+    {
+      "id": "nun.lifecycle.recovery",
+      "domain": "cycles",
+      "maps_terms": ["harvest cycle", "core reconstruction", "hibernation cycle", "rollback"],
+      "interface": "nun.lifecycle.v1",
+      "status": "specified",
+      "permissions": ["stage", "verify", "activate", "rollback"]
+    },
+    {
+      "id": "nun.consensus.engine",
+      "domain": "synthetic-intelligence",
+      "maps_terms": ["geth consensus", "collective consciousness", "distributed intelligence"],
+      "interface": "nun.consensus.v1",
+      "status": "specified",
+      "permissions": ["propose", "vote", "inspect"]
+    },
+    {
+      "id": "nun.evolution.gate",
+      "domain": "genetics-and-evolution",
+      "maps_terms": ["genetic drift", "mutation", "natural selection", "epigenetics"],
+      "interface": "nun.evolution-gate.v1",
+      "status": "specified",
+      "permissions": ["propose", "verify", "promote"]
+    }
+  ],
+  "guardrails": {
+    "glossary_is_executable": false,
+    "fictional_physics_is_simulation_only": true,
+    "biological_terms_are_not_lab_instructions": true,
+    "missing_evidence_means_unknown": true,
+    "privileged_actions_require_capabilities": true,
+    "activation_requires_rollback_path": true
+  }
+}
