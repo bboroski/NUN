@@ -1,0 +1,25 @@
+name: NUN kernel host contracts
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host-contract-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Install C toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes build-essential
+      - name: Compile with strict C11 diagnostics
+        run: make check
+      - name: Run host contract tests
+        run: make test
