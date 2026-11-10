@@ -1,0 +1,21 @@
+[submodule "modules/SAMBU"]
+	path = modules/SAMBU
+	url = https://github.com/bboroski/SAMBU.git
+[submodule "modules/ToolNG"]
+	path = modules/ToolNG
+	url = https://github.com/bboroski/ToolNG.git
+[submodule "modules/ReaperCripple"]
+	path = modules/ReaperCripple
+	url = https://github.com/bboroski/ReaperCripple.git
+[submodule "modules/Kloz"]
+	path = modules/Kloz
+	url = https://github.com/bboroski/Kloz.git
+[submodule "modules/CO"]
+	path = modules/CO
+	url = https://github.com/bboroski/CO.git
+[submodule "modules/SaintSI"]
+	path = modules/SaintSI
+	url = https://github.com/bboroski/SaintSI.git
+[submodule "modules/Klipot"]
+	path = modules/Klipot
+	url = https://github.com/bboroski/Klipot.git

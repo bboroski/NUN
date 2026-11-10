@@ -1,32 +1,29 @@
-# NUN — Minimal Kernel Substrate
+# NUN — integrated systems foundation
 
-**A specification scaffold for a minimal operating-system kernel.**
+NUN coordinates seven source repositories as one verifiable engineering system. Every repository is pinned as a Git submodule, preserving its complete source code, tests, build configuration, assets and independent history.
 
-Current status: **documentation scaffold only**. The repository contains only a README; there is no kernel source, boot path, linker script, build system, driver, or test suite. This document defines a technical direction; planned components are not represented as implemented features.
+## Included projects
 
-[Українська](README.md) · [English](README.en.md) · [Русский](README.ru.md) · [Repository](https://github.com/bboroski/NUN)
+- SAMBU — language runtime, interpreter, CLI, IDE and developer tooling.
+- ToolNG — native policy, evidence and bounded-workflow core.
+- ReaperCripple — staged bootstrap, rollback, BSP adapters, telemetry and manufacturing profiles.
+- Kloz — platform ABI, caller-owned arena and resource budgets.
+- CO — deterministic component lifecycle.
+- SaintSI — heartbeat, health observation and CRC-32.
+- Klipot — ecosystem registry, contracts and integration planner.
 
-## Proposed system boundaries
+## Integrated runtime
 
-- **Boot contract:** loader handoff format, memory map, and ABI version.
-- **Architecture layer:** CPU entry, privilege transition, exception and interrupt vectors.
-- **Memory layer:** physical pages, early allocator, virtual addressing, and protection.
-- **Execution layer:** task/context model and an explicit synchronization model.
-- **Device boundary:** documented bus/driver interfaces without assumptions about a specific board.
-- **Diagnostics:** early serial/framebuffer output and structured panic records.
+The native NUN runtime composes Kloz resources, CO lifecycle callbacks, SaintSI health observations, ReaperCripple bootstrap/rollback and ToolNG fail-closed authorization. It validates a versioned platform contract, uses caller-owned memory, bounds memory/queue/work and rolls back bootstrap stages in reverse order.
 
-## Engineering requirements
+SAMBU and Klipot remain host-side tools. Their complete Python code is available in the pinned submodules and their test suites are included in the one-knob workflow when pytest is installed. Host Python code is not presented as freestanding kernel code.
 
-Every hardware-dependent operation must be tied to a specific architecture and boot protocol. ABI, memory boundaries, alignment, privilege levels, and interrupt policy must be documented. Host tests cannot replace emulation or target-platform validation.
+## One-knob build
 
-## Current verification status
+Clone with recursive submodules, then run one.cmd on Windows or python3 one.py on Linux/macOS. Requirements: CMake 3.20+, a C11 compiler and Python 3.10+. Install pytest to execute the SAMBU and Klipot test suites.
 
-There is no build or test command because implementation has not started. The first code milestone should add a reproducible build, linker map, serial smoke test, and automated image validation.
+## Status boundary
 
-## Technical identity
+This is a host integration build and a kernel foundation, not a bootable operating system. A bootable image still needs a named CPU target, boot protocol, architecture entry path, linker layout, early console, exception/interrupt vectors, page management, device drivers and QEMU or hardware validation.
 
-**NUN** is the canonical technical name for the minimal kernel substrate. The GitHub path is retained only as the repository address.
-
-## Status
-
-Do not treat this repository as a bootable OS or load it onto physical hardware: no kernel implementation exists yet.
+See docs/ECOSYSTEM_INTEGRATION.md and ecosystem/manifest.json.
