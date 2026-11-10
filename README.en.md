@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="Duck mark" width="104" /></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111" /></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-C11%20CONTRACT-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/IMPLEMENTATION-HOST%20METADATA%20SLICE-FFD600?style=for-the-badge&labelColor=111111" /></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 <hr />
 
@@ -22,9 +22,9 @@ NUN records the technical contract for a future minimal kernel before a full imp
 
 ## Current status
 
-**Current status: SPECIFICATION ONLY**
+**Current status: C11 boot-information contract added; the kernel itself remains unimplemented.**
 
-The repository does not yet contain kernel source code, a boot path, linker script, build system, drivers, or tests. The README brand asset is not runtime code. NUN is not a bootable OS and must not be loaded onto physical hardware.
+The repository now contains nun_boot_info_validate, a versioned handoff structure, architecture-ID validation, memory-map validation, range-overflow and overlap checks, entry-point validation, CMake, and host tests (python one.py check). This validates metadata on the host only. There is still no CPU entry path, linker script, page allocator, scheduler, device drivers, or bootable kernel image. NUN is not a bootable OS.
 
 ## Engineering requirements
 
@@ -40,7 +40,7 @@ Every hardware-dependent action must be tied to a specific architecture and boot
 | Emulator validation | Serial smoke test, exception/interrupt, and memory tests |
 | Target qualification | Physical hardware and the specific board port are validated separately |
 
-The first implementation milestone should add a reproducible build, linker map, serial smoke test, and automated image validation. Until then, the project remains a specification scaffold.
+Next milestones include an architecture entry path, linker map, early diagnostics, physical/virtual memory management, and separate emulator and target tests. The host contract does not replace any of these.
 
 ## Contract with NUNLauncher
 
