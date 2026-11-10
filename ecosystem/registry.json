@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "ecosystem": "NUN",
+  "canonical_source": "bboroski/NUN/ecosystem/registry.json",
+  "governance": {
+    "principle": "Independent repositories integrate through pinned manifests, explicit adapters and testable evidence; the kernel remains a small privileged core.",
+    "dependency_rule": "No cyclic source dependencies. Each repository owns its implementation and release.",
+    "admission_rule": "A capability manifest is descriptive metadata, not executable permission or a security sandbox.",
+    "release_rule": "Cross-repository compatibility is reported separately from each repository's local test status."
+  },
+  "repositories": [
+    {
+      "name": "NUN",
+      "repository": "bboroski/NUN",
+      "role": "bare-metal-kernel-and-system-abi",
+      "integration_status": "foundation-in-progress",
+      "planned_interfaces": ["boot-info-v1", "kernel-service-abi", "capability-manifest-v1"],
+      "evidence": ["host-tested-boot-info-validator"],
+      "not_yet_present": ["efi-loader", "linker-script", "kernel-entry", "scheduler", "drivers", "bootable-image"]
+    },
+    {
+      "name": "NUNLauncher",
+      "repository": "bboroski/NUNLauncher",
+      "role": "android-home-launcher-and-system-shell",
+      "integration_status": "android-app-foundation-in-progress",
+      "planned_interfaces": ["android-home-activity", "launcher-app-catalog", "future-nun-binder-bridge"],
+      "security_boundary": "ordinary Android application; no bootloader or firmware write privileges"
+    },
+    {
+      "name": "SAMBU",
+      "repository": "bboroski/SAMBU",
+      "role": "systems-language-and-developer-tooling",
+      "integration_status": "architecture-contract",
+      "planned_interfaces": ["compiler-toolchain-adapter", "language-runtime-profiles", "developer-tooling"],
+      "security_boundary": "Python interpreter and experimental native IR are user-space/developer components"
+    },
+    {
+      "name": "ToolNG",
+      "repository": "bboroski/ToolNG",
+      "role": "local-diagnostics-and-evidence-presentation",
+      "integration_status": "design-pattern-reuse",
+      "planned_interfaces": ["diagnostic-event-schema", "report-schema", "evidence-state-model"],
+      "security_boundary": "Windows-only device enumeration and UI remain outside the kernel"
+    },
+    {
+      "name": "ReaperCripple",
+      "repository": "bboroski/ReaperCripple",
+      "role": "bsp-runtime-bootstrap-and-board-qualification",
+      "integration_status": "adapter-contract",
+      "planned_interfaces": ["architecture-profile", "capability-gated-init", "rollback-record", "bounded-telemetry"],
+      "security_boundary": "exact SoC/board profile and target tests are required for hardware claims"
+    },
+    {
+      "name": "Kloz",
+      "repository": "bboroski/Kloz",
+      "role": "caller-owned-memory-and-resource-governance",
+      "integration_status": "adapter-contract",
+      "planned_interfaces": ["status-abi", "arena", "resource-budget", "platform-ops"],
+      "security_boundary": "accounting is not page protection, allocation interception or a sandbox"
+    },
+    {
+      "name": "CO",
+      "repository": "bboroski/CO",
+      "role": "deterministic-component-lifecycle",
+      "integration_status": "adapter-contract",
+      "planned_interfaces": ["component-init-step-stop", "bounded-poll", "fault-retention"],
+      "security_boundary": "caller serializes access; one callback is executed per poll"
+    },
+    {
+      "name": "SaintSI",
+      "repository": "bboroski/SaintSI",
+      "role": "health-observation-and-integrity-checks",
+      "integration_status": "adapter-contract",
+      "planned_interfaces": ["heartbeat-registry", "degraded-state", "crc32"],
+      "security_boundary": "health is observation; CRC-32 is accidental-corruption detection only"
+    },
+    {
+      "name": "Klipot",
+      "repository": "bboroski/Klipot",
+      "role": "ecosystem-registry-and-package-control-plane",
+      "integration_status": "schema-and-planner-reuse",
+      "planned_interfaces": ["manifest-validation", "dependency-dag", "provenance", "conflict-policy"],
+      "security_boundary": "portal presentation cannot grant system permissions or activate unverified code"
+    }
+  ],
+  "shared_contracts": {
+    "boot_info_v1": {
+      "header": "include/nun/boot_info.h",
+      "implementation": "src/boot_info.c",
+      "abi_major": 1,
+      "abi_minor": 0,
+      "validation": "make test"
+    },
+    "capability_manifest_v1": {
+      "schema": "spec/capability-manifest.schema.json",
+      "architecture": "docs/architecture/capability-composition.md"
+    },
+    "duck_ui": {
+      "canonical_tokens": "https://github.com/bboroski/SAMBU/blob/main/design/duck-ui.tokens.json",
+      "principle": "black graphite surfaces, semantic yellow accents, visible focus and text-plus-icon statuses"
+    }
+  }
+}
