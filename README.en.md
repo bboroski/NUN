@@ -1,4 +1,4 @@
-# MKS — Minimal Kernel Substrate
+# NUN — Minimal Kernel Substrate
 
 **A specification scaffold for a minimal operating-system kernel.**
 
@@ -25,7 +25,7 @@ There is no build or test command because implementation has not started. The fi
 
 ## Technical identity
 
-**MKS** is the canonical technical name for the minimal kernel substrate. The GitHub path is retained only as the repository address.
+**NUN** is the canonical technical name for the minimal kernel substrate. The GitHub path is retained only as the repository address.
 
 ## Status
 
