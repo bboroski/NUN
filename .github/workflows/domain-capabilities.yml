@@ -1,0 +1,34 @@
+name: Domain capability specification checks
+
+on:
+  push:
+    branches: [main, feature/reaper-domain-capabilities]
+    paths:
+      - "spec/domain-capability-profile.json"
+      - "tools/validate_domain_profile.py"
+      - "tests/**"
+      - ".github/workflows/domain-capabilities.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "spec/domain-capability-profile.json"
+      - "tools/validate_domain_profile.py"
+      - "tests/**"
+      - ".github/workflows/domain-capabilities.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate domain profile
+        run: python tools/validate_domain_profile.py
+      - name: Run host-side tests
+        run: python -m unittest discover -s tests -v
