@@ -41,3 +41,10 @@ There is no kernel build or test command because implementation has not started.
 ## Status
 
 Do not treat this repository as a bootable OS or load it onto physical hardware: no kernel implementation exists yet.
+
+## Academic biology glossary
+
+- [500 academic terms EN–RU](data/biology/academic_terms_500.tsv)
+- [Data contract and usage boundaries](docs/BIOLOGY_DOMAIN_PACK.md)
+
+An offline reference pack for education and metadata; it does not control systems, devices or diagnostics.
