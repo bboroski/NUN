@@ -1,0 +1,46 @@
+name: Windows game compatibility metadata
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "README.en.md"
+      - "README.ru.md"
+      - "docs/architecture/windows-game-compatibility.md"
+      - "spec/windows-game-profile.schema.json"
+      - "data/compatibility/**"
+      - "tools/inspect_windows_pe.py"
+      - "tools/validate_windows_game_compatibility.py"
+      - "tests/**"
+      - ".github/workflows/windows-game-compatibility.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "spec/windows-game-profile.schema.json"
+      - "data/compatibility/**"
+      - "tools/inspect_windows_pe.py"
+      - "tools/validate_windows_game_compatibility.py"
+      - "tests/**"
+      - ".github/workflows/windows-game-compatibility.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out NUN
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile host-side tools and tests
+        run: python -m py_compile tools/inspect_windows_pe.py tools/validate_windows_game_compatibility.py tests/test_inspect_windows_pe.py
+      - name: Run PE inspector tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate game profile metadata
+        run: python tools/validate_windows_game_compatibility.py

@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nun:windows-game-profile:1",
+  "title": "NUN Windows Game Profile",
+  "description": "Declarative, non-executable compatibility requirements for one Windows game entry point.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile_version",
+    "id",
+    "executable",
+    "machine",
+    "subsystem",
+    "graphics",
+    "audio",
+    "input",
+    "security",
+    "support_tier"
+  ],
+  "properties": {
+    "profile_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "executable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path inside the per-game prefix; never an implicit host absolute path."
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "working_directory": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "machine": {
+      "enum": ["x86", "x86_64", "arm64", "unknown"]
+    },
+    "subsystem": {
+      "enum": ["windows_gui", "windows_console", "native", "unknown"]
+    },
+    "windows_compatibility_target": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Requested API behavior target; not a claim of full Windows compatibility."
+    },
+    "graphics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["apis", "translation_backend"],
+      "properties": {
+        "apis": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["direct3d8", "direct3d9", "direct3d10", "direct3d11", "direct3d12", "opengl", "vulkan", "unknown"]
+          }
+        },
+        "translation_backend": {
+          "enum": ["auto", "dxvk", "vkd3d-proton", "wined3d", "native-vulkan", "none"]
+        },
+        "minimum_vulkan_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"
+        },
+        "required_features": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["apis"],
+      "properties": {
+        "apis": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["xaudio2", "wasapi", "directsound", "winmm", "unknown"]
+          }
+        },
+        "minimum_channels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["apis"],
+      "properties": {
+        "apis": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["xinput", "directinput", "rawinput", "hid", "keyboard_mouse", "unknown"]
+          }
+        },
+        "hotplug_required": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "required"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "source": {
+            "enum": ["game_install", "trusted_runtime", "user_supplied"]
+          }
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anti_cheat", "kernel_driver_required"],
+      "properties": {
+        "anti_cheat": {
+          "enum": ["none", "user_mode", "kernel_mode", "unknown"]
+        },
+        "kernel_driver_required": {
+          "type": "boolean"
+        },
+        "network_access": {
+          "enum": ["denied", "prompt", "profile_scoped"]
+        },
+        "external_device_access": {
+          "enum": ["denied", "prompt", "profile_scoped"]
+        }
+      }
+    },
+    "resource_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "memory_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "process_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cpu_time_ms": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "support_tier": {
+      "enum": ["not_tested", "loads", "menu", "playable", "verified", "blocked"]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["test_id", "result"],
+        "properties": {
+          "test_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "enum": ["pass", "fail", "not_run"]
+          },
+          "nun_build": {
+            "type": "string"
+          },
+          "runtime_version": {
+            "type": "string"
+          },
+          "gpu_driver": {
+            "type": "string"
+          },
+          "tested_at": {
+            "type": "string",
+            "format": "date"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "security": {
+            "properties": {
+              "anti_cheat": {
+                "const": "kernel_mode"
+              }
+            },
+            "required": ["anti_cheat"]
+          }
+        },
+        "required": ["security"]
+      },
+      "then": {
+        "properties": {
+          "support_tier": {
+            "const": "blocked"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "security": {
+            "properties": {
+              "kernel_driver_required": {
+                "const": true
+              }
+            },
+            "required": ["kernel_driver_required"]
+          }
+        },
+        "required": ["security"]
+      },
+      "then": {
+        "properties": {
+          "support_tier": {
+            "const": "blocked"
+          }
+        }
+      }
+    }
+  ]
+}
