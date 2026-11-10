@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bboroski/NUN/blob/main/spec/boot-handoff.schema.json",
+  "title": "NUN versioned boot handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "boot_id", "architecture", "kernel_image", "entry_point", "memory_map", "capabilities", "digest_sha256"],
+  "properties": {
+    "schema_version": { "const": "nun.boot-handoff.v1" },
+    "boot_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "architecture": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "kernel_image": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "size_bytes", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "size_bytes": { "type": "integer", "minimum": 1, "maximum": 18446744073709551615 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+      }
+    },
+    "entry_point": { "type": "integer", "minimum": 0, "maximum": 18446744073709551615 },
+    "memory_map": {
+      "type": "array", "minItems": 1, "maxItems": 256,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["base", "length", "kind"],
+        "properties": {
+          "base": { "type": "integer", "minimum": 0, "maximum": 18446744073709551615 },
+          "length": { "type": "integer", "minimum": 1, "maximum": 18446744073709551615 },
+          "kind": { "enum": ["available", "reserved", "firmware", "kernel", "initrd", "mmio"] }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array", "maxItems": 64, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "digest_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}
