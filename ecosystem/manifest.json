@@ -1,0 +1,55 @@
+{
+  "project_id": "NUN",
+  "schema_version": 1,
+  "contract_major": 1,
+  "role": "bare-metal-operating-system-kernel",
+  "maturity": "architecture-baseline-host-tested-boot-contract",
+  "targets": [
+    {
+      "architecture": "x86_64",
+      "firmware": "UEFI",
+      "profile": "QEMU-OVMF-development",
+      "status": "planned; no EFI loader or bootable image yet"
+    },
+    {
+      "architecture": "AArch64",
+      "firmware": "UEFI or qualified device firmware",
+      "status": "planned; no target implementation yet"
+    },
+    {
+      "architecture": "RISC-V64",
+      "firmware": "platform-specific",
+      "status": "planned; no target implementation yet"
+    }
+  ],
+  "provides": [
+    "nun-boot-info-validation-v1",
+    "nun-os-layered-architecture",
+    "nun-language-runtime-integration-contract",
+    "nun-ecosystem-capability-map"
+  ],
+  "consumes": [
+    "versioned-platform-operations",
+    "board-specific-bsp-capabilities",
+    "signed-kernel-and-package-artifacts",
+    "versioned-language-binding-abi"
+  ],
+  "integrations": [
+    "Kloz is the candidate caller-owned memory/resource substrate through a narrow adapter",
+    "CO is the candidate deterministic component lifecycle runtime through a narrow adapter",
+    "SaintSI is the candidate bounded health observer; CRC-32 is not authentication",
+    "ReaperCripple provides BSP and board-qualification patterns, not a generic bootloader",
+    "SAMBU provides language/compiler architecture and developer tooling; its Python runtime is not a kernel dependency",
+    "ToolNG contributes local diagnostics and evidence UX patterns; Windows device APIs remain host-only",
+    "Klipot contributes registry, schema and dependency-planning contracts",
+    "NUNLauncher is the Android Home shell and is not the UEFI loader"
+  ],
+  "safety": [
+    "No native extension executes during discovery or validation",
+    "Unknown architecture capabilities fail closed",
+    "Firmware services are not used after successful ExitBootServices",
+    "Only mapped and bounded memory-map entries are validated",
+    "CRC-32 is not a signature or authentication mechanism",
+    "No bootable or production hardware support is claimed before emulator and target evidence exists"
+  ]
+}
