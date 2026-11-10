@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "repository": "bboroski/NUN",
+  "role": "minimal-kernel architecture and boot-context specification",
+  "maturity": "specification-only",
+  "domains": {
+    "lucifer": {
+      "status": "partial",
+      "evidence": [
+        "docs/architecture/capability-composition.md"
+      ]
+    },
+    "beelzebub": {
+      "status": "planned",
+      "evidence": []
+    },
+    "leviathan": {
+      "status": "partial",
+      "evidence": [
+        "docs/architecture/capability-composition.md"
+      ]
+    },
+    "asmodeus": {
+      "status": "partial",
+      "evidence": [
+        "README.md",
+        "docs/REAPER_DOMAIN_INTEGRATION.md"
+      ]
+    },
+    "belphegor": {
+      "status": "planned",
+      "evidence": []
+    },
+    "mammon": {
+      "status": "partial",
+      "evidence": [
+        "README.md"
+      ]
+    },
+    "satan": {
+      "status": "partial",
+      "evidence": [
+        "README.md",
+        "docs/REAPER_DOMAIN_INTEGRATION.md"
+      ]
+    },
+    "belial": {
+      "status": "planned",
+      "evidence": []
+    },
+    "astaroth": {
+      "status": "implemented",
+      "evidence": [
+        "spec/capability-manifest.schema.json",
+        "docs/architecture/capability-composition.md"
+      ]
+    },
+    "baal": {
+      "status": "planned",
+      "evidence": []
+    },
+    "adramelech": {
+      "status": "partial",
+      "evidence": [
+        "README.md"
+      ]
+    },
+    "ariel": {
+      "status": "planned",
+      "evidence": []
+    },
+    "pazuzu": {
+      "status": "partial",
+      "evidence": [
+        "README.md"
+      ]
+    }
+  },
+  "integrations": [
+    {
+      "repository": "bboroski/NUNLauncher",
+      "relation": "contract",
+      "status": "planned"
+    },
+    {
+      "repository": "bboroski/Kloz",
+      "relation": "adapter",
+      "status": "planned"
+    },
+    {
+      "repository": "bboroski/ReaperCripple",
+      "relation": "adapter",
+      "status": "planned"
+    }
+  ]
+}
