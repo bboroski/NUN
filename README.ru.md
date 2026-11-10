@@ -1,51 +1,72 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="Duck mark" width="104" /></p>
 <h1 align="center">NUN</h1>
-<p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111" /></p>
+<p align="center"><strong>NUN OS · Bare-metal Kernel Foundation</strong></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-FOUNDATION%20IN%20PROGRESS-FFD600?style=for-the-badge&labelColor=111111" /><img src="https://img.shields.io/badge/BOOT-HOST%20CONTRACT%20TESTS-FFD600?style=for-the-badge&labelColor=111111" /></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 <hr />
 
-**Спецификационная основа минимального системного ядра: границы архитектуры, памяти, выполнения и передачи управления.**
+**NUN — основа самостоятельной операционной системы: загрузочный контракт, архитектурные порты, управление памятью, выполнение задач, драйверы, изоляция и пользовательская среда.**
 
-## Позиционирование
+## Архитектура продукта
 
-NUN фиксирует технический контракт будущего минимального ядра до появления полноценной реализации. Это общая точка согласования для системных разработчиков: обязанности kernel core, данные от bootstrap-уровня и доказательства, которые потребуются для проверки архитектуры.
+NUN OS — отдельная bare-metal операционная система. NUNLauncher — самостоятельное Android-приложение типа Home, а не UEFI-загрузчик. Android-приложение не может самостоятельно заменить загрузчик устройства или записывать защищённые разделы прошивки.
 
-## Предлагаемые границы системы
+Начальная инженерная цель NUN OS — x86_64 + UEFI в QEMU/OVMF. AArch64 и RISC-V 64-bit предусмотрены как следующие отдельные порты, но пока не заявлены как реализованные.
 
-- **Boot contract:** формат handoff от загрузчика, карта памяти и версия ABI.
-- **Architecture layer:** CPU entry, privilege transition, exception и interrupt vectors.
-- **Memory layer:** физические страницы, ранний allocator, виртуальная адресация и защита.
-- **Execution layer:** task/context model и явная модель синхронизации.
-- **Device boundary:** описанные bus/driver interfaces без предположений о конкретной плате.
-- **Diagnostics:** ранний serial/framebuffer output и структурированный panic record.
+## Что уже заложено в репозитории
 
-## Текущий статус
+- Версионированный C11 boot-information ABI v1.
+- Проверка magic, версии ABI, целевой архитектуры и зарезервированных флагов.
+- Валидация memory map: размер, количество, выравнивание, типы, переполнения и пересечения диапазонов.
+- Проверка диапазонов kernel image/initrd и согласованности framebuffer-полей.
+- Host-тесты и GitHub Actions workflow для строгой C11-компиляции.
+- Архитектура NUN OS, загрузочная цепочка, модель интеграции экосистемы и языковые профили Fortran/Pascal/Delphi.
 
-**Current status: SPECIFICATION ONLY**
+Это **не bootable OS**: EFI loader, linker script, kernel entry, page tables, scheduler, драйверы, userspace и готовый образ ещё не реализованы.
 
-В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. Бренд-ресурс README не является runtime-кодом. NUN не является bootable OS и не предназначен для загрузки на физическое оборудование.
+## Языковые подсистемы
 
-## Инженерные требования
+Общий системный ABI будет доступен через отдельные binding/runtime-профили:
 
-Каждое аппаратно-зависимое действие должно быть привязано к конкретной архитектуре и boot protocol. ABI, границы памяти, alignment, privilege level и interrupt policy необходимо документировать явно. Host-тесты не заменяют эмуляцию или проверку на целевой платформе.
+- **Fortran:** модули, числовые типы, массивы, научные вычисления и `ISO_C_BINDING`.
+- **Pascal / Free Pascal:** units, records, sets, classes, generics, exceptions, RTTI и RTL-профили.
+- **Delphi:** Object Pascal, компоненты, свойства, события, RTTI и C ABI interoperability при наличии лицензированного toolchain.
 
-## Управление проектом и readiness gates
-
-| Этап | Требуемое доказательство |
-|---|---|
-| Architecture baseline | Выбрана CPU architecture и определена модель привилегий |
-| Boot contract | Версионируемый handoff, memory map и правила проверки |
-| Reproducible build | Сборка, linker map и проверка образа воспроизводимы |
-| Emulator validation | Serial smoke test, exception/interrupt и memory tests |
-| Target qualification | Физическое оборудование и конкретный board port проверены отдельно |
-
-Первый этап реализации должен добавить воспроизводимую сборку, linker map, serial smoke test и автоматическую проверку образа. До этого проект остаётся спецификационным каркасом.
-
-## Контракт с NUNLauncher
-
-[NUNLauncher](https://github.com/bboroski/NUNLauncher) должен проверять kernel image и handoff-данные. NUN обязан независимо проверять полученный контекст перед инициализацией. Управление памятью, scheduler и драйверы относятся к ядру, а не к launcher-уровню.
+Компиляторы и runtimes будут пользовательскими подсистемами. Они не загружаются в привилегированное ядро.
 
 ## Экосистема
 
-[SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUNLauncher](https://github.com/bboroski/NUNLauncher).
+| Репозиторий | Системная роль |
+|---|---|
+| SAMBU | Языки, компиляторы, IDE и developer tooling |
+| ReaperCripple | BSP, архитектурные адаптеры, bootstrap и rollback |
+| Kloz | Arena memory, платформенные контракты и resource budgets |
+| CO | Lifecycle и bounded execution |
+| SaintSI | Health observation, heartbeat и CRC-32 |
+| ToolNG | Диагностика, evidence-модель и отчёты |
+| Klipot | Реестр модулей, схемы, dependency graph |
+| NUNLauncher | Android Home Launcher и пользовательская оболочка |
+
+Интеграция выполняется через версионированные интерфейсы и адаптеры. Прикладные и платформенно-зависимые функции не переносятся в kernel автоматически.
+
+## Сборка и тесты текущего host-контракта
+
+```bash
+make check
+make test
+```
+
+Эти команды проверяют только boot-info validator. Они не собирают EFI loader и не производят загрузочный образ.
+
+## Техническая документация
+
+- [NUN OS foundation](docs/NUN_OS_FOUNDATION.md)
+- [Boot chain and image contract](docs/BOOT_CHAIN_AND_IMAGE_CONTRACT.md)
+- [Fortran, Pascal and Delphi integration](docs/LANGUAGE_RUNTIME_INTEGRATION.md)
+- [All-repository capability map](docs/ECOSYSTEM_CAPABILITY_MAP.md)
+- [Implementation roadmap](docs/IMPLEMENTATION_ROADMAP.md)
+- [Capability composition](docs/architecture/capability-composition.md)
+
+## Release policy
+
+Поддержка архитектуры, bootable-образа или безопасного обновления объявляется только после реализации и соответствующих тестов в эмуляторе и на конкретном целевом устройстве.
