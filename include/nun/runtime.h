@@ -4,10 +4,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "pbsc/platform.h"
-#include "dlo/runtime.h"
-#include "riae/health.h"
-#include "pbsc/arena.h"
+#include "kloz/platform.h"
+#include "co/runtime.h"
+#include "saintsi/health.h"
+#include "kloz/arena.h"
 #include "kloz/budget.h"
 #include "reaper_runtime.h"
 
@@ -55,8 +55,8 @@ typedef enum nun_access_origin {
 } nun_access_origin_t;
 
 typedef struct nun_runtime_config {
-    const pbsc_platform_ops_t *platform;
-    const dlo_hooks_t *lifecycle_hooks;
+    const kloz_platform_ops_t *platform;
+    const co_hooks_t *lifecycle_hooks;
     void *arena_storage;
     size_t arena_capacity;
     size_t arena_reserved_bytes;
@@ -67,12 +67,12 @@ typedef struct nun_runtime_config {
 } nun_runtime_config_t;
 
 typedef struct nun_runtime {
-    pbsc_platform_ops_t platform;
-    dlo_hooks_t lifecycle_hooks;
+    kloz_platform_ops_t platform;
+    co_hooks_t lifecycle_hooks;
     pbsc_arena_t arena;
     kloz_budget_t budget;
-    dlo_runtime_t lifecycle;
-    riae_supervisor_t assurance;
+    co_runtime_t lifecycle;
+    saintsi_supervisor_t assurance;
     reaper_runtime_t bootstrap;
     reaper_boot_step_t boot_steps[4];
     void *arena_storage;
@@ -107,7 +107,7 @@ int nun_runtime_authorize(nun_access_operation_t operation,
 
 nun_state_t nun_runtime_state(const nun_runtime_t *runtime);
 nun_result_t nun_runtime_health(const nun_runtime_t *runtime,
-                                riae_health_state_t *state_out,
+                                saintsi_health_state_t *state_out,
                                 uint32_t *stale_count_out);
 
 #ifdef __cplusplus
