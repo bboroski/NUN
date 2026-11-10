@@ -49,3 +49,8 @@ NUN фиксирует технический контракт будущего 
 ## Экосистема
 
 [SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUNLauncher](https://github.com/bboroski/NUNLauncher).
+
+
+## Продуктовая система
+
+Единые правила дизайна Duck, трёхъязычной документации, управления возможностями, маркетинговых заявлений и выпусков: [docs/PRODUCT_SYSTEM.md](docs/PRODUCT_SYSTEM.md). Реестр на 10 000 ID — это ёмкость планирования, а не заявление о 10 000 готовых функциях.
