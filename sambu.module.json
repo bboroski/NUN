@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "ecosystem": "SAMBU",
+  "module_id": "nun-kernel",
+  "repository": "bboroski/NUN",
+  "display_name": "NUN",
+  "version": null,
+  "role": "minimal-kernel-substrate-specification",
+  "runtime": [
+    "C11",
+    "architecture-specific toolchains"
+  ],
+  "maturity": "specification-only",
+  "provides": [
+    "kernel-boot-contract-v1",
+    "architecture-entry-contract",
+    "memory-map-handoff-contract",
+    "kernel-layer-boundaries"
+  ],
+  "consumes": [
+    "versioned-boot-information-block",
+    "architecture-specific-loader-handoff"
+  ],
+  "dependencies": [],
+  "boundaries": [
+    "NUN is a specification-only repository; no bootable kernel, boot path, linker script, driver or scheduler is implemented.",
+    "The kernel must remain independently buildable once implementation exists; optional integrations must not become mandatory runtime dependencies.",
+    "Hardware, privilege transitions, memory mappings and interrupt behavior require architecture-specific implementation and evidence.",
+    "No automatic firmware or kernel installation is authorized by an update notification."
+  ],
+  "verification": {
+    "host_tests": "Not implemented; specification and manifest validation only.",
+    "target_validation": "Not implemented; no bootable image or supported target is declared.",
+    "evidence": [
+      "README.md",
+      "ecosystem/update-policy.json"
+    ]
+  }
+}
