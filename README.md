@@ -50,3 +50,6 @@ NUN фіксує технічний контракт майбутнього мі
 
 [SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUNLauncher](https://github.com/bboroski/NUNLauncher).
 
+## Reaper cycle architecture model
+
+[CPU boundary and workload contract](docs/architecture/reaper-cycle-model.md) — a bounded test workload, not a new ISA or a bootable kernel component.
