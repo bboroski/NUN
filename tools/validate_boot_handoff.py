@@ -112,7 +112,7 @@ def validate_handoff(document: Any, *, verify_digest: bool = True) -> dict[str, 
         if base + length > MAX_U64 + 1:
             raise HandoffError(f"{field} address range overflows 64-bit address space")
         kind = raw["kind"]
-        if kind not in _KINDS:
+        if not isinstance(kind, str) or kind not in _KINDS:
             raise HandoffError(f"{field}.kind is not a supported memory-map category")
         regions.append((base, base + length, kind))
     regions.sort(key=lambda item: (item[0], item[1], item[2]))
