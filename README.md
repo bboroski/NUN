@@ -60,3 +60,7 @@ NUN фіксує технічний контракт майбутнього мі
 ## Reaper cycle architecture model
 
 [CPU boundary and workload contract](docs/architecture/reaper-cycle-model.md) — a bounded test workload, not a new ISA or a bootable kernel component.
+
+## Kernel image and handoff contract
+
+[NUN Kernel Image Contract v1](docs/architecture/kernel-image-contract-v1.md) defines the proposed image-format and handoff capability consumed by NUNLauncher. This is a specification only; no loader or bootable image is implemented.
