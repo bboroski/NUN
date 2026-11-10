@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "system": "NUN",
+  "version": "0.1.0",
+  "modules": [
+    {"repository":"NUN","role":"kernel-and-boot","placement":"kernel","status":"boot-scaffold","capabilities":["limine-handoff","serial-diagnostics","framebuffer-marker","physical-page-allocation"]},
+    {"repository":"Kloz","role":"platform-abi-and-resource-governance","placement":"kernel","status":"pinned-submodule-compiled-and-smoke-tested","capabilities":["status-abi","arena-memory","platform-operations","resource-budgets"]},
+    {"repository":"CO","role":"component-lifecycle","placement":"kernel","status":"pinned-submodule-compiled-and-smoke-tested","capabilities":["lifecycle-state-machine","bounded-step","cleanup-contract"]},
+    {"repository":"SaintSI","role":"runtime-assurance","placement":"kernel-smoke-and-future-system-service","status":"pinned-submodule-compiled-and-smoke-tested","capabilities":["heartbeat-observation","degraded-state","crc32"]},
+    {"repository":"ReaperCripple","role":"board-support-and-bootstrap","placement":"kernel-portable-supervisor-plus-target-specific-bsp","status":"supervisor-compiled-and-smoke-tested-board-bsp-not-qualified","capabilities":["boot-state-machine","optional-bsp-profiles","capability-gated-init","rollback"]},
+    {"repository":"SAMBU","role":"language-and-developer-platform","placement":"user-space","status":"pinned-submodule-user-space-integration-planned","capabilities":["language-runtime","ide","compiler-tools","declarative-workflows"]},
+    {"repository":"ToolNG","role":"diagnostics-and-reporting","placement":"companion-application","status":"pinned-submodule-schema-adaptation-planned","capabilities":["bounded-evidence","local-reports","diagnostic-workflows"]},
+    {"repository":"Klipot","role":"capability-registry-and-control-plane","placement":"user-space-service-and-admin-ui","status":"pinned-submodule-schema-adaptation-planned","capabilities":["manifest-validation","dependency-planning","module-catalog"]},
+    {"repository":"NUNLauncher","role":"android-home-interface","placement":"android-application","status":"android-home-foundation-implemented-bridge-not-implemented","capabilities":["home-activity","app-discovery","app-search","app-launch"]}
+  ],
+  "rules": [
+    "Repository identity is preserved exactly; never replace canonical names with local aliases.",
+    "Manifests are data and never trigger code execution.",
+    "Python, Windows-only and web UI modules do not run in kernel privilege.",
+    "Target support is unverified until the exact compiler, emulator or hardware matrix passes."
+  ]
+}

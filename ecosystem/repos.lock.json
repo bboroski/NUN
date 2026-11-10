@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "purpose": "Pinned inspected source identities for the NUN foundation; refs identify main-branch snapshots, not signed releases.",
+  "repositories": [
+    {"name":"NUN","repository":"bboroski/NUN","ref":"fb8426e95763c1102dfdc6cbafe5d98f1ed3488e","role":"operating-system-kernel"},
+    {"name":"NUNLauncher","repository":"bboroski/NUNLauncher","ref":"441ac421df4720e9b35870f6729507e2288d58d0","role":"android-home-launcher"},
+    {"name":"SAMBU","repository":"bboroski/SAMBU","ref":"841226f109dca79df39c0dd0b899ca5f522a563f","role":"language-and-developer-tooling"},
+    {"name":"ToolNG","repository":"bboroski/ToolNG","ref":"c98b637e6049ad64c4b7ab65de4f360c94c488d5","role":"local-diagnostics"},
+    {"name":"ReaperCripple","repository":"bboroski/ReaperCripple","ref":"f207cf76658238ace230bb41dd7c3410aa9b26fb","role":"hardware-bsp-and-bootstrap"},
+    {"name":"Kloz","repository":"bboroski/Kloz","ref":"bf67327bf60e6d8d2b681def4101f04370208779","role":"platform-abi-and-resource-governance"},
+    {"name":"CO","repository":"bboroski/CO","ref":"8e6fc92254f1dc4a06bbf5c5949000fbf4842595","role":"component-lifecycle"},
+    {"name":"SaintSI","repository":"bboroski/SaintSI","ref":"dc72a92c88087f7689bd8e2f814979114e4c3350","role":"health-observation-and-integrity"},
+    {"name":"Klipot","repository":"bboroski/Klipot","ref":"6e5dcbc3a51c79fa245aaaa4a70062eb3e566866","role":"capability-registry-and-control-plane"}
+  ],
+  "external_boot_protocol": {
+    "name":"Limine",
+    "release":"v12.9.6",
+    "binary_sha256":"b38aabb042b0c0f9f562b7741be3c1204838d7bbacfa78bb411c674bd5b984ee",
+    "protocol_header_commit":"6e85ddd6f928b5b512015c4d47d1cfce2fd28079",
+    "protocol_header_git_blob":"b38a3f35e2a3d547f80326a13279f153aee8a837"
+  }
+}

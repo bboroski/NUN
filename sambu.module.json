@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "ecosystem": "SAMBU",
+  "module_id": "nun-os-kernel",
+  "repository": "bboroski/NUN",
+  "display_name": "NUN",
+  "version": "0.1.0",
+  "role": "bare-metal-operating-system-kernel",
+  "runtime": ["x86-64 ELF64", "Limine boot protocol", "freestanding C"],
+  "maturity": "early-boot-scaffold",
+  "provides": ["nun.boot.handoff.v1", "nun.serial.diagnostics.v1", "nun.framebuffer.marker.v1", "nun.pmm.pages.v1", "nun.system.foundation.v1"],
+  "consumes": ["platform.abi.v1", "lifecycle.control.v1", "health.monitor.v1"],
+  "dependencies": [
+    {"module_id":"kloz-platform","relation":"required","status":"implemented","scope":"pinned C sources compiled into early kernel; arena and budget contract smoke checks"},
+    {"module_id":"co-lifecycle","relation":"required","status":"implemented","scope":"pinned lifecycle runtime compiled and exercised with one bounded step"},
+    {"module_id":"saintsi-assurance","relation":"required","status":"implemented","scope":"pinned health registry and CRC32 compiled and exercised"},
+    {"module_id":"reapercripple-hardware","relation":"optional-adapter","status":"implemented","scope":"portable supervisor state machine only; no board BSP or MMIO invoked"},
+    {"module_id":"sambu-core","relation":"policy-port","status":"planned","scope":"user-space compiler, IDE, language runtime and workflow tooling"},
+    {"module_id":"toolng-diagnostics","relation":"metadata-projection","status":"planned","scope":"portable diagnostic evidence and report schemas only"},
+    {"module_id":"klipot-control-plane","relation":"metadata-projection","status":"planned","scope":"manifest and capability catalog integration; no arbitrary execution"},
+    {"module_id":"nunlauncher-android-home","relation":"optional-adapter","status":"planned","scope":"separate Android HOME application using future authenticated NUN bridge"}
+  ],
+  "boundaries": [
+    "Kernel is x86-64 only in this foundation; other processor families require separate ports.",
+    "Python, Windows GUI and web control-plane code remain in user space.",
+    "Fortran, Pascal and Delphi runtimes must never unwind exceptions through kernel frames.",
+    "Repository manifests are data and cannot cause dynamic code loading.",
+    "CRC32 detects accidental corruption and is not cryptographic authentication.",
+    "ReaperCripple hardware profiles require exact board qualification before hardware access.",
+    "The initial physical allocator is monotonic and does not reclaim pages."
+  ],
+  "verification": {
+    "host_tests": "make check covers the NUN physical page allocator; make kernel compiles the pinned native service sources.",
+    "target_validation": "QEMU boot and physical hardware qualification are pending; no production-ready claim.",
+    "evidence": ["Limine protocol header Git blob pinned in ecosystem/repos.lock.json", "Limine v12.9.6 release digest pinned", "Kloz/CO/SaintSI/ReaperCripple contract smoke check runs in the kernel entry path"]
+  }
+}

@@ -1,8 +1,8 @@
 # NUN — Minimal Kernel Substrate
 
-**A specification repository for a minimal operating-system kernel.**
+**NUN is an operating system with its own kernel, boot contract, system ABI and user-space environment.**
 
-Current status: **architecture documentation only; no kernel implementation**. The repository contains README files in three languages and technical specifications. It does not yet contain kernel source, a boot path, linker script, build system, drivers, or tests. Documents describe planned architecture and do not claim that planned components are implemented.
+Current status: **early x86-64 boot foundation**. The repository now contains a Limine handoff, COM1 diagnostics, a framebuffer marker, an initial physical-page allocator and native contract smoke checks for Kloz, CO, SaintSI and the ReaperCripple supervisor. This is not a complete or production-ready OS: scheduler, user mode, driver model, VFS, networking, secure boot and graphical shell remain unimplemented.
 
 [Українська](README.md) · [English](README.en.md) · [Русский](README.ru.md) · [Repository](https://github.com/bboroski/NUN)
 
@@ -32,7 +32,7 @@ The composition system additionally requires deterministic dependency resolution
 
 ## Current verification status
 
-There is no kernel build or test command because implementation has not started. The composition specification is an architecture contract, not a working runtime. The first code milestone should add a reproducible build, linker map, serial smoke test, image validation, and separate host tests for the registry and resolver.
+Capability composition remains an architectural direction, not a completed runtime. The implemented boot scaffold and native contracts are documented below. Host tests and CI must be observed passing before making a readiness claim.
 
 ## Technical identity
 
@@ -40,7 +40,33 @@ There is no kernel build or test command because implementation has not started.
 
 ## Status
 
-Do not treat this repository as a bootable OS or load it onto physical hardware: no kernel implementation exists yet.
+This is an early boot image for development and QEMU testing. It is not production-ready and must not be installed on a primary device. Physical hardware requires separate boot-chain, driver, memory and recovery qualification.
+
+## Implemented foundation and build
+
+The development branch adds an x86-64 kernel ELF, checked required Limine responses, COM1 diagnostics, a black/yellow framebuffer marker, a monotonic physical-page allocator and smoke checks for integrated C11 contracts.
+
+~~~bash
+make deps
+make check
+make kernel
+make iso
+make run
+~~~
+
+Requirements: x86-64 GCC/Clang, GNU Make, curl, git, xorriso and QEMU. CI is configured for host tests, kernel compilation and ELF inspection; no passing CI result or physical-device boot is claimed until evidence exists.
+
+## Language environment
+
+Fortran, Pascal and Delphi/Object Pascal are planned as full user-space toolchains, runtimes/RTLs and SDKs over a stable C ABI. This includes a Fortran module/array/ISO_C_BINDING profile, Pascal units/classes/generics/exceptions and Delphi-mode compatibility/migration tooling. They do not execute in ring 0 or bypass the system ABI.
+
+## Implementation documentation
+
+- [System architecture](docs/ARCHITECTURE.md)
+- [Repository integration](docs/ECOSYSTEM_INTEGRATION.md)
+- [Fortran / Pascal / Delphi runtime](docs/LANGUAGE_RUNTIME.md)
+- [Boot and build](docs/BOOT_AND_BUILD.md)
+- [Security model](docs/SECURITY_MODEL.md)
 
 ## Academic biology glossary
 

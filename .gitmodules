@@ -1,0 +1,21 @@
+[submodule "ecosystem/sources/SAMBU"]
+	path = ecosystem/sources/SAMBU
+	url = https://github.com/bboroski/SAMBU.git
+[submodule "ecosystem/sources/ToolNG"]
+	path = ecosystem/sources/ToolNG
+	url = https://github.com/bboroski/ToolNG.git
+[submodule "ecosystem/sources/ReaperCripple"]
+	path = ecosystem/sources/ReaperCripple
+	url = https://github.com/bboroski/ReaperCripple.git
+[submodule "ecosystem/sources/Kloz"]
+	path = ecosystem/sources/Kloz
+	url = https://github.com/bboroski/Kloz.git
+[submodule "ecosystem/sources/CO"]
+	path = ecosystem/sources/CO
+	url = https://github.com/bboroski/CO.git
+[submodule "ecosystem/sources/SaintSI"]
+	path = ecosystem/sources/SaintSI
+	url = https://github.com/bboroski/SaintSI.git
+[submodule "ecosystem/sources/Klipot"]
+	path = ecosystem/sources/Klipot
+	url = https://github.com/bboroski/Klipot.git
