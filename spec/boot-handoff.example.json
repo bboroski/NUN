@@ -1,0 +1,18 @@
+{
+  "schema_version": "nun.boot-handoff.v1",
+  "boot_id": "example-boot-001",
+  "architecture": "x86_64",
+  "kernel_image": {
+    "path": "artifacts/kernel.bin",
+    "size_bytes": 4096,
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "entry_point": 1048576,
+  "memory_map": [
+    { "base": 0, "length": 1048576, "kind": "firmware" },
+    { "base": 1048576, "length": 2097152, "kind": "kernel" },
+    { "base": 3145728, "length": 4194304, "kind": "available" }
+  ],
+  "capabilities": ["memory-map.v1", "serial-console.v1"],
+  "digest_sha256": "d4667b138e1ea3d390c570a681e766e238a347d52e61f837b35f2f779bdad179"
+}
