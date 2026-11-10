@@ -22,7 +22,7 @@ NUN records the technical contract for a future minimal kernel before a full imp
 
 ## Current status
 
-<badge>SPECIFICATION ONLY</badge>
+**Current status: SPECIFICATION ONLY**
 
 The repository does not yet contain kernel source code, a boot path, linker script, build system, drivers, or tests. The README brand asset is not runtime code. NUN is not a bootable OS and must not be loaded onto physical hardware.
 
