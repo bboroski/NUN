@@ -41,12 +41,12 @@ def validate_profile(document: Any) -> list[str]:
             errors.append(f"duplicate capability id: {identifier}")
         else:
             seen.add(identifier)
-        if item.get("domain") not in DOMAINS:
+        if item.get("domain") not in tuple(DOMAINS):
             errors.append(f"{prefix}.domain is unsupported")
         for field in ("interface",):
             if not isinstance(item.get(field), str) or not item[field].strip():
                 errors.append(f"{prefix}.{field} must be non-empty")
-        if item.get("status") not in STATUSES:
+        if item.get("status") not in tuple(STATUSES):
             errors.append(f"{prefix}.status is unsupported")
         for field in ("maps_terms", "permissions"):
             values = item.get(field)
