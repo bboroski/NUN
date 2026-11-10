@@ -56,3 +56,8 @@ NUN фіксує технічний контракт майбутнього мі
 
 - [Project-specific architecture mapping](docs/REAPER_DOMAIN_INTEGRATION.md)
 - [Canonical 50-pattern catalogue in SAMBU](https://github.com/bboroski/SAMBU/blob/main/data/reaper/engineering_patterns_50.tsv)
+
+
+## Application UI preview
+
+Open `ui/index.html` for the NUN engineering desktop design. It uses a compact status rail, architecture blueprint, inspectable component nodes and a lower tool dock with the mineral/evergreen/copper/jade identity. This is a UI prototype; the kernel remains a separate specification and is not implemented here.
