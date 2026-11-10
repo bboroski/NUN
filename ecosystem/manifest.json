@@ -1,0 +1,25 @@
+{
+  "project_id": "nun-kernel",
+  "schema_version": 1,
+  "contract_major": 1,
+  "role": "kernel-substrate-specification",
+  "maturity": "specification-only",
+  "provides": [
+    "kernel-boot-contract-v1",
+    "architecture-entry-contract",
+    "memory-map-handoff-contract"
+  ],
+  "consumes": [
+    "versioned-boot-information-block",
+    "architecture-specific-loader-handoff"
+  ],
+  "optional_adapters": [
+    "Kloz platform-ops adapter after kernel implementation",
+    "SaintSI assurance observer after platform timebase implementation"
+  ],
+  "safety": [
+    "No bootable image exists",
+    "Host manifest validation is not kernel validation",
+    "No firmware or kernel self-installation"
+  ]
+}
