@@ -1,0 +1,148 @@
+{
+  "schema_version": "nun.system-capabilities.v1",
+  "system_id": "NUN",
+  "catalog_version": "1.0.0",
+  "principle": "Independent repositories are integrated through explicit versioned adapters; catalog presence does not mean runtime integration is complete.",
+  "design_system": {
+    "name": "Duck Black / Yellow",
+    "tokens": {
+      "background": "#0D0D0D",
+      "panel": "#1A1A1A",
+      "border": "#262626",
+      "accent_primary": "#FFD600",
+      "accent_secondary": "#BFA100",
+      "text_primary": "#E6E6E6",
+      "text_secondary": "#999999",
+      "error": "#FF4444",
+      "success": "#4CAF50"
+    }
+  },
+  "components": [
+    {
+      "id": "NUN",
+      "repository": "bboroski/NUN",
+      "role": "operating-system-kernel",
+      "maturity": "architecture-plus-host-tested-boot-contract",
+      "integration": "system-owner",
+      "provides": ["boot-information-abi-v1", "kernel-architecture-contract", "system-call-contract-roadmap"],
+      "requires": ["verified-architecture-port", "boot-loader", "platform-operations"]
+    },
+    {
+      "id": "NUNLauncher",
+      "repository": "bboroski/NUNLauncher",
+      "role": "android-home-launcher-and-future-boot-supervisor",
+      "maturity": "android-starter-source-plus-boot-specification",
+      "integration": "android-home-shell; firmware-loader-remains-separate",
+      "provides": ["android-home-activity", "installed-app-discovery", "app-search", "app-launch"],
+      "requires": ["android-framework", "user-selected-home-role"],
+      "does_not_provide": ["replacement-android-kernel", "firmware-bootloader-in-apk"]
+    },
+    {
+      "id": "Kloz",
+      "repository": "bboroski/Kloz",
+      "role": "portable-bare-metal-substrate",
+      "maturity": "host-tested-c11-core-target-qualification-required",
+      "integration": "audited-static-adapter",
+      "provides": ["fixed-width-status-abi", "caller-owned-arena", "versioned-platform-ops", "clock-contract", "irq-and-device-barrier-contract"],
+      "requires": ["exact-board-or-cpu-port"],
+      "limits": ["not-an-rtos", "no-scheduler", "no-generic-driver-stack"]
+    },
+    {
+      "id": "CO",
+      "repository": "bboroski/CO",
+      "role": "deterministic-component-lifecycle",
+      "maturity": "host-tested-c11-core",
+      "integration": "optional-lifecycle-adapter",
+      "provides": ["deterministic-init-step-shutdown", "bounded-poll", "partial-init-cleanup"],
+      "requires": ["caller-owned-context", "serialized-access"],
+      "limits": ["no-thread-scheduler", "no-preemption", "no-implicit-retry"]
+    },
+    {
+      "id": "SaintSI",
+      "repository": "bboroski/SaintSI",
+      "role": "runtime-integrity-observer",
+      "maturity": "host-tested-c11-core",
+      "integration": "optional-health-observer",
+      "provides": ["bounded-heartbeat-registry", "rollover-safe-timeout", "crc32-iso-hdlc"],
+      "requires": ["caller-monotonic-timebase"],
+      "limits": ["crc-is-not-authentication", "observation-does-not-actuate"]
+    },
+    {
+      "id": "ReaperCripple",
+      "repository": "bboroski/ReaperCripple",
+      "role": "embedded-bsp-and-platform-qualification",
+      "maturity": "host-tested-core-target-validation-required",
+      "integration": "profile-selected-board-adapters",
+      "provides": ["bsp-adapters", "capability-gated-bootstrap", "reverse-order-rollback", "board-profiles", "calibration-contracts", "bounded-telemetry"],
+      "requires": ["exact-silicon-profile", "board-evidence", "platform-operations"],
+      "limits": ["no-guessed-pinout", "no-undocumented-register-writes"]
+    },
+    {
+      "id": "SAMBU",
+      "repository": "bboroski/SAMBU",
+      "role": "language-modeling-and-developer-tooling",
+      "maturity": "experimental-alpha",
+      "integration": "user-space-toolchain-and-policy-adapter",
+      "provides": ["sambu-interpreter", "workflow-descriptions", "policy-analysis", "scientific-models", "experimental-native-ir"],
+      "requires": ["versioned-system-sdk", "target-toolchain"],
+      "limits": ["native-compiler-incomplete", "workflow-description-is-not-execution-evidence"]
+    },
+    {
+      "id": "Klipot",
+      "repository": "bboroski/Klipot",
+      "role": "ecosystem-registry-and-control-plane",
+      "maturity": "static-portal-with-schema-and-planner",
+      "integration": "optional-admin-and-offline-catalog",
+      "provides": ["module-registry", "manifest-validation-model", "dependency-planning", "contract-visualization"],
+      "requires": ["published-versioned-manifests"],
+      "limits": ["not-a-firmware-dependency", "browser-labs-are-not-live-device-evidence"]
+    },
+    {
+      "id": "ToolNG",
+      "repository": "bboroski/ToolNG",
+      "role": "windows-host-diagnostics",
+      "maturity": "native-windows-desktop-utility",
+      "integration": "external-developer-and-recovery-workstation",
+      "provides": ["windows-device-observation", "evidence-aware-readiness", "local-reports", "safe-guidance"],
+      "requires": ["windows-pnp-and-service-evidence"],
+      "limits": ["not-a-kernel-module", "no-silent-device-mutation", "no-cloud-report-upload"]
+    }
+  ],
+  "language_profiles": [
+    {
+      "id": "fortran",
+      "initial_compiler_path": ["GNU Fortran", "LLVM Flang"],
+      "system_interop": "ISO_C_BINDING and BIND(C) through the NUN C ABI",
+      "runtime_scope": "user-space",
+      "maturity": "planned"
+    },
+    {
+      "id": "pascal",
+      "initial_compiler_path": ["Free Pascal"],
+      "system_interop": "C-compatible records and explicit C calling convention",
+      "runtime_scope": "user-space",
+      "maturity": "planned"
+    },
+    {
+      "id": "delphi-object-pascal",
+      "initial_compiler_path": ["optional developer-supplied Delphi compiler", "Free Pascal compatibility profile"],
+      "system_interop": "versioned C ABI; no private Delphi object ABI across boundaries",
+      "runtime_scope": "user-space",
+      "maturity": "planned-source-compatibility-workstream"
+    },
+    {
+      "id": "sambu",
+      "initial_compiler_path": ["existing Python-hosted interpreter", "future native backend"],
+      "system_interop": "versioned host adapters first; native ABI only after backend qualification",
+      "runtime_scope": "developer tooling and future user-space runtime",
+      "maturity": "experimental-alpha"
+    }
+  ],
+  "integration_rules": [
+    "No implicit repository-to-repository linking.",
+    "Every adapter declares ABI version, dependency range, permissions, resource budget and failure policy.",
+    "Host-tested code is not automatically kernel-safe or target-qualified.",
+    "The kernel and boot path remain independently buildable without Klipot, ToolNG or SAMBU.",
+    "No target is marked supported without a repeatable build and emulator or physical-target evidence."
+  ]
+}
