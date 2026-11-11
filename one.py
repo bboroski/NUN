@@ -54,9 +54,12 @@ def main() -> int:
                             cwd=ROOT, stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL, check=False)
     if pytest.returncode == 0:
-        run([python, "-m", "pytest", "-q",
-             str(ROOT / "modules" / "SAMBU" / "tests"),
-             str(ROOT / "modules" / "Klipot" / "tests")])
+        # Run each suite from its package root so imports resolve exactly as
+        # they do for an installed checkout, without mutating the environment.
+        run([python, "-m", "pytest", "-q", "tests"],
+            cwd=ROOT / "modules" / "SAMBU")
+        run([python, "-m", "pytest", "-q", "tests"],
+            cwd=ROOT / "modules" / "Klipot")
     else:
         print("SKIP Python suites: install pytest to run SAMBU and Klipot tests.")
     print("NUN host integration build completed. No bootable OS image is produced.")
