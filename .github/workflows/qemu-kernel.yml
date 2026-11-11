@@ -31,9 +31,9 @@ jobs:
           set -e
           echo "QEMU serial output:"
           cat build/qemu/serial.log
+          echo "QEMU CPU/interrupt trace (last 120 lines):"
+          tail -n 120 build/qemu/qemu.log || true
           if [ "$status" -ne 124 ] && [ "$status" -ne 0 ]; then
-            echo "QEMU debug log:"
-            cat build/qemu/qemu.log
             exit "$status"
           fi
           grep -F "NUN kernel: x86_64 entry reached" build/qemu/serial.log
