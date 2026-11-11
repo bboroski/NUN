@@ -15,7 +15,7 @@ CFLAGS="-std=gnu11 -O2 -Wall -Wextra -Werror -ffreestanding -fno-builtin -fno-st
 
 # Guard the early boot path against accidental compiler-generated SIMD use.
 objdump -d -Mintel "$BUILD/kernel.elf" > "$BUILD/kernel.dis"
-if grep -Eiw '\\b(xmm[0-9]+|ymm[0-9]+|zmm[0-9]+|mm[0-7])\\b' "$BUILD/kernel.dis"; then
+if grep -Eiw '(xmm[0-9]+|ymm[0-9]+|zmm[0-9]+|mm[0-7])' "$BUILD/kernel.dis"; then
   echo "error: early NUN kernel contains SIMD instructions before FPU state setup" >&2
   exit 1
 fi
