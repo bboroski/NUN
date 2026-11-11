@@ -6,7 +6,9 @@ mkdir -p "$BUILD/iso/boot/grub"
 CC="${CC:-gcc}"
 AS="${AS:-as}"
 LD="${LD:-ld}"
-CFLAGS="-std=gnu11 -O2 -Wall -Wextra -Werror -ffreestanding -fno-builtin -fno-stack-protector -fno-pic -fno-pie -fno-asynchronous-unwind-tables -m64 -mno-red-zone -mcmodel=small"
+# Early bring-up does not enable CR0/CR4 FPU/SIMD state. Keep compiler output
+# in general-purpose registers until the kernel owns FPU initialization/context switching.
+CFLAGS="-std=gnu11 -O2 -Wall -Wextra -Werror -ffreestanding -fno-builtin -fno-stack-protector -fno-pic -fno-pie -fno-asynchronous-unwind-tables -m64 -mno-red-zone -mno-sse -mno-sse2 -mno-mmx -mno-80387 -msoft-float -mcmodel=small"
 "$CC" $CFLAGS -c "$ROOT/kernel/bringup.c" -o "$BUILD/bringup.o"
 "$AS" --64 "$ROOT/boot/boot.S" -o "$BUILD/boot.o"
 "$LD" -m elf_x86_64 -nostdlib -z max-page-size=0x1000 -T "$ROOT/boot/linker.ld" "$BUILD/boot.o" "$BUILD/bringup.o" -o "$BUILD/kernel.elf"
