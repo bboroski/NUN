@@ -39,16 +39,20 @@ typedef enum nun_event_classification {
 } nun_event_classification_t;
 
 /*
- * Version 1 event envelope.
+ * Version 1 in-process event view.
  *
- * Text fields are fixed-capacity, NUL-terminated UTF-8 strings. event_id,
- * producer and kind are required; correlation_id may be empty. sequence is
- * monotonic per producer, not globally ordered. monotonic_ticks must come
- * from the producer's monotonic clock domain.
+ * Text fields are fixed-capacity, NUL-terminated strings; callers must supply
+ * valid UTF-8. The validator checks termination and capacity, not UTF-8
+ * validity. event_id, producer and kind are required; correlation_id may be
+ * empty. sequence is monotonic per producer, not globally ordered.
+ * monotonic_ticks belongs to the producer's monotonic clock domain.
  *
- * payload is a caller-owned, serialized JSON object. The validator checks
+ * payload is a caller-owned serialized JSON object. The validator checks
  * pointer and size bounds but deliberately does not parse JSON or copy data.
  * The payload must remain valid for the duration of its consumer's use.
+ *
+ * This structure contains native pointers and size_t: do not serialize or
+ * transmit its raw memory. Map its fields to the nun.event.v1 wire schema.
  */
 typedef struct nun_event_v1 {
     uint32_t abi_version;
