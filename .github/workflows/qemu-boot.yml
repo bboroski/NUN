@@ -1,0 +1,33 @@
+name: NUN QEMU x86_64 boot smoke test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qemu-x86_64:
+    name: Multiboot2 / x86_64 / serial / memory / PIT
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install bare-metal and emulator tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes gcc binutils make qemu-system-x86 grub-common grub-pc-bin xorriso
+      - name: Build Multiboot2 kernel and boot ISO
+        run: make clean iso
+      - name: Verify boot, memory allocator and timer IRQ in QEMU
+        run: make qemu-test
+      - name: Upload serial boot log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nun-qemu-serial-log
+          path: build/qemu-serial.log
+          if-no-files-found: ignore
