@@ -73,7 +73,7 @@ long_mode_start:
 gdt64:
     .quad 0
     .quad 0x00af9a000000ffff
-    .quad 0x00af92000000ffff
+    .quad 0x00cf92000000ffff
 gdt64_end:
 gdt64_pointer:
     .word gdt64_end - gdt64 - 1
