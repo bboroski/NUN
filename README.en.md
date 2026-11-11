@@ -14,12 +14,10 @@
 - **Architecture layer:** CPU entry, privilege transition, exception, and interrupt vectors.
 - **Memory layer:** physical pages, early allocator, virtual addressing, and protection.
 - **Execution layer:** task/context model and explicit synchronization.
-- **Device boundary:** defined bus/driver interfaces without assumptions about a specific board.
+- **Device boundary:** bus/driver interfaces without assumptions about a specific board.
 - **Diagnostics:** early serial/framebuffer output and structured panic records.
 
 ## Current status
-
-<badge>SPECIFICATION ONLY</badge>
 
 The repository currently contains no kernel source, boot path, linker script, build system, drivers, or tests. NUN is **not a bootable OS** and is not intended to run on physical hardware. No architecture, including Elbrus/E2K, is marked as verified.
 
