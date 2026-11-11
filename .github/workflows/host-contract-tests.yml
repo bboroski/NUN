@@ -17,6 +17,8 @@ jobs:
         compiler: [gcc, clang]
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Select compiler
         run: echo "CC=${{ matrix.compiler }}" >> "$GITHUB_ENV"
       - name: Configure host contract
