@@ -39,3 +39,8 @@ License not declared; no LICENSE file is present.
 
 ---
 **Built with care for engineering, clarity and people.**
+
+
+## GUI and contribution standard
+
+The shared visual identity uses deep black `#111111` and Duck Yellow `#FFD600`. Repository-specific GUI boundaries, real-versus-concept status, accessibility and evidence requirements are defined in [GUI Design Standard](docs/gui/GUI_DESIGN_STANDARD.md). Use the [Pull Request template](.github/PULL_REQUEST_TEMPLATE.md) for changes; merge policy requires two independent approvals and passing required CI checks, subject to branch protection.
