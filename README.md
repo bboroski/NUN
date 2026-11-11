@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY%20%C2%B7%20DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111" alt="Specification only · documentation scaffold"></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-EARLY%20x86_64%20KERNEL%20BRING--UP%20%C2%B7%20NOT%20A%20COMPLETE%20OS-FFD600?style=for-the-badge&labelColor=111111" alt="Early x86_64 kernel bring-up · not a complete OS"></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 <sub>Оновлено: 2026-11-11</sub>
 
@@ -10,6 +10,7 @@
 
 - [Поточні можливості](#поточні-можливості)
 - [Швидкий старт і перевірка](#швидкий-старт-і-перевірка)
+- [Додатковий Limine boot target](#додатковий-limine-boot-target)
 - [Архітектура, межі та достовірність](#архітектура-межі-та-достовірність)
 - [Інтерфейс і візуальні матеріали](#інтерфейс-і-візуальні-матеріали)
 - [Інженерна якість](#інженерна-якість)
@@ -28,10 +29,18 @@
 - Readiness gates для reproducible build, emulator і target qualification.
 
 ## Швидкий старт і перевірка
-Перший x86_64 Multiboot2 bring-up target збирається окремим скриптом: `bash scripts/build-qemu.sh`, запуск — `bash scripts/run-qemu.sh`. Автоматична перевірка завантаження й serial diagnostics виконується workflow `NUN QEMU kernel bring-up`.
+Перший x86_64 Multiboot2 bring-up target збирається окремим скриптом: `bash scripts/build-qemu.sh`, запуск — `bash scripts/run-qemu.sh`. Автоматична перевірка Multiboot2 bring-up і serial diagnostics виконується workflow `NUN QEMU kernel bring-up`.
+
+## Додатковий Limine boot target
+
+Окремий `make iso` збирає гібридний BIOS/x86_64 UEFI образ через Limine 12.9.6 із закріпленою SHA-256 перевіркою архіву. `make test` запускає host-тести маніфесту, `make run` запускає образ у QEMU. Цей Limine target поки окремий від Multiboot2 bring-up та не використовує його allocator/interrupt stack.
+
+`make usb DEVICE=/dev/sdX` записує образ на цілий USB-диск. Операція знищує всі дані на вибраному диску, вимагає root і точного підтвердження `ERASE /dev/...`; інсталятор відхиляє partition, read-only або mounted targets і системний root-диск. Перевірте модель/розмір пристрою та зробіть резервну копію перед запуском.
+
+Доказом для Limine target є QEMU smoke-test через BIOS та x86_64 UEFI. Це ранній x86_64 boot prototype, а не повноцінна ОС чи кваліфікація фізичного обладнання. E2K-компонент у цьому PR — окремий Linux userspace runtime під MCST LCC; він не є bare-metal E2K kernel і потребує окремого native E2K runner.
 
 ## Архітектура, межі та достовірність
-NUN має початковий x86_64 Multiboot2 boot path, ранню serial-консоль, обмежений physical-page bitmap allocator, IDT exception stubs і PIT IRQ0. Результат QEMU boot ще має бути підтверджений CI; це ранній bring-up, а не production-ready ОС. Повноцінний scheduler, SMP, ACPI, драйвери, VFS, мережа, userspace та GUI ще не реалізовані.
+NUN має ранній x86_64 Multiboot2 boot path із serial-консоллю, обмеженим physical-page bitmap allocator, IDT exception stubs і PIT IRQ0. Додатковий незалежний Limine target формує BIOS/UEFI ISO та перевіряє початковий kernel entry у QEMU. Ці два bring-up paths залишаються окремими; повноцінний scheduler, SMP, ACPI, драйвери, VFS, мережа, userspace та GUI ще не реалізовані.
 
 ## Інтерфейс і візуальні матеріали
 
@@ -41,9 +50,9 @@ NUN наразі є специфікаційною основою ядра, а �
 
 
 
-### Версионированный boot-info контракт
+### Версіонований boot-info контракт
 
-Дополнительно реализован host-tested C11 контракт передачи boot-метаданных: `include/nun/boot_info.h` и `src/boot_info.c` проверяют версию структуры, архитектурный идентификатор, границы образа ядра, entry point и карту памяти. Это проверка входных данных; она не заменяет загрузчик, переход в ядро, эмуляторную проверку или квалификацию на целевом оборудовании.
+Додатково реалізовано host-tested C11 контракт передачі boot-метаданих: `include/nun/boot_info.h` та `src/boot_info.c` перевіряють версію структури, ідентифікатор архітектури, межі образу ядра, entry point і карту пам’яті. Це перевірка вхідних даних; вона не замінює завантажувач, перехід до ядра, тестування в емуляторі чи кваліфікацію на цільовому обладнанні.
 
 ```sh
 cmake -S . -B build -DNUN_BUILD_TESTS=ON
@@ -59,7 +68,10 @@ ctest --test-dir build --output-on-failure
 
 ## Карта документації
 
-- [QEMU kernel bring-up](docs/QEMU_KERNEL_BRINGUP.md)
+- [QEMU Multiboot2 kernel bring-up](docs/QEMU_KERNEL_BRINGUP.md)
+- [Limine boot and USB image](docs/BOOT.md)
+- [Boot image manifest schema](spec/boot-image-manifest.schema.json)
+- [E2K Linux userspace profile](docs/ELBRUS_E2K.md)
 - [OS subsystem ownership](docs/architecture/OS_SUBSYSTEM_OWNERSHIP.md)
 - [Композиція можливостей](docs/architecture/capability-composition.md)
 - [Інтеграція екосистеми](docs/ECOSYSTEM_INTEGRATION.md)
