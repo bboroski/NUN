@@ -40,3 +40,8 @@ NUN наразі не є завантажуваною ОС: немає підт�
 
 ---
 **Створено з любов'ю до інженерії, системності та людей.**
+
+
+## Майбутній GUI та внесок
+
+NUN наразі є специфікацією, а не завантажуваною ОС або GUI. Вимоги до майбутніх host/developer tools та межі доказів описані в [GUI Design Standard](docs/gui/GUI_DESIGN_STANDARD.md). Макетні статуси не є kernel telemetry. Шаблон PR: [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md).
