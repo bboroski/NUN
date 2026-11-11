@@ -1,0 +1,35 @@
+{
+  "schema_version": "nun.ecosystem.v1",
+  "system": {
+    "id": "nun",
+    "name": "NUN",
+    "contract_version": "1.0.0",
+    "build_mode": "host-integration",
+    "bootable": false
+  },
+  "modules": [
+    {"id":"SAMBU","repository":"bboroski/SAMBU","path":"modules/SAMBU","role":"language-runtime-cli-ide-policy-authoring","integration":"host-tooling-and-developer-platform"},
+    {"id":"ToolNG","repository":"bboroski/ToolNG","path":"modules/ToolNG","role":"bounded-policy-and-workflow-core","integration":"linked-native-policy-core"},
+    {"id":"ReaperCripple","repository":"bboroski/ReaperCripple","path":"modules/ReaperCripple","role":"bootstrap-rollback-bsp-telemetry-and-manufacturing","integration":"linked-native-supervision-library"},
+    {"id":"Kloz","repository":"bboroski/Kloz","path":"modules/Kloz","role":"platform-abi-arena-and-resource-budget","integration":"linked-native-foundation"},
+    {"id":"CO","repository":"bboroski/CO","path":"modules/CO","role":"deterministic-component-lifecycle","integration":"linked-native-runtime"},
+    {"id":"SaintSI","repository":"bboroski/SaintSI","path":"modules/SaintSI","role":"health-heartbeat-and-integrity-observation","integration":"linked-native-assurance"},
+    {"id":"Klipot","repository":"bboroski/Klipot","path":"modules/Klipot","role":"ecosystem-registry-and-integration-planner","integration":"host-tooling-and-contract-registry"}
+  ],
+  "runtime_contracts": {
+    "platform": "Kloz PBSC ABI v1",
+    "lifecycle": "CO DLO runtime",
+    "assurance": "SaintSI RIAE health supervisor",
+    "bootstrap": "ReaperCripple staged bootstrap and reverse rollback",
+    "policy": "ToolNG WDEP fail-closed authorization",
+    "language_tooling": "SAMBU host runtime and developer tools",
+    "control_plane": "Klipot manifest planner"
+  },
+  "safety": [
+    "Only caller-supplied platform callbacks may access hardware.",
+    "The ToolNG policy core denies device mutation and network upload by default.",
+    "Health observation never resets hardware or feeds a watchdog.",
+    "Python host tooling is not linked into a freestanding kernel image.",
+    "A successful host build is not proof of bootability or target-board qualification."
+  ]
+}
