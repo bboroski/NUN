@@ -80,9 +80,14 @@ int main(void)
 
     memory = nun_runtime_allocate(&runtime, 32u, 8u);
     assert(memory != NULL);
+    assert(runtime.arena_reserved_bytes == 32u);
+    /* The configured 256-byte budget has only 224 bytes left. */
+    assert(nun_runtime_allocate(&runtime, 225u, 8u) == NULL);
+    assert(runtime.arena_reserved_bytes == 32u);
     assert(nun_runtime_reserve_queue_slots(&runtime, 2u) == NUN_OK);
     assert(nun_runtime_release_queue_slots(&runtime, 2u) == NUN_OK);
     assert(nun_runtime_reset_arena(&runtime) == NUN_OK);
+    assert(runtime.arena_reserved_bytes == 0u);
     assert(nun_runtime_health(&runtime, &health, &stale) == NUN_OK);
     assert(health == SAINTSI_HEALTHY);
     assert(stale == 0u);

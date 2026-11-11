@@ -59,7 +59,6 @@ typedef struct nun_runtime_config {
     const co_hooks_t *lifecycle_hooks;
     void *arena_storage;
     size_t arena_capacity;
-    size_t arena_reserved_bytes;
     size_t memory_limit;
     uint32_t queue_limit;
     uint64_t work_limit;
@@ -77,6 +76,7 @@ typedef struct nun_runtime {
     reaper_boot_step_t boot_steps[4];
     void *arena_storage;
     size_t arena_capacity;
+    size_t arena_reserved_bytes;
     size_t memory_limit;
     uint32_t queue_limit;
     uint64_t work_limit;

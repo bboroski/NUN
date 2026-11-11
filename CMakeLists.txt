@@ -7,7 +7,19 @@ if(NOT NUN_BUILD_TESTS)
     set(BUILD_TESTING OFF CACHE BOOL "Disable imported module test executables" FORCE)
 endif()
 add_subdirectory(modules/ReaperCripple)
+# NUN owns the aggregate integration tests below; keep ToolNG's standalone test
+# executables in ToolNG CI so one pinned module snapshot cannot inject a second
+# incompatible test matrix into the NUN build.
+set(BUILD_TESTING OFF CACHE BOOL "Disable nested ToolNG tests in NUN integration" FORCE)
 add_subdirectory(modules/ToolNG)
+
+# ToolNG's pinned checkout contains the WDEP policy implementation in this
+# source file; include it in the policy-core target used by NUN.Runtime.
+if(TARGET ToolNG.PolicyCore)
+    target_sources(ToolNG.PolicyCore PRIVATE modules/ToolNG/src/sambu_engine.c)
+else()
+    message(FATAL_ERROR "ToolNG.PolicyCore target is required by NUN.Runtime")
+endif()
 
 add_library(NUN.Kloz STATIC
     modules/Kloz/src/arena.c
@@ -41,7 +53,7 @@ target_link_libraries(NUN.Runtime
         NUN.CO
         NUN.SaintSI
         efmf
-        WDEP.PolicyCore
+        ToolNG.PolicyCore
 )
 if(MSVC)
     target_compile_options(NUN.Runtime PRIVATE /W4 /utf-8)
