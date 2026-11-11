@@ -25,7 +25,7 @@ add_library(NUN.SaintSI STATIC
 )
 target_include_directories(NUN.SaintSI PUBLIC modules/SaintSI/include)
 
-add_library(NUN.Runtime STATIC src/runtime/runtime.c)
+add_library(NUN.Runtime STATIC src/runtime/runtime.c src/runtime/advice.c)
 target_include_directories(NUN.Runtime
     PUBLIC
         include
@@ -55,6 +55,10 @@ if(NUN_BUILD_TESTS)
     add_executable(NUN.RuntimeTests tests/runtime_tests.c)
     target_link_libraries(NUN.RuntimeTests PRIVATE NUN.Runtime)
     add_test(NAME nun_runtime_tests COMMAND NUN.RuntimeTests)
+
+    add_executable(NUN.AdviceTests tests/advice_tests.c)
+    target_link_libraries(NUN.AdviceTests PRIVATE NUN.Runtime)
+    add_test(NAME nun_runtime_advice_tests COMMAND NUN.AdviceTests)
 
     add_executable(NUN.KlozArenaTests modules/Kloz/tests/test_arena.c)
     target_link_libraries(NUN.KlozArenaTests PRIVATE NUN.Kloz)
