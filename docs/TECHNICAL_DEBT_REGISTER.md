@@ -6,9 +6,9 @@
 
 ## Findings
 
-| ID | Domain | Preliminary risk | Status | Evidence | Next action |
-|---|---|---:|---|---|---|
-| NUN-CI-001 | Runtime / memory accounting | Critical (25) | identified | `NUN integration CI` fails to compile `src/runtime/runtime.c`: `nun_runtime_t` has no member `arena_reserved_bytes`, referenced during rollback, initialization, allocation and arena reset. | Inspect the runtime structure and arena ownership/lifecycle contract; reconcile accounting with overflow and rollback behavior; add initialization, allocation, reset and failure-path tests. |
+| ID | Domain | Impact | Likelihood | Risk | Effort (1–5) | Owner | Target | Acceptance decision | Status | Evidence | Next action |
+|---|---|---:|---:|---:|---:|---|---|---|---|---|---|
+| NUN-CI-001 | Runtime / memory accounting | 5 | 5 | Critical (25) | 3 | TBD (maintainer) | Before next release | Pending triage | identified | `NUN integration CI` fails to compile `src/runtime/runtime.c`: `nun_runtime_t` has no member `arena_reserved_bytes`, referenced during rollback, initialization, allocation and arena reset. | Inspect the runtime structure and arena ownership/lifecycle contract; reconcile accounting with overflow and rollback behavior; add initialization, allocation, reset and failure-path tests. |
 
 ## Risk method
 
