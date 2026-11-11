@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "repository": "bboroski/NUN",
+  "optimization_method": "four-vector",
+  "status": "baseline_pending",
+  "implementation_status": "profile_added",
+  "product_role": "kernel-boot-runtime",
+  "detected_stack": "c-cpp",
+  "vectors": {
+    "physics": {
+      "focus": "latency-throughput-resource-cost",
+      "metrics": [
+        "boot_stage_latency",
+        "interrupt_latency",
+        "scheduler_latency",
+        "kernel_memory"
+      ],
+      "baseline": "not_measured"
+    },
+    "biology": {
+      "focus": "bounded-resource-lifecycle-and-feedback",
+      "controls": [
+        "early_memory_budget",
+        "stack_budget",
+        "fault_path"
+      ],
+      "baseline": "not_measured"
+    },
+    "technology": {
+      "focus": "modularity-contracts-security",
+      "boundaries": [
+        "boot",
+        "kernel_core",
+        "drivers",
+        "modules"
+      ]
+    },
+    "sambo": {
+      "focus": "reuse-leverage-and-safe-deferral",
+      "strategies": [
+        "scheduler_approved_deferred_work",
+        "bounded_queue"
+      ]
+    }
+  },
+  "verification": {
+    "commands": [
+      "scripts/test-e2k-host.sh",
+      "scripts/run-qemu.sh"
+    ],
+    "results": "not_run_in_this_change"
+  },
+  "guardrails": [
+    "No async/heap use before target contract permits"
+  ],
+  "acceptance": [
+    "baseline recorded on a named platform",
+    "no unbounded queues caches retries or loops",
+    "errors and partial results remain explicit",
+    "public contracts remain compatible or are versioned",
+    "performance claims have before-after evidence"
+  ],
+  "updated_at": "2026-11-11"
+}
