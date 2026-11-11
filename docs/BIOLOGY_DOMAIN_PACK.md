@@ -2,7 +2,7 @@
 
 **Repository:** `NUN`  
 **Dataset:** [`data/biology/academic_terms_500.tsv`](../data/biology/academic_terms_500.tsv)  
-**Format:** UTF-8, pipe-delimited TSV, stable numeric IDs  
+**Format:** UTF-8, tab-separated TSV, stable numeric IDs  
 **Coverage:** 500 English terms with Russian equivalents across five biology domains
 
 ## Data contract
@@ -17,7 +17,7 @@ The file contains one header row and exactly 500 records. IDs are stable from 1 
 | `physiology_anatomy` | 301–400 | Physiology and anatomy |
 | `immunology_microbiology_virology` | 401–500 | Immunology, microbiology and virology |
 
-Each record has four fields: `id`, `category`, `term_en`, and `term_ru`. The vertical bar is the field separator. Consumers should validate the header, record count, unique contiguous IDs, known category keys, UTF-8 decoding and non-empty terms before use.
+Each record has four fields: `id`, `category`, `term_en`, and `term_ru`. A tab character is the field separator. Consumers should validate the header, record count, unique contiguous IDs, known category keys, UTF-8 decoding and non-empty terms before use.
 
 ## Editorial quality notes
 
@@ -41,6 +41,10 @@ A future optional read-only knowledge-domain resource that may be exposed by a u
 - Do not use terminology as a substitute for biosafety procedures, laboratory protocols, calibrated measurements or professional review.
 - Keep this pack optional and offline. Core system, boot, manufacturing, device-diagnostic and lifecycle behavior must remain independent of it.
 - Any future parser or UI must handle unknown terms gracefully and retain the original source entry for traceability.
+
+## Local validation
+
+Run `python tools/validate_biology_terms.py` from the repository root. The validator uses only the Python standard library and checks the header, 500-record count, contiguous unique IDs, category coverage and non-empty bilingual fields.
 
 ## Change policy
 

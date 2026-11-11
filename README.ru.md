@@ -1,61 +1,48 @@
-# NUN — Minimal Kernel Substrate
+<p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
+<h1 align="center">NUN</h1>
+<p align="center"><strong>Minimal Kernel Substrate</strong></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
+<p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 
-**Спецификационный репозиторий минимального системного ядра.**
+---
 
-Текущий статус: **архитектурная документация и host-интеграционная основа; загружаемого ядра пока нет**. В репозитории находятся спецификации и нативный host runtime для интеграции семи исходных проектов. Архитектурный boot path, linker script, interrupt layer, paging и драйверы ещё не реализованы.
+**NUN — спецификационная основа будущего минимального системного ядра.** Репозиторий фиксирует границы архитектуры, памяти, исполнения и передачи управления до начала полной реализации.
 
-[Українська](README.md) · [English](README.en.md) · [Русский](README.ru.md) · [Репозиторий](https://github.com/bboroski/NUN)
+## Целевые системные контракты
 
-## Предлагаемые границы системы
-
-- **Boot contract:** формат handoff от загрузчика, карта памяти и версия ABI.
-- **Architecture layer:** CPU entry, переходы между уровнями привилегий, векторы исключений и прерываний.
+- **Boot contract:** версионированный handoff от launcher, memory map и правила проверки.
+- **Architecture layer:** CPU entry, privilege transition, exception и interrupt vectors.
 - **Memory layer:** физические страницы, ранний allocator, виртуальная адресация и защита.
-- **Execution layer:** task/context model и явная модель синхронизации.
-- **Device boundary:** документированные bus/driver interfaces без предположений о конкретной плате.
-- **Capability composition layer:** реестр возможностей, проверка совместимости, граф композиций, изолированное подключение и атомарный откат.
+- **Execution layer:** task/context model и явная синхронизация.
+- **Device boundary:** bus/driver interfaces без предположений о конкретной плате.
+- **Diagnostics:** ранний serial/framebuffer output и структурированный panic record.
 
-## Объединение и поглощение возможностей
+## Текущий статус
 
-В архитектуре NUN предусматривается **Capability Composition & Assimilation** — системный механизм для приёма новых модулей, проверки их контрактов и зависимостей, объединения совместимых возможностей в составные возможности и повторного использования таких композиций как обычных модулей.
+В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. NUN **не является загружаемой ОС** и не предназначен для запуска на физическом оборудовании. Ни одна архитектура, включая Elbrus/E2K, не обозначена как проверенная.
 
-Это не бесконтрольное слияние исполняемого кода. У каждой возможности есть версионируемый манифест, стабильный идентификатор, ABI, объявленные интерфейсы и минимально необходимые разрешения. Подключение проходит через карантин, проверку, разрешение зависимостей и конфликтов, изолированную стадию тестирования и транзакционную активацию.
+## План реализации и readiness gates
 
-- [Архитектура Capability Composition & Assimilation](docs/architecture/capability-composition.md)
-- [JSON Schema манифеста возможности](spec/capability-manifest.schema.json)
+| Этап | Необходимое доказательство |
+|---|---|
+| Architecture baseline | Определены CPU architecture, ABI и модель привилегий |
+| Boot contract | Версионированные handoff, memory map и правила проверки |
+| Reproducible build | Повторяемая сборка, linker map и проверка образа |
+| Emulator validation | Serial smoke test, exception/interrupt и memory tests |
+| Target qualification | Отдельная проверка конкретного процессора и платы |
 
-## Инженерные требования
+Первый этап с кодом должен включать минимальную сборку, linker map, serial smoke test и автоматическую проверку образа. Host-тесты не заменяют эмулятор и физическую платформу.
 
-Каждая аппаратно-зависимая операция должна быть привязана к конкретной архитектуре и boot protocol. ABI, границы памяти, alignment, privilege level и interrupt policy должны быть документированы. Host-тесты не заменяют эмуляцию или проверку целевой платформы.
+## Контракт с NUNLauncher
 
-Для системы композиций также обязательны детерминированное разрешение зависимостей, запрет циклических зависимостей, изоляция модулей, принцип минимальных привилегий, происхождение артефактов, атомарная активация и проверенный rollback.
+[NUNLauncher](https://github.com/bboroski/NUNLauncher) должен проверять kernel image и формировать handoff-данные. NUN обязан самостоятельно проверить полученный контекст до инициализации. Управление памятью, scheduler и драйверы относятся к ядру, а не к уровню launcher.
 
-## Текущий статус проверок
+## Экосистема и лицензия
 
-Интеграционную host-сборку и тестовые наборы запускает one.py через CMake/CTest и Python test runners. Это не проверка загрузки ядра: bootable image, linker map, serial smoke test, interrupt/paging layer и проверка на целевой плате ещё не реализованы.
+Связанные компоненты: [SAMBU](https://github.com/bboroski/SAMBU), [Kloz](https://github.com/bboroski/Kloz), [CO](https://github.com/bboroski/CO), [SaintSI](https://github.com/bboroski/SaintSI), [ReaperCripple](https://github.com/bboroski/ReaperCripple) и [NUNLauncher](https://github.com/bboroski/NUNLauncher).
 
-## Интеграция исходной экосистемы
+Файл <code>LICENSE</code> отсутствует; лицензия не объявлена. Определите условия до распространения.
 
-NUN закрепляет полные исходные деревья семи независимых проектов как Git submodules в каталоге modules/. Сохраняются их собственные истории, тесты, файлы сборки и лицензии.
+---
 
-- SAMBU — язык, интерпретатор, CLI, IDE и инструменты разработчика; остаётся host-инструментарием.
-- ToolNG — нативное ядро политик и ограниченных workflow.
-- ReaperCripple — staged bootstrap, rollback и BSP-адаптеры.
-- Kloz — платформенный ABI, память arena и ресурсные бюджеты.
-- CO — детерминированный жизненный цикл компонентов.
-- SaintSI — наблюдение за health, heartbeat и целостностью.
-- Klipot — реестр экосистемы, контракты и планировщик.
-
-Нативный runtime NUN связывает Kloz, CO, SaintSI, ReaperCripple и ToolNG: проверяет платформенный контракт, ограничивает память/очереди/объём работы, запускает lifecycle, выполняет health-проверки и использует fail-closed авторизацию. SAMBU и Klipot доступны в полном исходном дереве для host-side workflows.
-
-Интеграционная host-сборка запускается через one.cmd в Windows или python3 one.py в Linux/macOS. Подробности — в docs/ECOSYSTEM_INTEGRATION.md и ecosystem/manifest.json.
-
-Это интеграционная основа и host runtime, а не загружаемая ОС. Архитектурная точка входа, boot protocol, linker layout, interrupt/exception vectors, paging, драйверы и аппаратная квалификация требуют отдельной реализации.
-
-## Техническая идентичность
-
-**NUN** — каноническое техническое имя минимального kernel substrate. GitHub-путь оставлен только как адрес репозитория.
-
-## Статус
-
-Не считать репозиторий загружаемой ОС и не загружать его на физическое оборудование: реализации ядра пока нет.
+**Создано с любовью к системному программированию и людям.**
