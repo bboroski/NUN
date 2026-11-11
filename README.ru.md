@@ -19,7 +19,7 @@
 
 ## Текущий статус
 
-В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. NUN **не является загружаемой ОС** и не предназначен для запуска на физическом оборудовании. Ни одна архитектура, включая Elbrus/E2K, не обозначена как проверенная.
+В `NUN` уже есть C runtime, интеграция модулей, CMake host-build и набор host-тестов для runtime, arena, platform и смежных контрактов. Это **пока не загружаемая ОС**: отсутствуют полноценный kernel boot path, architecture entry, linker scripts, page tables, interrupt entry, завершённая модель драйверов и подтверждённая загрузка на оборудовании. Добавлен ручной E2K workflow для native qualification; он требует self-hosted runner с LCC и не является доказательством успешного тестирования цели. Поддержка Windows `.exe` игр не реализована; целевая архитектура описана в [WINDOWS_PE_COMPATIBILITY.md](docs/WINDOWS_PE_COMPATIBILITY.md).
 
 ## План реализации и readiness gates
 
