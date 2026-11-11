@@ -71,6 +71,7 @@ typedef struct nun_runtime {
     co_hooks_t lifecycle_hooks;
     kloz_arena_t arena;
     kloz_budget_t budget;
+    size_t arena_reserved_bytes;
     co_runtime_t lifecycle;
     saintsi_supervisor_t assurance;
     reaper_runtime_t bootstrap;
