@@ -47,7 +47,8 @@ NUN наразі є специфікаційною основою ядра, а �
 
 ## Карта документації
 
-- [QEMU kernel bring-up](docs/QEMU_KERNEL_BRINGUP.md)\n- [Композиція можливостей](docs/architecture/capability-composition.md)
+- [QEMU kernel bring-up](docs/QEMU_KERNEL_BRINGUP.md)
+- [Композиція можливостей](docs/architecture/capability-composition.md)
 - [Інтеграція екосистеми](docs/ECOSYSTEM_INTEGRATION.md)
 - [Технічний борг і межі](docs/TECHNICAL_DEBT_REGISTER.md)
 
