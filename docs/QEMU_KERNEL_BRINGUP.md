@@ -14,7 +14,7 @@ This freestanding kernel target is separate from the host-side CMake integration
 
 ## Build and run
 
-On Debian or Ubuntu install gcc, binutils, grub-pc-bin, grub-common, xorriso and qemu-system-x86.
+On Debian or Ubuntu install gcc, binutils, grub-pc-bin, grub-common, mtools, xorriso and qemu-system-x86.
 
     bash scripts/build-qemu.sh
     bash scripts/run-qemu.sh
