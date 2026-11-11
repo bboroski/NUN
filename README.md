@@ -39,6 +39,18 @@ NUN наразі є специфікаційною основою ядра, а �
 
 <p align="center"><img src="assets/duck-ui/duck-ui-preview.svg" alt="Спільний дизайн Duck Black Yellow; не інтерфейс NUN" width="960"></p>
 
+
+
+### Версионированный boot-info контракт
+
+Дополнительно реализован host-tested C11 контракт передачи boot-метаданных: `include/nun/boot_info.h` и `src/boot_info.c` проверяют версию структуры, архитектурный идентификатор, границы образа ядра, entry point и карту памяти. Это проверка входных данных; она не заменяет загрузчик, переход в ядро, эмуляторную проверку или квалификацию на целевом оборудовании.
+
+```sh
+cmake -S . -B build -DNUN_BUILD_TESTS=ON
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure
+```
+
 ## Інженерна якість
 - Перевіряйте збірку й тести саме для цільової платформи; host CI не замінює hardware qualification.
 - Статуси **implemented**, **partial**, **planned** мають підтверджуватися кодом, тестами та документацією.
