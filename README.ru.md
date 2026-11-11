@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><strong>Только спецификация · документационный каркас</strong></p>
+<p align="center"><strong>Код фазы A добавлен · проверка QEMU ожидает CI</strong></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 <sub>Обновлено: 2026-11-11</sub>
 
@@ -19,19 +19,20 @@
 - [Лицензия](#лицензия)
 - [Палитра Duck Black / Yellow](#палитра-duck-black-yellow)
 
-> **NUN** — NUN — спецификационная основа будущего минимального системного ядра, определяющая архитектурные, boot, memory и execution contracts.
+> **NUN** — NUN — минимальная основа системного ядра; первая реализация x86_64 bring-up находится в отдельной ветке, подтверждение загрузки в QEMU ожидает CI.
 
 ## Текущие возможности
-- Версионированный boot handoff contract с NUNLauncher.
-- Architecture layer: CPU entry, privilege transitions, exceptions и interrupt vectors.
-- Требования к memory model, раннему allocator, виртуальной адресации и защите.
-- Readiness gates для воспроизводимой сборки, эмулятора и целевой платформы.
+- Multiboot2 entry для x86_64 и переход в long mode.
+- Диагностическая serial-консоль COM1 и проверка memory map из Multiboot2.
+- Ранний allocator физических страниц 4 KiB с резервированием ядра и boot-info.
+- Базовые exception gates в IDT, remap PIC и таймерный IRQ от PIT.
+- QEMU boot gate добавлен; выполнение CI ещё ожидается.
 
 ## Быстрый старт и проверка
-Изучите спецификации и контракты перед реализацией; полноценный build/boot pipeline пока не заявлен.
+Требуются GCC, GNU binutils, Make, GRUB, xorriso и QEMU: `make clean iso && make qemu-test`. Полноценный production boot pipeline пока не заявлен.
 
 ## Архитектура и подтверждённые границы
-NUN пока не является загружаемой ОС. Подтверждённый kernel boot path и стек драйверов отсутствуют. Проваленные integration checks открытых PR не входят в main и не считаются реализованными функциями.
+Первый kernel boot path добавлен в `feature/nun-integration-phase-a`, но QEMU smoke test ещё не подтверждён CI. Это ограниченный x86_64 bring-up, а не полноценная ОС; драйверы, userspace и системные службы пока не реализованы.
 
 ## Интерфейс и визуальные материалы
 
@@ -47,8 +48,9 @@ NUN сейчас является спецификационной осново�
 
 ## Карта документации
 
-- [Композиция возможностей](docs/architecture/capability-composition.md)
-- [Интеграция экосистемы](docs/ECOSYSTEM_INTEGRATION.md)
+- [QEMU bootstrap phase A](docs/QEMU_BOOTSTRAP.md)
+- [Карта интеграции 12 репозиториев](docs/NUN_INTEGRATION.md)
+- [Changelog NUN](CHANGELOG.NUN)
 - [Технический долг и границы](docs/TECHNICAL_DEBT_REGISTER.md)
 
 ## NUN Mesh и связанные репозитории
