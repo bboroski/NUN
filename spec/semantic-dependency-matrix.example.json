@@ -1,0 +1,45 @@
+{
+  "schema_version": "nun.semantic-dependency-matrix.v1",
+  "status": "specification-only",
+  "nodes": [
+    {
+      "id": "boot-contract",
+      "role": "boot-contract",
+      "evidence_state": "specified",
+      "depends_on": [],
+      "evidence_refs": ["spec/boot-contract"]
+    },
+    {
+      "id": "memory-contract",
+      "role": "memory-contract",
+      "evidence_state": "specified",
+      "depends_on": ["boot-contract"],
+      "evidence_refs": ["spec/memory-model"]
+    },
+    {
+      "id": "execution-contract",
+      "role": "execution-contract",
+      "evidence_state": "unknown",
+      "depends_on": ["memory-contract"],
+      "evidence_refs": []
+    },
+    {
+      "id": "diagnostic-contract",
+      "role": "diagnostic-contract",
+      "evidence_state": "specified",
+      "depends_on": ["execution-contract"],
+      "evidence_refs": ["spec/diagnostics"]
+    }
+  ],
+  "expansion": {
+    "max_depth": 4,
+    "damping": 0.6,
+    "max_nodes": 64,
+    "self_edges": false
+  },
+  "promotion_policy": "explicit-review-and-evidence-only",
+  "notes": [
+    "This document does not implement a scheduler, kernel boot path, driver, or MMIO access.",
+    "A dependency path is metadata and must never be interpreted as authorization to execute a component."
+  ]
+}
