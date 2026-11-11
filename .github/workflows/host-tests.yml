@@ -1,0 +1,21 @@
+name: NUN host contract tests
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test boot information contract
+        run: make test
+      - name: Validate JSON specifications
+        run: |
+          python -m json.tool spec/boot-info-v1.schema.json > /dev/null
+          python -m json.tool spec/system-capability-catalog.json > /dev/null
