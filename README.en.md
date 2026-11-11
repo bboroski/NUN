@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-HOST%20TESTED%20CONTRACT-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-C11%20HANDOFF%20VALIDATOR-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 
 ---
@@ -19,7 +19,17 @@
 
 ## Current status
 
-The repository currently contains no kernel source, boot path, linker script, build system, drivers, or tests. NUN is **not a bootable OS** and is not intended to run on physical hardware. No architecture, including Elbrus/E2K, is marked as verified.
+The repository now contains a first host-tested C11 boot-info contract: a versioned handoff structure and validation for architecture, kernel-image bounds, entry point, and memory map. This is **not yet a bootable OS**: architecture entry code, linker script, boot path, scheduler, drivers, and bootable binary are absent. E2K is represented only as a target identifier in the contract, not as verified support.
+
+## First implemented system contract
+
+```sh
+cmake -S . -B build -DBUILD_TESTING=ON
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure
+```
+
+`include/nun/boot_info.h` and `src/boot_info.c` validate handoff metadata without hardware access, allocation, relocation, or transferring control to the entry point. This is a host-tested foundation, not a kernel loader.
 
 ## Implementation plan and readiness gates
 
