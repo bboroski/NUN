@@ -1,0 +1,11 @@
+# NUN change log
+
+## 0.1.0-phase-a (unreleased)
+
+- Added a Multiboot2 x86_64 bootstrap that enters long mode with a temporary 1 GiB identity map.
+- Added COM1 serial diagnostics and a version-independent early boot-information parser.
+- Added an early 4 KiB physical-frame allocator that reserves the kernel, Multiboot2 information and boot modules.
+- Added IDT exception stubs, legacy PIC remapping and a nominal 1 kHz PIT timer interrupt.
+- Added a QEMU ISO build target and CI smoke test. QEMU boot status remains pending until the workflow succeeds on the branch.
+
+Not included: production bootloader, higher-half VM, buddy/slab allocator, APIC, SMP, scheduler, userspace, filesystem, network, graphics, signed boot chain or non-x86_64 ports.
