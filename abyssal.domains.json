@@ -28,7 +28,7 @@
       "status": "partial",
       "evidence": [
         "include/nun/boot_info.h",
-        "docs/NUN_OS_INTEGRATION.md"
+        "docs/ECOSYSTEM_INTEGRATION.md"
       ]
     },
     "belphegor": {
