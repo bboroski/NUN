@@ -4,23 +4,20 @@
 <p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 
-
-<p align="center"><sub><a href="design/DUCK_UI_SYSTEM.md">Duck Black / Yellow UI standard</a> · <a href="assets/duck-ui/duck-ui-preview.svg">Vector UI preview</a></sub></p>
+---
 
 **NUN — специфікаційна основа майбутнього мінімального системного ядра.** Репозиторій фіксує межі архітектури, пам'яті, виконання та передачі керування до початку повної реалізації.
 
 ## Цільові системні контракти
 
-- **Boot contract:** версійований handoff від launcher, карта пам'яті та правила перевірки.
+- **Boot contract:** версійований handoff від launcher, memory map і правила перевірки.
 - **Architecture layer:** CPU entry, privilege transition, exception та interrupt vectors.
 - **Memory layer:** фізичні сторінки, ранній allocator, віртуальна адресація й захист.
 - **Execution layer:** task/context model та явна синхронізація.
-- **Device boundary:** описані bus/driver interfaces без припущень про конкретну плату.
+- **Device boundary:** bus/driver interfaces без припущень про конкретну плату.
 - **Diagnostics:** ранній serial/framebuffer output і структурований panic record.
 
 ## Поточний стан
-
-<badge>SPECIFICATION ONLY</badge>
 
 У репозиторії наразі немає вихідного коду ядра, boot path, linker script, build system, драйверів або тестів. NUN **не є завантажуваною ОС** і не призначений для запуску на фізичному обладнанні. Жодна архітектура, включно з Elbrus/E2K, не має статусу перевіреної підтримки.
 
@@ -28,13 +25,13 @@
 
 | Етап | Обов'язковий доказ |
 |---|---|
-| Architecture baseline | Визначені CPU architecture, ABI та модель привілеїв |
+| Architecture baseline | CPU architecture, ABI та модель привілеїв визначені |
 | Boot contract | Версійовані handoff, memory map і правила валідації |
 | Reproducible build | Повторювана збірка, linker map і перевірка образу |
-| Emulator validation | Serial smoke test, exception/interrupt та memory tests |
+| Emulator validation | Serial smoke test, exception/interrupt і memory tests |
 | Target qualification | Окрема перевірка конкретної плати й процесора |
 
-Перший кодовий етап має принести мінімальну збірку, linker map, serial smoke test та автоматичну перевірку образу. Host-тести не замінюють емулятор і фізичну платформу.
+Перший етап із кодом має принести мінімальну збірку, linker map, serial smoke test та автоматичну перевірку образу. Host-тести не замінюють емулятор і фізичну платформу.
 
 ## Контракт із NUNLauncher
 
