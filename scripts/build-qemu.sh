@@ -12,6 +12,14 @@ CFLAGS="-std=gnu11 -O2 -Wall -Wextra -Werror -ffreestanding -fno-builtin -fno-st
 "$CC" $CFLAGS -c "$ROOT/kernel/bringup.c" -o "$BUILD/bringup.o"
 "$AS" --64 "$ROOT/boot/boot.S" -o "$BUILD/boot.o"
 "$LD" -m elf_x86_64 -nostdlib -z max-page-size=0x1000 -T "$ROOT/boot/linker.ld" "$BUILD/boot.o" "$BUILD/bringup.o" -o "$BUILD/kernel.elf"
+
+# Guard the early boot path against accidental compiler-generated SIMD use.
+objdump -d -Mintel "$BUILD/kernel.elf" > "$BUILD/kernel.dis"
+if grep -Eiw '\\b(xmm[0-9]+|ymm[0-9]+|zmm[0-9]+|mm[0-7])\\b' "$BUILD/kernel.dis"; then
+  echo "error: early NUN kernel contains SIMD instructions before FPU state setup" >&2
+  exit 1
+fi
+
 if command -v grub-file >/dev/null 2>&1; then
   grub-file --is-x86-multiboot2 "$BUILD/kernel.elf"
 fi
