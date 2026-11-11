@@ -22,14 +22,18 @@ jobs:
         shell: bash
         run: |
           set +e
-          { sleep 2; printf 'ping\n'; } | timeout 8s qemu-system-x86_64 -machine q35 -m 512M \
+          { sleep 2; printf 'ping\n'; } | timeout 8s qemu-system-x86_64 -machine q35 -accel tcg -m 512M \
             -cdrom build/qemu/nun-qemu.iso -boot d -display none \
             -serial stdio -monitor none -no-reboot -no-shutdown \
+            -d int,cpu_reset -D build/qemu/qemu.log \
             > build/qemu/serial.log 2>&1
           status=$?
           set -e
+          echo "QEMU serial output:"
+          cat build/qemu/serial.log
           if [ "$status" -ne 124 ] && [ "$status" -ne 0 ]; then
-            cat build/qemu/serial.log
+            echo "QEMU debug log:"
+            cat build/qemu/qemu.log
             exit "$status"
           fi
           grep -F "NUN kernel: x86_64 entry reached" build/qemu/serial.log
