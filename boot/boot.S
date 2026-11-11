@@ -164,7 +164,10 @@ isr_common:
     pushq %r14
     pushq %r15
     movq %rsp, %rdi
+    movq %rsp, %r12
+    andq $-16, %rsp
     call interrupt_dispatch
+    movq %r12, %rsp
     popq %r15
     popq %r14
     popq %r13
