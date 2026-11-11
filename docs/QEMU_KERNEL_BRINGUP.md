@@ -9,6 +9,7 @@ This freestanding kernel target is separate from the host-side CMake integration
 - COM1 serial diagnostics and a polling command loop: ping returns NUN: pong; help lists commands.
 - Multiboot2 memory-map parsing with bounds checks and a bounded physical-page bitmap allocator for the identity-mapped first GiB.
 - One-page write/read/clear self-test before the kernel reports readiness.
+- Early kernel objects are compiled without MMX/SSE/x87 instructions until CPU FPU/SIMD state initialization and task-context save/restore are implemented.
 - IDT exception stubs, legacy PIC remapping and PIT IRQ0 nominally configured at 1 kHz.
 - CI builds an ISO, launches QEMU, checks memory and interrupt diagnostics, and sends ping over the serial console.
 
@@ -23,6 +24,6 @@ The serial console is COM1 (stdio). Once NUN Kernel Ready appears, type ping and
 
 ## Explicit limitations
 
-This is a bring-up milestone, not a production kernel. The page allocator tracks only physical addresses below 1 GiB; the temporary page tables identity-map only that range. The allocator is a single-core bitmap without a free path or synchronization. The interrupt layer currently enables only PIT IRQ0 through the legacy PIC; APIC/IOAPIC, keyboard, UART interrupts, SMP, ACPI, PCI/USB, VFS, networking, Secure Boot, user mode, scheduler, system services and graphics are not implemented by this milestone. The 1 kHz timer is the PIT's nominal programmed rate, not a claim of nanosecond precision.
+This is a bring-up milestone, not a production kernel. The page allocator tracks only physical addresses below 1 GiB; the temporary page tables identity-map only that range. The allocator is a single-core bitmap without a free path or synchronization. The interrupt layer currently enables only PIT IRQ0 through the legacy PIC; APIC/IOAPIC, keyboard, UART interrupts, SMP, ACPI, PCI/USB, VFS, networking, Secure Boot, user mode, scheduler, system services and graphics are not implemented by this milestone. The 1 kHz timer is the PIT's nominal programmed rate, not a claim of nanosecond precision. Compiler-generated MMX/SSE/x87 instructions are disabled in this stage because the kernel has not enabled and managed FPU/SIMD state yet.
 
 The top-level CMake build remains a host integration/test build and is not a bootable OS image. A successful CI job is required before this milestone is described as QEMU-verified.
