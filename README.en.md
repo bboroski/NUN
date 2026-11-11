@@ -19,7 +19,7 @@
 
 ## Current status
 
-The repository currently contains no kernel source, boot path, linker script, build system, drivers, or tests. NUN is **not a bootable OS** and is not intended to run on physical hardware. No architecture, including Elbrus/E2K, is marked as verified.
+NUN already contains a C runtime, module integration, a CMake host build, and host tests for the runtime, arena, platform, and related contracts. It is **not yet a bootable OS**: a complete kernel boot path, architecture entry, linker scripts, page tables, interrupt entry, finished driver model, and verified hardware boot are still absent. A manual E2K qualification workflow has been added; it requires a self-hosted runner with LCC and is not evidence of a successful target test. Windows `.exe` game support is not implemented; its target architecture is documented in [WINDOWS_PE_COMPATIBILITY.md](docs/WINDOWS_PE_COMPATIBILITY.md).
 
 ## Implementation plan and readiness gates
 
