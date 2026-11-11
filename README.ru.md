@@ -1,48 +1,41 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
+<p align="center"><strong>Только спецификация · документационный каркас</strong></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 
----
+> **NUN** — NUN — спецификационная основа будущего минимального системного ядра, определяющая архитектурные, boot, memory и execution contracts.
 
-**NUN — спецификационная основа будущего минимального системного ядра.** Репозиторий фиксирует границы архитектуры, памяти, исполнения и передачи управления до начала полной реализации.
+## Текущие возможности
+- Версионированный boot handoff contract с NUNLauncher.
+- Architecture layer: CPU entry, privilege transitions, exceptions и interrupt vectors.
+- Требования к memory model, раннему allocator, виртуальной адресации и защите.
+- Readiness gates для воспроизводимой сборки, эмулятора и целевой платформы.
 
-## Целевые системные контракты
+## Быстрый старт и проверка
+```bash
+Изучите спецификации и контракты перед реализацией; полноценный build/boot pipeline пока не заявлен.
+```
 
-- **Boot contract:** версионированный handoff от launcher, memory map и правила проверки.
-- **Architecture layer:** CPU entry, privilege transition, exception и interrupt vectors.
-- **Memory layer:** физические страницы, ранний allocator, виртуальная адресация и защита.
-- **Execution layer:** task/context model и явная синхронизация.
-- **Device boundary:** bus/driver interfaces без предположений о конкретной плате.
-- **Diagnostics:** ранний serial/framebuffer output и структурированный panic record.
+## Архитектура и подтверждённые границы
+NUN пока не является загружаемой ОС. Подтверждённый kernel boot path и стек драйверов отсутствуют. Проваленные integration checks открытых PR не входят в main и не считаются реализованными функциями.
 
-## Текущий статус
+## Инженерное качество
+- Запускайте проверки для целевой платформы; host CI не заменяет аппаратную квалификацию.
+- Статусы implemented, partial и planned должны подтверждаться кодом, тестами и доказательствами.
+- Макет, спецификация или открытый Pull Request не доказывают production-ready реализацию.
+- Внешние интеграции должны быть явными, версионированными, изолированными и тестируемыми.
 
-В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. NUN **не является загружаемой ОС** и не предназначен для запуска на физическом оборудовании. Ни одна архитектура, включая Elbrus/E2K, не обозначена как проверенная.
+## NUN Mesh и связанные репозитории
+[SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUN](https://github.com/bboroski/NUN) · [NUNLauncher](https://github.com/bboroski/NUNLauncher) · [Fragile-Baby](https://github.com/bboroski/Fragile-Baby) · [Luci](https://github.com/bboroski/Luci)
 
-## План реализации и readiness gates
+Каждый репозиторий сохраняет каноническое имя, собственный код, API, цикл выпуска и границы ответственности. Интеграция означает версионированные контракты, а не автоматическое слияние независимых runtime.
 
-| Этап | Необходимое доказательство |
-|---|---|
-| Architecture baseline | Определены CPU architecture, ABI и модель привилегий |
-| Boot contract | Версионированные handoff, memory map и правила проверки |
-| Reproducible build | Повторяемая сборка, linker map и проверка образа |
-| Emulator validation | Serial smoke test, exception/interrupt и memory tests |
-| Target qualification | Отдельная проверка конкретного процессора и платы |
+## Дизайн и документация
+Общее направление интерфейсов — **Duck Black / Yellow**: тёмные поверхности, жёлтые акценты для действий и состояний, читаемая типографика, доступный контраст, клавиатурная навигация и поддержка reduced motion. Подробности — в [design/DUCK_UI_SYSTEM.md](design/DUCK_UI_SYSTEM.md), если файл присутствует.
 
-Первый этап с кодом должен включать минимальную сборку, linker map, serial smoke test и автоматическую проверку образа. Host-тесты не заменяют эмулятор и физическую платформу.
-
-## Контракт с NUNLauncher
-
-[NUNLauncher](https://github.com/bboroski/NUNLauncher) должен проверять kernel image и формировать handoff-данные. NUN обязан самостоятельно проверить полученный контекст до инициализации. Управление памятью, scheduler и драйверы относятся к ядру, а не к уровню launcher.
-
-## Экосистема и лицензия
-
-Связанные компоненты: [SAMBU](https://github.com/bboroski/SAMBU), [Kloz](https://github.com/bboroski/Kloz), [CO](https://github.com/bboroski/CO), [SaintSI](https://github.com/bboroski/SaintSI), [ReaperCripple](https://github.com/bboroski/ReaperCripple) и [NUNLauncher](https://github.com/bboroski/NUNLauncher).
-
-Файл <code>LICENSE</code> отсутствует; лицензия не объявлена. Определите условия до распространения.
+## Лицензия
+Лицензия не объявлена; файл LICENSE отсутствует.
 
 ---
-
-**Создано с любовью к системному программированию и людям.**
+**Создано с любовью к инженерии, системности и людям.**
