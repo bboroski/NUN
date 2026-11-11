@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bboroski/NUN/blob/main/spec/boot-image-manifest.schema.json",
+  "title": "NUN Boot Image Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "product", "artifact", "target", "bootloader", "kernel", "security", "build"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "product": { "const": "NUN" },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "format", "size_bytes", "sha256"],
+      "properties": {
+        "file": { "type": "string", "minLength": 1 },
+        "format": { "const": "ISO9660-hybrid" },
+        "size_bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["architecture", "firmware", "boot_protocol", "limine_base_revision"],
+      "properties": {
+        "architecture": { "const": "x86_64" },
+        "firmware": {
+          "type": "array",
+          "items": { "enum": ["bios", "uefi"] },
+          "uniqueItems": true,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "boot_protocol": { "const": "limine" },
+        "limine_base_revision": { "const": 6 }
+      }
+    },
+    "bootloader": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "archive_sha256"],
+      "properties": {
+        "name": { "const": "Limine" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "archive_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "kernel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "format", "endianness", "machine", "type", "entry_point"],
+      "properties": {
+        "path": { "const": "boot/NUN/kernel.elf" },
+        "format": { "const": "ELF64" },
+        "endianness": { "const": "little" },
+        "machine": { "const": "x86_64" },
+        "type": { "const": "ET_DYN" },
+        "entry_point": { "type": "string", "pattern": "^0x[0-9a-f]+$" }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest_algorithm", "signature_status"],
+      "properties": {
+        "digest_algorithm": { "const": "sha256" },
+        "signature_status": { "const": "unsigned" }
+      }
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_commit"],
+      "properties": { "source_commit": { "type": "string", "minLength": 1 } }
+    }
+  }
+}

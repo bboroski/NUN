@@ -1,0 +1,29 @@
+name: NUN E2K native runtime
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2k-native:
+    runs-on: [self-hosted, linux, e2k]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify native E2K Linux and LCC
+        run: |
+          test "$(uname -m)" = "e2k"
+          command -v lcc
+          lcc --version
+      - name: Build E2K ELF and manifest
+        run: make e2k-host
+      - name: Execute NUN E2K runtime self-test
+        run: make e2k-host-test
+      - name: Upload native E2K runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: NUN-E2K-native-runtime
+          path: |
+            build/e2k/NUN-E2K-host
+            build/e2k/NUN-E2K-host.json
