@@ -18,11 +18,11 @@ jobs:
           sudo apt-get install -y gcc binutils grub-pc-bin grub-common xorriso qemu-system-x86
       - name: Build Multiboot2 image
         run: bash scripts/build-qemu.sh
-      - name: Boot in QEMU and verify diagnostics
+      - name: Boot QEMU, check memory and interrupt handling, then ping over serial
         shell: bash
         run: |
           set +e
-          timeout 8s qemu-system-x86_64 -machine q35 -m 512M \
+          { sleep 2; printf 'ping\n'; } | timeout 8s qemu-system-x86_64 -machine q35 -m 512M \
             -cdrom build/qemu/nun-qemu.iso -boot d -display none \
             -serial stdio -monitor none -no-reboot -no-shutdown \
             > build/qemu/serial.log 2>&1
@@ -34,6 +34,8 @@ jobs:
           fi
           grep -F "NUN kernel: x86_64 entry reached" build/qemu/serial.log
           grep -F "NUN: usable physical pages below 1 GiB:" build/qemu/serial.log
-          grep -F "NUN: physical page allocator probe:" build/qemu/serial.log
-          grep -F "NUN: IDT installed; PIC remapped; PIT configured" build/qemu/serial.log
-          grep -F "NUN: PIT interrupt received" build/qemu/serial.log
+          grep -F "NUN: physical memory self-test passed" build/qemu/serial.log
+          grep -F "NUN: IDT installed; PIC remapped; PIT configured at 1000 Hz" build/qemu/serial.log
+          grep -F "NUN Kernel Ready" build/qemu/serial.log
+          grep -F "NUN: PIT interrupt received (1000 Hz)" build/qemu/serial.log
+          grep -F "NUN: pong" build/qemu/serial.log
