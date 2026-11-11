@@ -108,6 +108,8 @@ static uint64_t pmm_init(uint32_t mbi) {
     uint32_t offset=8u;
     uint64_t kernel_first=(uint64_t)(uintptr_t)&__kernel_start/PAGE_SIZE;
     uint64_t kernel_last=((uint64_t)(uintptr_t)&__kernel_end+PAGE_SIZE-1u)/PAGE_SIZE;
+    uint64_t mbi_first=(uint64_t)mbi/PAGE_SIZE;
+    uint64_t mbi_last=((uint64_t)mbi+total+PAGE_SIZE-1u)/PAGE_SIZE;
     while (offset+8u<=total) {
         uint32_t *tag=(uint32_t *)(uintptr_t)(mbi+offset);
         uint32_t type=tag[0], size=tag[1];
@@ -125,7 +127,8 @@ static uint64_t pmm_init(uint32_t mbi) {
                 if (first<256u) first=256u;
                 if (last>MAX_TRACKED_PAGES) last=MAX_TRACKED_PAGES;
                 for (uint64_t page=first;page<last;page++) {
-                    if (page<kernel_first || page>=kernel_last) bit_clear((uint32_t)page);
+                    if ((page<kernel_first || page>=kernel_last) &&
+                        (page<mbi_first || page>=mbi_last)) bit_clear((uint32_t)page);
                 }
             }
         }
