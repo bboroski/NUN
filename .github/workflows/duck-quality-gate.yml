@@ -1,0 +1,19 @@
+name: Duck repository quality gate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repository-contract:
+    name: Trilingual docs and Duck UI contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Validate repository contract
+        run: python3 .github/scripts/duck_quality_gate.py
