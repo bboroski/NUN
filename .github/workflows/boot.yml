@@ -1,0 +1,110 @@
+name: NUN boot image
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nun-boot-image-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out NUN
+        uses: actions/checkout@v4
+
+      - name: Install build and emulator dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc clang lld nasm make curl xorriso mtools python3 qemu-system-x86 ovmf
+
+      - name: Run host-side manifest tests
+        run: make test
+
+      - name: Build the BIOS and UEFI image
+        run: make iso
+
+      - name: Boot the image in QEMU (BIOS)
+        shell: bash
+        run: |
+          set +e
+          timeout 20s qemu-system-x86_64 \
+            -machine q35 -m 512M \
+            -cdrom build/NUN.iso \
+            -serial stdio -display none -monitor none -no-reboot \
+            > build/qemu-bios-serial.log 2>&1
+          qemu_status=$?
+          set -e
+          if [[ "$qemu_status" -ne 124 ]]; then
+            echo "BIOS QEMU did not remain in the expected kernel halt loop (exit: $qemu_status)." >&2
+            cat build/qemu-bios-serial.log
+            exit 1
+          fi
+          grep -Fq "NUN: boot path ready" build/qemu-bios-serial.log || {
+            cat build/qemu-bios-serial.log
+            exit 1
+          }
+
+      - name: Boot the image in QEMU (x86_64 UEFI)
+        shell: bash
+        run: |
+          set -euo pipefail
+          OVMF_CODE=""
+          for firmware_dir in /usr/share/OVMF /usr/share/edk2; do
+            [[ -d "$firmware_dir" ]] || continue
+            candidate="$(find "$firmware_dir" -type f \
+              \( -name 'OVMF_CODE.fd' -o -name 'OVMF_CODE_4M.fd' \) 2>/dev/null | sort | head -n 1 || true)"
+            if [[ -n "$candidate" && -r "$candidate" ]]; then
+              OVMF_CODE="$candidate"
+              break
+            fi
+          done
+          [[ -n "$OVMF_CODE" ]] || {
+            echo "OVMF_CODE firmware image was not found." >&2
+            exit 1
+          }
+          OVMF_VARS="${OVMF_CODE/OVMF_CODE/OVMF_VARS}"
+          [[ -r "$OVMF_VARS" ]] || {
+            echo "Matching OVMF variable template was not found: $OVMF_VARS" >&2
+            exit 1
+          }
+          cp "$OVMF_VARS" build/OVMF_VARS.fd
+          set +e
+          timeout 20s qemu-system-x86_64 \
+            -machine q35 -m 512M \
+            -drive if=pflash,format=raw,readonly=on,file="$OVMF_CODE" \
+            -drive if=pflash,format=raw,file=build/OVMF_VARS.fd \
+            -cdrom build/NUN.iso \
+            -serial stdio -display none -monitor none -no-reboot \
+            > build/qemu-uefi-serial.log 2>&1
+          qemu_status=$?
+          set -e
+          if [[ "$qemu_status" -ne 124 ]]; then
+            echo "UEFI QEMU did not remain in the expected kernel halt loop (exit: $qemu_status)." >&2
+            cat build/qemu-uefi-serial.log
+            exit 1
+          fi
+          grep -Fq "NUN: boot path ready" build/qemu-uefi-serial.log || {
+            cat build/qemu-uefi-serial.log
+            exit 1
+          }
+
+      - name: Upload boot image, manifest, kernel and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: NUN-boot-image
+          path: |
+            build/NUN.iso
+            build/NUN.image.json
+            build/kernel.elf
+            build/qemu-bios-serial.log
+            build/qemu-uefi-serial.log
+          if-no-files-found: warn

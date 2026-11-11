@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "repository": "bboroski/NUN",
+  "role": "x86_64 kernel bring-up and boot-context verification foundation",
+  "maturity": "early-implementation",
+  "domains": {
+    "lucifer": {
+      "status": "partial",
+      "evidence": [
+        "docs/architecture/capability-composition.md"
+      ]
+    },
+    "beelzebub": {
+      "status": "partial",
+      "evidence": [
+        "src/boot_info.c",
+        "tests/test_boot_info.c"
+      ]
+    },
+    "leviathan": {
+      "status": "partial",
+      "evidence": [
+        "src/runtime/runtime.c",
+        "docs/architecture/capability-composition.md"
+      ]
+    },
+    "asmodeus": {
+      "status": "partial",
+      "evidence": [
+        "include/nun/boot_info.h",
+        "docs/ECOSYSTEM_INTEGRATION.md"
+      ]
+    },
+    "belphegor": {
+      "status": "partial",
+      "evidence": [
+        "one.py",
+        "tools/check_ecosystem_contracts.py"
+      ]
+    },
+    "mammon": {
+      "status": "partial",
+      "evidence": [
+        "kernel/bringup.c",
+        "src/boot_info.c"
+      ]
+    },
+    "satan": {
+      "status": "partial",
+      "evidence": [
+        "scripts/install-usb.sh",
+        "src/boot_info.c"
+      ]
+    },
+    "belial": {
+      "status": "partial",
+      "evidence": [
+        "scripts/write_image_manifest.py",
+        "spec/boot-image-manifest.schema.json"
+      ]
+    },
+    "astaroth": {
+      "status": "implemented",
+      "evidence": [
+        "spec/capability-manifest.schema.json",
+        "docs/architecture/capability-composition.md"
+      ]
+    },
+    "baal": {
+      "status": "partial",
+      "evidence": [
+        "scripts/build-qemu.sh",
+        "scripts/build.sh",
+        "CMakeLists.txt"
+      ]
+    },
+    "adramelech": {
+      "status": "partial",
+      "evidence": [
+        ".github/workflows/qemu-kernel.yml",
+        ".github/workflows/smart-pipeline.yml"
+      ]
+    },
+    "ariel": {
+      "status": "planned",
+      "evidence": []
+    },
+    "pazuzu": {
+      "status": "partial",
+      "evidence": [
+        "tests/test_boot_info.c",
+        "tests/test_image_manifest.py"
+      ]
+    }
+  },
+  "integrations": [
+    {
+      "repository": "bboroski/NUNLauncher",
+      "relation": "contract",
+      "status": "partial"
+    },
+    {
+      "repository": "bboroski/Kloz",
+      "relation": "adapter",
+      "status": "planned"
+    },
+    {
+      "repository": "bboroski/ReaperCripple",
+      "relation": "adapter",
+      "status": "planned"
+    }
+  ]
+}
