@@ -39,6 +39,18 @@ NUN is currently a kernel specification foundation, not a graphical application.
 
 <p align="center"><img src="assets/duck-ui/duck-ui-preview.svg" alt="Shared Duck Black Yellow design system; not a NUN interface" width="960"></p>
 
+
+
+### Versioned boot-info contract
+
+A host-tested C11 handoff contract is also provided in `include/nun/boot_info.h` and `src/boot_info.c`. It validates the structure version, architecture identifier, kernel-image bounds, entry point, and memory map. This validates input metadata only; it does not replace a loader, transfer control to the kernel, emulator testing, or target-hardware qualification.
+
+```sh
+cmake -S . -B build -DNUN_BUILD_TESTS=ON
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure
+```
+
 ## Engineering quality
 - Run the checks appropriate to the target platform; host CI is not hardware qualification.
 - Mark capabilities as implemented, partial or planned according to code, tests and evidence.
