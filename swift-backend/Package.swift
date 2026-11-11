@@ -1,0 +1,3 @@
+// swift-tools-version: 6.0
+import PackageDescription
+let package = Package(name:"NUNControlBackend",platforms:[.macOS(.v13)],products:[.library(name:"NUNControlBackendCore",targets:["NUNControlBackendCore"]),.executable(name:"nuncontrol-server",targets:["NUNControlBackendServer"])],dependencies:[.package(url:"https://github.com/vapor/vapor.git",from:"4.110.0")],targets:[.target(name:"NUNControlBackendCore",dependencies:[.product(name:"Vapor",package:"vapor")]),.executableTarget(name:"NUNControlBackendServer",dependencies:["NUNControlBackendCore",.product(name:"Vapor",package:"vapor")]),.testTarget(name:"NUNControlBackendCoreTests",dependencies:["NUNControlBackendCore"])],swiftLanguageModes:[.v6])
