@@ -1,29 +1,29 @@
 # NUN x86_64 QEMU kernel bring-up
 
-This executable target is separate from the existing host-side CMake integration build.
+This freestanding kernel target is separate from the host-side CMake integration build.
 
-## Implemented in this milestone
+## Phase A capabilities
 
-- GRUB Multiboot2 entry and transition from 32-bit protected mode to 64-bit long mode.
-- Temporary identity map for the first GiB using 2 MiB pages.
-- COM1 serial diagnostics.
-- Multiboot2 memory-map parsing and a bounded physical-page bitmap allocator for the first GiB.
-- IDT exception stubs, legacy PIC remapping and a 100 Hz PIT IRQ0.
-- CI builds an ISO, boots it in QEMU and checks serial output including a timer interrupt.
+- GRUB Multiboot2 entry and transition from 32-bit protected mode to x86_64 long mode.
+- Temporary identity mapping of physical addresses below 1 GiB using 2 MiB pages.
+- COM1 serial diagnostics and a polling command loop: ping returns NUN: pong; help lists commands.
+- Multiboot2 memory-map parsing with bounds checks and a bounded physical-page bitmap allocator for the identity-mapped first GiB.
+- One-page write/read/clear self-test before the kernel reports readiness.
+- Early kernel objects are compiled without MMX/SSE/x87 instructions until CPU FPU/SIMD state initialization and task-context save/restore are implemented.
+- IDT exception stubs, legacy PIC remapping and PIT IRQ0 nominally configured at 1 kHz.
+- CI builds an ISO, launches QEMU, checks memory and interrupt diagnostics, and sends ping over the serial console.
 
 ## Build and run
 
-On Debian or Ubuntu install `gcc`, `binutils`, `grub-pc-bin`, `grub-common`, `xorriso` and `qemu-system-x86`.
+On Debian or Ubuntu install gcc, binutils, grub-pc-bin, grub-common, mtools, xorriso and qemu-system-x86.
 
-```sh
-bash scripts/build-qemu.sh
-bash scripts/run-qemu.sh
-```
+    bash scripts/build-qemu.sh
+    bash scripts/run-qemu.sh
 
-The serial console is COM1 (stdio). Expected diagnostics include kernel entry, the Multiboot2 pointer, usable tracked pages, one allocated page, IDT/PIC/PIT initialization and periodic timer messages.
+The serial console is COM1 (stdio). Once NUN Kernel Ready appears, type ping and expect NUN: pong.
 
 ## Explicit limitations
 
-This is a bring-up milestone, not a production kernel. The page allocator tracks only physical addresses below 1 GiB; the temporary page tables identity-map only that range. The allocator is a single-core bitmap without locking. The interrupt layer currently enables only PIT IRQ0; other vectors route to a fatal diagnostic path. There is no userspace, scheduler, SMP, ACPI, PCI/USB, VFS, network stack, Secure Boot or graphical compositor yet. Those must be added as separately tested milestones.
+This is a bring-up milestone, not a production kernel. The page allocator tracks only physical addresses below 1 GiB; the temporary page tables identity-map only that range. The allocator is a single-core bitmap without a free path or synchronization. The interrupt layer currently enables only PIT IRQ0 through the legacy PIC; APIC/IOAPIC, keyboard, UART interrupts, SMP, ACPI, PCI/USB, VFS, networking, Secure Boot, user mode, scheduler, system services and graphics are not implemented by this milestone. The 1 kHz timer is the PIT's nominal programmed rate, not a claim of nanosecond precision. Compiler-generated MMX/SSE/x87 instructions are disabled in this stage because the kernel has not enabled and managed FPU/SIMD state yet.
 
-The existing top-level CMake build remains a host integration/test build and is not used to claim a bootable image.
+The top-level CMake build remains a host integration/test build and is not a bootable OS image. A successful CI job is required before this milestone is described as QEMU-verified.

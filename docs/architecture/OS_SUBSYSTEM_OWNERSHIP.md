@@ -14,25 +14,26 @@ This document assigns each subsystem to one canonical repository and separates e
 | System services | NUN | CO, SaintSI, ToolNG | NUN owns IPC, process/service manager, users, permissions and security enforcement. CO lifecycle and SaintSI health observations are optional service-side components, not kernel authorization. |
 | SAMBU toolchain | SAMBU | NUN, Klipot, Luci | SAMBU owns language/compiler/stdlib/SDK/package tooling. A freestanding NUN target and kernel ABI binding are future work; the current Python-hosted compiler slice is not a kernel compiler. |
 | Graphics and desktop | NUN (future user-space stack) | SAMBU, Klipot | NUN owns display/device interfaces and future compositor/window protocol. Applications and developer-facing tooling remain separate. No desktop is implemented by the current kernel target. |
-| Developer environment | SAMBU, Klipot, Luci | ToolNG | SAMBU owns language tools; Klipot owns the federation portal; Luci owns local registry/contract checks; ToolNG owns Windows diagnostics. None is a kernel runtime. |
-| Federation and updates | Hellduck | Klipot, Luci, NUNLauncher | Hellduck owns repository/release metadata and compatibility navigation. Klipot visualizes; Luci validates local manifests/policies; NUNLauncher will own boot-image validation/rollback integration. Transactional OS updates are not implemented yet. |
+| Developer environment | SAMBU, Klipot, Luci | ToolNG | SAMBU owns language tools; Klipot owns the developer portal; Luci owns local registry/contract checks; ToolNG owns diagnostics and evidence tooling. None is a kernel runtime. |
+| Federation and updates | Hellduck | Klipot, Luci, NUNLauncher | Hellduck owns repository/release metadata and compatibility navigation. Klipot visualizes; Luci validates local manifests/policies; NUNLauncher owns the future boot-image validation/rollback handoff. Transactional OS updates are not implemented yet. |
 
 ## Current executable milestone: x86_64 QEMU bring-up
 
-The current feature branch adds a GRUB Multiboot2 path with:
+The Phase A branch extends the GRUB Multiboot2 path with:
 
 - 32-bit loader entry and transition to x86_64 long mode;
 - temporary identity mapping of physical addresses below 1 GiB using 2 MiB pages;
-- COM1 serial diagnostics;
-- Multiboot2 memory-map parsing and a bounded bitmap physical-page allocator;
-- IDT exception stubs, PIC remapping and PIT IRQ0 at 100 Hz;
-- a CI smoke test that builds an ISO, boots QEMU and checks serial output.
+- COM1 serial diagnostics and a polling serial command loop (ping returns NUN: pong);
+- bounds-checked Multiboot2 memory-map parsing and a physical-page bitmap allocator;
+- a one-page write/read/clear memory self-test before readiness;
+- IDT exception stubs, legacy PIC remapping and PIT IRQ0 nominally programmed at 1 kHz;
+- a CI smoke test that builds an ISO, boots QEMU, checks memory/timer diagnostics and sends a serial ping.
 
-The pull request must pass its QEMU workflow before this is described as a verified boot. The first target is a bring-up kernel, not a complete OS.
+This is not yet a verified boot until the QEMU workflow passes on the proposed commit. The timer is nominally programmed at 1 kHz; nanosecond timer precision is not claimed. The first target is a bring-up kernel, not a complete OS.
 
 ## Ordered implementation gates
 
-1. **Boot proof:** Multiboot2 header validation, long-mode entry, serial output, panic path, reproducible ISO and QEMU test.
+1. **Boot proof:** Multiboot2 header validation, long-mode entry, serial command round-trip, panic path, reproducible ISO and QEMU test.
 2. **Memory safety:** reserve all boot-owned regions, physical allocator tests, page-table builder, kernel mapping/protection, heap and guard pages.
 3. **Interrupt foundation:** complete exception frames, fault diagnostics, APIC/IOAPIC, timer abstraction and interrupt-safe synchronization.
 4. **Execution:** context switch, scheduler, kernel threads, preemption, SMP bring-up and synchronization primitives.
