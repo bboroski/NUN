@@ -1,48 +1,68 @@
-<p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
-<h1 align="center">NUN</h1>
-<p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
-<p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
+# NUN — Minimal Kernel Substrate
 
----
+**Архитектурный каркас минимального системного ядра.**
 
-**NUN — спецификационная основа будущего минимального системного ядра.** Репозиторий фиксирует границы архитектуры, памяти, исполнения и передачи управления до начала полной реализации.
+Текущий статус: в ветке загрузочного прототипа добавлен первый исполняемый контур запуска для x86_64. Это начальный этап bring-up ядра, а не завершённая операционная система.
 
-## Целевые системные контракты
+[Українська](README.md) · [English](README.en.md) · [Русский](README.ru.md) · [Репозиторий](https://github.com/bboroski/NUN)
 
-- **Boot contract:** версионированный handoff от launcher, memory map и правила проверки.
-- **Architecture layer:** CPU entry, privilege transition, exception и interrupt vectors.
+## Загрузка и создание установочного носителя
+
+NUN использует протокол Limine (base revision 6) для запуска ядра ELF64 PIE на x86_64 вместо собственного ограниченного 512-байтового MBR-загрузчика. Сборка формирует гибридный ISO для BIOS и x86_64 UEFI. Ранний запуск выводит диагностику через COM1, получает карту памяти и рисует простую графическую заставку, если доступен совместимый RGB framebuffer.
+
+Зависимости для Debian/Ubuntu:
+
+    sudo apt-get update
+    sudo apt-get install -y build-essential gcc clang lld nasm make curl xorriso mtools qemu-system-x86
+
+Основные команды:
+
+    make iso
+    make run
+    make usb DEVICE=/dev/sdX
+
+ISO создаётся в build/NUN.iso. Команда USB записывает образ на **весь выбранный диск**, а не на раздел. Перед записью проверяются тип устройства, размер, read-only состояние, смонтированные файловые системы и диск корневой системы; затем требуется точное подтверждение ERASE /dev/....
+
+**Внимание:** запись полностью перезаписывает выбранный USB-носитель. Сначала сохраните его данные. Не указывайте системный диск компьютера.
+
+- [Загрузка, сборка и USB-установка](docs/BOOT.md)
+- [Репозиторий Limine](https://github.com/Limine-Bootloader/Limine)
+- Используется закреплённая версия Limine 12.9.6; архив проверяется по SHA-256 до распаковки. Лицензия загрузчика сохранена в third_party/limine/COPYING и включена в ISO.
+
+## Границы текущей реализации
+
+Добавлены ранняя точка входа ядра, запросы Limine для карты памяти/framebuffer/информации о загрузчике, COM1-диагностика, простая framebuffer-заставка, сборка ISO и защищённая запись USB-образа.
+
+Пока **не реализованы**: планировщик, физический allocator, драйверы накопителей, файловая система, сетевой стек, графическая среда, редактор разделов, Secure Boot и постоянный установщик на внутренний диск. USB-образ — это загрузочный носитель для прототипа, а не полноценная установка NUN на компьютер.
+
+## Предлагаемые границы системы
+
+- **Boot contract:** формат handoff от загрузчика, карта памяти и версия ABI.
+- **Architecture layer:** CPU entry, переходы между уровнями привилегий, векторы исключений и прерываний.
 - **Memory layer:** физические страницы, ранний allocator, виртуальная адресация и защита.
-- **Execution layer:** task/context model и явная синхронизация.
-- **Device boundary:** bus/driver interfaces без предположений о конкретной плате.
-- **Diagnostics:** ранний serial/framebuffer output и структурированный panic record.
+- **Execution layer:** task/context model и явная модель синхронизации.
+- **Device boundary:** документированные bus/driver interfaces без предположений о конкретной плате.
+- **Capability composition layer:** реестр возможностей, проверка совместимости, граф композиций, изолированное подключение и атомарный откат.
 
-## Текущий статус
+## Объединение и поглощение возможностей
 
-В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. NUN **не является загружаемой ОС** и не предназначен для запуска на физическом оборудовании. Ни одна архитектура, включая Elbrus/E2K, не обозначена как проверенная.
+NUN предусматривает **Capability Composition & Assimilation** — системный механизм для приёма новых модулей, проверки их контрактов и зависимостей, объединения совместимых возможностей в составные возможности и повторного использования таких композиций как обычных модулей.
 
-## План реализации и readiness gates
+Это не бесконтрольное слияние исполняемого кода. У каждой возможности есть версионируемый манифест, стабильный идентификатор, ABI, объявленные интерфейсы и минимально необходимые разрешения. Подключение проходит через карантин, проверку, разрешение зависимостей и конфликтов, изолированную стадию тестирования и транзакционную активацию.
 
-| Этап | Необходимое доказательство |
-|---|---|
-| Architecture baseline | Определены CPU architecture, ABI и модель привилегий |
-| Boot contract | Версионированные handoff, memory map и правила проверки |
-| Reproducible build | Повторяемая сборка, linker map и проверка образа |
-| Emulator validation | Serial smoke test, exception/interrupt и memory tests |
-| Target qualification | Отдельная проверка конкретного процессора и платы |
+- [Архитектура Capability Composition & Assimilation](docs/architecture/capability-composition.md)
+- [JSON Schema манифеста возможности](spec/capability-manifest.schema.json)
 
-Первый этап с кодом должен включать минимальную сборку, linker map, serial smoke test и автоматическую проверку образа. Host-тесты не заменяют эмулятор и физическую платформу.
+## Инженерные требования
 
-## Контракт с NUNLauncher
+Каждая аппаратно-зависимая операция должна быть привязана к конкретной архитектуре и boot protocol. ABI, границы памяти, alignment, privilege level и interrupt policy должны быть документированы. Host-тесты не заменяют эмуляцию или проверку целевой платформы.
 
-[NUNLauncher](https://github.com/bboroski/NUNLauncher) должен проверять kernel image и формировать handoff-данные. NUN обязан самостоятельно проверить полученный контекст до инициализации. Управление памятью, scheduler и драйверы относятся к ядру, а не к уровню launcher.
+Для системы композиций также обязательны детерминированное разрешение зависимостей, запрет циклических зависимостей, изоляция модулей, принцип минимальных привилегий, происхождение артефактов, атомарная активация и проверенный rollback.
 
-## Экосистема и лицензия
+## Проверка
 
-Связанные компоненты: [SAMBU](https://github.com/bboroski/SAMBU), [Kloz](https://github.com/bboroski/Kloz), [CO](https://github.com/bboroski/CO), [SaintSI](https://github.com/bboroski/SaintSI), [ReaperCripple](https://github.com/bboroski/ReaperCripple) и [NUNLauncher](https://github.com/bboroski/NUNLauncher).
+Добавлен GitHub Actions workflow: он должен собрать BIOS/UEFI ISO, загрузить его в QEMU (BIOS) и сохранить ISO с serial log как артефакты. До успешного завершения workflow сборку нельзя считать подтверждённой. Локальная сборка: make iso, запуск в QEMU: make run.
 
-Файл <code>LICENSE</code> отсутствует; лицензия не объявлена. Определите условия до распространения.
+## Техническая идентичность
 
----
-
-**Создано с любовью к системному программированию и людям.**
+**NUN** — каноническое техническое имя минимального kernel substrate. GitHub-путь оставлен только как адрес репозитория.
