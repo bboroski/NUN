@@ -3,13 +3,13 @@
 #include <limits.h>
 #include <string.h>
 
-#include "sambu_engine.h"
+#include "toolng_engine.h"
 
-_Static_assert(NUN_ACCESS_READ_LOCAL == WDEP_OP_READ_LOCAL, "ToolNG read ABI drift");
-_Static_assert(NUN_ACCESS_SCAN == WDEP_OP_SCAN, "ToolNG scan ABI drift");
-_Static_assert(NUN_ACCESS_MUTATE_DEVICE == WDEP_OP_MUTATE_DEVICE, "ToolNG mutation ABI drift");
-_Static_assert(NUN_ORIGIN_INTERNAL == WDEP_ORIGIN_INTERNAL, "ToolNG internal origin ABI drift");
-_Static_assert(NUN_ORIGIN_USER == WDEP_ORIGIN_USER, "ToolNG user origin ABI drift");
+_Static_assert((int)NUN_ACCESS_READ_LOCAL == (int)TOOLNG_OP_READ_LOCAL, "ToolNG read ABI drift");
+_Static_assert((int)NUN_ACCESS_SCAN == (int)TOOLNG_OP_SCAN, "ToolNG scan ABI drift");
+_Static_assert((int)NUN_ACCESS_MUTATE_DEVICE == (int)TOOLNG_OP_MUTATE_DEVICE, "ToolNG mutation ABI drift");
+_Static_assert((int)NUN_ORIGIN_INTERNAL == (int)TOOLNG_ORIGIN_INTERNAL, "ToolNG internal origin ABI drift");
+_Static_assert((int)NUN_ORIGIN_USER == (int)TOOLNG_ORIGIN_USER, "ToolNG user origin ABI drift");
 
 static int32_t nun_read_tick(nun_runtime_t *runtime, uint32_t *tick_out)
 {
@@ -371,7 +371,7 @@ nun_result_t nun_runtime_release_queue_slots(nun_runtime_t *runtime,
 int nun_runtime_authorize(nun_access_operation_t operation,
                           nun_access_origin_t origin)
 {
-    return wdep_authorize((WdepOperation)operation, (WdepOrigin)origin);
+    return toolng_authorize((ToolNGOperation)operation, (ToolNGOrigin)origin);
 }
 
 nun_state_t nun_runtime_state(const nun_runtime_t *runtime)

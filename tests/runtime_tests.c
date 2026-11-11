@@ -58,14 +58,14 @@ int main(void)
         NULL
     };
     nun_runtime_config_t config = {
-        &platform,
-        &hooks,
-        arena_storage,
-        sizeof(arena_storage),
-        256u,
-        8u,
-        100u,
-        20u
+        .platform = &platform,
+        .lifecycle_hooks = &hooks,
+        .arena_storage = arena_storage,
+        .arena_capacity = sizeof(arena_storage),
+        .memory_limit = 256u,
+        .queue_limit = 8u,
+        .work_limit = 100u,
+        .heartbeat_timeout_ticks = 20u
     };
     void *memory;
     saintsi_health_state_t health = SAINTSI_DEGRADED;
