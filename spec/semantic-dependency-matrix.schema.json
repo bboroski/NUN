@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bboroski/NUN/blob/main/spec/semantic-dependency-matrix.schema.json",
+  "title": "NUN bounded semantic dependency matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "nodes", "expansion", "promotion_policy"],
+  "properties": {
+    "schema_version": {"const": "nun.semantic-dependency-matrix.v1"},
+    "status": {"const": "specification-only"},
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "role", "evidence_state", "depends_on"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 64},
+          "role": {"enum": ["boot-contract", "memory-contract", "execution-contract", "synchronization-contract", "diagnostic-contract", "device-boundary"]},
+          "evidence_state": {"enum": ["unknown", "specified", "host-tested", "emulator-verified", "hardware-verified"]},
+          "depends_on": {"type": "array", "maxItems": 64, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "evidence_refs": {"type": "array", "maxItems": 16, "items": {"type": "string", "maxLength": 512}}
+        }
+      }
+    },
+    "expansion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_depth", "damping", "max_nodes", "self_edges"],
+      "properties": {
+        "max_depth": {"type": "integer", "minimum": 1, "maximum": 6},
+        "damping": {"type": "number", "minimum": 0, "maximum": 1},
+        "max_nodes": {"const": 64},
+        "self_edges": {"const": false}
+      }
+    },
+    "promotion_policy": {"const": "explicit-review-and-evidence-only"},
+    "notes": {"type": "array", "maxItems": 16, "items": {"type": "string", "maxLength": 512}}
+  }
+}
