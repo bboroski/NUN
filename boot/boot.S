@@ -17,6 +17,7 @@ mb2_header_end:
 .global _start
 _start:
     cli
+    cld
     movl $boot_stack_top, %esp
     movl %ebx, %edi
 
