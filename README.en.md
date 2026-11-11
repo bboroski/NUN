@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><strong>Specification only · documentation scaffold</strong></p>
+<p align="center"><strong>Phase A code added · QEMU verification pending</strong></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 <sub>Updated: 2026-11-11</sub>
 
@@ -19,19 +19,20 @@
 - [License](#license)
 - [Duck Black / Yellow palette](#duck-black-yellow-palette)
 
-> **NUN** — NUN is a specification foundation for a future minimal system kernel, defining architecture, boot, memory and execution contracts.
+> **NUN** — NUN is a minimal system-kernel substrate with the first x86_64 bring-up implementation on a feature branch; QEMU boot is awaiting CI evidence.
 
 ## Current capabilities
-- Versioned boot handoff contract with NUNLauncher.
-- Architecture layer for CPU entry, privilege transitions, exceptions and interrupt vectors.
-- Memory model, early allocation, virtual addressing and protection requirements.
-- Readiness gates for reproducible builds, emulator and target qualification.
+- Multiboot2 x86_64 entry and transition to long mode.
+- COM1 serial diagnostics and Multiboot2 memory-map validation.
+- Early 4 KiB physical-frame allocator reserving the kernel and boot information.
+- Initial IDT exception gates, legacy PIC remap and PIT timer IRQ.
+- QEMU boot gate added; CI execution is still pending.
 
 ## Quick start and verification
-Review the specifications and contracts before implementation; a complete build/boot pipeline is not currently claimed.
+Requires GCC, GNU binutils, Make, GRUB, xorriso and QEMU: `make clean iso && make qemu-test`. A production boot pipeline is not claimed.
 
 ## Architecture and verified scope
-NUN is not a bootable OS. A verified kernel boot path and driver stack are not present. Failed integration checks in open PRs are not part of main and are not represented as implemented features.
+The first kernel boot path is implemented on `feature/nun-integration-phase-a`, but its QEMU smoke test is not yet confirmed by CI. This is a narrow x86_64 bring-up, not a complete OS; drivers, userspace and system services remain unimplemented.
 
 ## Interface and visual materials
 
@@ -47,8 +48,9 @@ NUN is currently a kernel specification foundation, not a graphical application.
 
 ## Documentation map
 
-- [Capability composition](docs/architecture/capability-composition.md)
-- [Ecosystem integration](docs/ECOSYSTEM_INTEGRATION.md)
+- [QEMU bootstrap phase A](docs/QEMU_BOOTSTRAP.md)
+- [12-repository integration map](docs/NUN_INTEGRATION.md)
+- [NUN change log](CHANGELOG.NUN)
 - [Technical debt and scope](docs/TECHNICAL_DEBT_REGISTER.md)
 
 ## NUN Mesh and related repositories
