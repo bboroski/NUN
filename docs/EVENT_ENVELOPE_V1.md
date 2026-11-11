@@ -14,8 +14,9 @@ ownership ambiguity at the boundary.
 ## Contract
 
 - ABI version: `NUN_EVENT_ABI_VERSION` (`0x00010000`).
-- Required text: `event_id`, `producer`, and `kind`; each is a
-  NUL-terminated UTF-8 string of 1–63 bytes.
+- Required text: `event_id`, `producer`, and `kind`; each has 1–63 bytes
+  plus a terminating NUL. Callers must provide valid UTF-8; the validator
+  checks termination and capacity but does not validate UTF-8 encoding.
 - Optional text: `correlation_id`; an empty string means no correlation ID.
 - Ordering: `sequence` is monotonic per producer. It is not a global order.
 - Clock: `monotonic_ticks` is meaningful only in the producer's declared
@@ -48,6 +49,9 @@ Example logical envelope:
   no I/O, mutates no queue, and grants no permissions.
 - Payload memory is not copied or freed. The caller must keep it alive while
   consumers use the event.
+- The C structure is an in-process ABI view containing native pointers and
+  `size_t`; its raw memory is not a portable wire format and must not be
+  serialized or transmitted. Map fields to the JSON schema instead.
 - Unknown ABI versions, incorrect structure sizes, unterminated required
   strings, invalid enum values, null payloads and out-of-range payload sizes
   are rejected with distinct result codes.
