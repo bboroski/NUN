@@ -1,48 +1,62 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
-<p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
+<p align="center"><strong>Основа операционной системы</strong></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-EARLY%20FOUNDATION-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/BOOT-NOT%20BOOTABLE-FFB000?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/CORE-C11%20HOST%20CONTRACT-FFD600?style=for-the-badge&labelColor=111111"></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
+<p align="center"><sub><a href="design/DUCK_UI_SYSTEM.md">Duck Black / Yellow UI standard</a> · <a href="assets/duck-ui/duck-ui-preview.svg">Vector UI preview</a></sub></p>
+
+**NUN — основа самостоятельной операционной системы.** Проект переходит от архитектурной спецификации к проверяемым системным контрактам, загрузочной цепочке и ядру.
+
+## Что уже есть
+
+- Версионированный C11 boot-information ABI с фиксированными типами и идентификаторами архитектур.
+- Host-валидатор magic, ABI, архитектуры, memory map, перекрытий, переполнения адресов, kernel entry, initrd и framebuffer.
+- Host-тесты валидатора и базовая цель make test.
+- JSON Schema для boot manifest и каталог возможностей девяти подключённых репозиториев.
+- Архитектурная основа ОС, матрица целевых процессоров, security/recovery policy и этапы готовности.
+- Контракты интеграции Kloz, CO, SaintSI, ReaperCripple, SAMBU, Klipot, ToolNG и NUNLauncher.
+
+## Статус
+
+<strong>EARLY FOUNDATION · NOT BOOTABLE</strong>
+
+В репозитории пока нет firmware loader, linker script, kernel entry point, interrupt controller, scheduler, virtual-memory manager, filesystem, стека драйверов или загрузочного образа. Host-тесты проверяют только boot metadata и не доказывают загрузку в эмуляторе или на физическом оборудовании.
+
+## Архитектура
+
+- **NUN** владеет ядром, ABI, памятью, процессами, IPC, безопасностью и системными службами.
+- **Kloz** предоставляет узкую переносимую платформенную основу; интеграция требует аудита и target-проверки.
+- **CO** и **SaintSI** могут подключаться как сервисные компоненты, но не заменяют scheduler, watchdog или криптографию.
+- **ReaperCripple** предоставляет точные BSP/board-профили и контролируемые bootstrap-процедуры.
+- **SAMBU** предоставляет экспериментальную языковую среду и инструменты; native compiler ещё не готов к production.
+- **Klipot** остаётся независимой контрольной плоскостью; **ToolNG** — Windows-диагностикой рабочей станции.
+
+## Системные языки
+
+Fortran, Pascal и Delphi/Object Pascal планируются как полноценные языки пользовательского пространства через версионированный C ABI, системные модули, runtime-адаптеры и библиотеки. Fortran использует ISO_C_BINDING/BIND(C); Pascal — FPC и C-compatible records; Delphi — отдельную source/runtime compatibility matrix. Частные runtime-объекты не пересекают границу ABI. SAMBU сохраняет собственный экспериментальный toolchain.
+
+## Целевые платформы
+
+Первый эталонный путь — x86_64 UEFI в QEMU/OVMF. AArch64 и RISC-V — следующие порты. Elbrus/E2K остаётся отдельным архитектурным направлением без подтверждённых boot evidence. Поддержка Apple/Intel/AMD определяется конкретной архитектурой, прошивкой и платой, а не только производителем процессора.
+
+## Сборка и тесты
+
+Требуются C11-компилятор и Make. Запуск: <code>make test</code>, очистка: <code>make clean</code>.
+
+Тест проверяет переносимые программные инварианты. Он не заменяет QEMU/OVMF boot test, linker map, serial trace или проверку физической платы.
+
+## Документация
+
+- [OS Foundation](docs/OS_FOUNDATION.md)
+- [Boot information ABI](include/nun/boot_info.h)
+- [Boot manifest schema](spec/boot-info-v1.schema.json)
+- [System capability catalog](spec/system-capability-catalog.json)
+- [Capability composition](docs/architecture/capability-composition.md)
+
+## Лицензия
+
+В NUN отсутствует файл LICENSE, лицензия не объявлена. Перед распространением или включением кода других репозиториев необходимо отдельно проверить лицензионные условия каждого компонента.
 
 ---
 
-**NUN — спецификационная основа будущего минимального системного ядра.** Репозиторий фиксирует границы архитектуры, памяти, исполнения и передачи управления до начала полной реализации.
-
-## Целевые системные контракты
-
-- **Boot contract:** версионированный handoff от launcher, memory map и правила проверки.
-- **Architecture layer:** CPU entry, privilege transition, exception и interrupt vectors.
-- **Memory layer:** физические страницы, ранний allocator, виртуальная адресация и защита.
-- **Execution layer:** task/context model и явная синхронизация.
-- **Device boundary:** bus/driver interfaces без предположений о конкретной плате.
-- **Diagnostics:** ранний serial/framebuffer output и структурированный panic record.
-
-## Текущий статус
-
-В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. NUN **не является загружаемой ОС** и не предназначен для запуска на физическом оборудовании. Ни одна архитектура, включая Elbrus/E2K, не обозначена как проверенная.
-
-## План реализации и readiness gates
-
-| Этап | Необходимое доказательство |
-|---|---|
-| Architecture baseline | Определены CPU architecture, ABI и модель привилегий |
-| Boot contract | Версионированные handoff, memory map и правила проверки |
-| Reproducible build | Повторяемая сборка, linker map и проверка образа |
-| Emulator validation | Serial smoke test, exception/interrupt и memory tests |
-| Target qualification | Отдельная проверка конкретного процессора и платы |
-
-Первый этап с кодом должен включать минимальную сборку, linker map, serial smoke test и автоматическую проверку образа. Host-тесты не заменяют эмулятор и физическую платформу.
-
-## Контракт с NUNLauncher
-
-[NUNLauncher](https://github.com/bboroski/NUNLauncher) должен проверять kernel image и формировать handoff-данные. NUN обязан самостоятельно проверить полученный контекст до инициализации. Управление памятью, scheduler и драйверы относятся к ядру, а не к уровню launcher.
-
-## Экосистема и лицензия
-
-Связанные компоненты: [SAMBU](https://github.com/bboroski/SAMBU), [Kloz](https://github.com/bboroski/Kloz), [CO](https://github.com/bboroski/CO), [SaintSI](https://github.com/bboroski/SaintSI), [ReaperCripple](https://github.com/bboroski/ReaperCripple) и [NUNLauncher](https://github.com/bboroski/NUNLauncher).
-
-Файл <code>LICENSE</code> отсутствует; лицензия не объявлена. Определите условия до распространения.
-
----
-
-**Создано с любовью к системному программированию и людям.**
+**NUN — создано с любовью к системному программированию, надёжности и людям.**
