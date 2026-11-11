@@ -1,0 +1,26 @@
+name: NUN E2K native qualification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2k-native:
+    runs-on: [self-hosted, linux, e2k]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Verify E2K host and LCC
+        run: |
+          test "$(uname -m)" = "e2k"
+          command -v lcc
+          lcc --version
+      - name: Configure native NUN integration
+        run: cmake -S . -B .build-e2k -DCMAKE_C_COMPILER=lcc -DNUN_BUILD_TESTS=ON
+      - name: Build
+        run: cmake --build .build-e2k --parallel
+      - name: Test
+        run: ctest --test-dir .build-e2k --output-on-failure

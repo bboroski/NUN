@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-HOST%20RUNTIME-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-NOT%20BOOTABLE-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 
 ---
@@ -19,7 +19,7 @@
 
 ## Текущий статус
 
-В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. NUN **не является загружаемой ОС** и не предназначен для запуска на физическом оборудовании. Ни одна архитектура, включая Elbrus/E2K, не обозначена как проверенная.
+В `NUN` уже есть C runtime, интеграция модулей, CMake host-build и набор host-тестов для runtime, arena, platform и смежных контрактов. Это **пока не загружаемая ОС**: отсутствуют полноценный kernel boot path, architecture entry, linker scripts, page tables, interrupt entry, завершённая модель драйверов и подтверждённая загрузка на оборудовании. Добавлен ручной E2K workflow для native qualification; он требует self-hosted runner с LCC и не является доказательством успешного тестирования цели. Поддержка Windows `.exe` игр не реализована; целевая архитектура описана в [WINDOWS_PE_COMPATIBILITY.md](docs/WINDOWS_PE_COMPATIBILITY.md).
 
 ## План реализации и readiness gates
 

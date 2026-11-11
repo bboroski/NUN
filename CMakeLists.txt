@@ -41,7 +41,7 @@ target_link_libraries(NUN.Runtime
         NUN.CO
         NUN.SaintSI
         efmf
-        WDEP.PolicyCore
+        ToolNG.PolicyCore
 )
 if(MSVC)
     target_compile_options(NUN.Runtime PRIVATE /W4 /utf-8)
