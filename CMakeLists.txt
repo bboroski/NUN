@@ -9,6 +9,14 @@ endif()
 add_subdirectory(modules/ReaperCripple)
 add_subdirectory(modules/ToolNG)
 
+# ToolNG's pinned checkout contains the WDEP policy implementation in this
+# source file; include it in the policy-core target used by NUN.Runtime.
+if(TARGET ToolNG.PolicyCore)
+    target_sources(ToolNG.PolicyCore PRIVATE modules/ToolNG/src/sambu_engine.c)
+else()
+    message(FATAL_ERROR "ToolNG.PolicyCore target is required by NUN.Runtime")
+endif()
+
 add_library(NUN.Kloz STATIC
     modules/Kloz/src/arena.c
     modules/Kloz/src/budget.c
