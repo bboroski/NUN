@@ -1,0 +1,39 @@
+name: NUN QEMU kernel bring-up
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-and-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install boot and emulator tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc binutils grub-pc-bin grub-common xorriso qemu-system-x86
+      - name: Build Multiboot2 image
+        run: bash scripts/build-qemu.sh
+      - name: Boot in QEMU and verify diagnostics
+        shell: bash
+        run: |
+          set +e
+          timeout 8s qemu-system-x86_64 -machine q35 -m 512M \
+            -cdrom build/qemu/nun-qemu.iso -boot d -display none \
+            -serial stdio -monitor none -no-reboot -no-shutdown \
+            > build/qemu/serial.log 2>&1
+          status=$?
+          set -e
+          if [ "$status" -ne 124 ] && [ "$status" -ne 0 ]; then
+            cat build/qemu/serial.log
+            exit "$status"
+          fi
+          grep -F "NUN kernel: x86_64 entry reached" build/qemu/serial.log
+          grep -F "NUN: usable physical pages below 1 GiB:" build/qemu/serial.log
+          grep -F "NUN: physical page allocator probe:" build/qemu/serial.log
+          grep -F "NUN: IDT installed; PIC remapped; PIT configured" build/qemu/serial.log
+          grep -F "NUN: PIT interrupt received" build/qemu/serial.log

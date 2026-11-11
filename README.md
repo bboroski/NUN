@@ -28,10 +28,10 @@
 - Readiness gates для reproducible build, emulator і target qualification.
 
 ## Швидкий старт і перевірка
-Перевірте документацію та контракти репозиторію перед реалізацією; повний build/boot pipeline наразі не заявлено.
+Перший x86_64 Multiboot2 bring-up target збирається окремим скриптом: `bash scripts/build-qemu.sh`, запуск — `bash scripts/run-qemu.sh`. Автоматична перевірка завантаження й serial diagnostics виконується workflow `NUN QEMU kernel bring-up`.
 
 ## Архітектура, межі та достовірність
-NUN наразі не є завантажуваною ОС: немає підтвердженого kernel boot path або драйверного стека. Невдалі integration checks у відкритих PR не включені в main і не подаються як реалізовані функції.
+NUN має початковий x86_64 Multiboot2 boot path, ранню serial-консоль, обмежений physical-page bitmap allocator, IDT exception stubs і PIT IRQ0. Результат QEMU boot ще має бути підтверджений CI; це ранній bring-up, а не production-ready ОС. Повноцінний scheduler, SMP, ACPI, драйвери, VFS, мережа, userspace та GUI ще не реалізовані.
 
 ## Інтерфейс і візуальні матеріали
 
@@ -47,6 +47,8 @@ NUN наразі є специфікаційною основою ядра, а �
 
 ## Карта документації
 
+- [QEMU kernel bring-up](docs/QEMU_KERNEL_BRINGUP.md)
+- [OS subsystem ownership](docs/architecture/OS_SUBSYSTEM_OWNERSHIP.md)
 - [Композиція можливостей](docs/architecture/capability-composition.md)
 - [Інтеграція екосистеми](docs/ECOSYSTEM_INTEGRATION.md)
 - [Технічний борг і межі](docs/TECHNICAL_DEBT_REGISTER.md)
