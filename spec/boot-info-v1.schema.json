@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nun:boot-info-manifest:1",
+  "title": "NUN Boot Information Manifest v1",
+  "description": "Machine-readable description of the NUN boot handoff. Physical addresses are hexadecimal strings and are never JSON numbers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["magic", "abi_major", "abi_minor", "architecture", "kernel", "memory_map"],
+  "properties": {
+    "magic": { "const": "NUNBOOT1" },
+    "abi_major": { "const": 1 },
+    "abi_minor": { "type": "integer", "minimum": 0 },
+    "architecture": { "enum": ["x86_64", "aarch64", "riscv64", "e2k"] },
+    "flags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["uefi", "firmware-secure-boot-enabled", "acpi-present", "device-tree-present", "framebuffer-present", "initrd-present"] }
+    },
+    "kernel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["physical_base", "size_bytes", "entry_physical", "sha256"],
+      "properties": {
+        "physical_base": { "$ref": "#/$defs/physical_address" },
+        "size_bytes": { "type": "integer", "minimum": 1 },
+        "entry_physical": { "$ref": "#/$defs/physical_address" },
+        "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" }
+      }
+    },
+    "memory_map": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["base", "length_bytes", "type", "attributes"],
+        "properties": {
+          "base": { "$ref": "#/$defs/physical_address" },
+          "length_bytes": { "type": "integer", "minimum": 1 },
+          "type": { "enum": ["usable", "reserved", "acpi_reclaimable", "acpi_nvs", "mmio", "framebuffer", "bootloader_reclaimable", "kernel", "initrd"] },
+          "attributes": { "type": "integer", "minimum": 0, "maximum": 4294967295 }
+        }
+      }
+    },
+    "acpi_rsdp": { "$ref": "#/$defs/optional_address" },
+    "device_tree": { "$ref": "#/$defs/optional_address" },
+    "initrd": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["physical_base", "size_bytes"],
+      "properties": {
+        "physical_base": { "$ref": "#/$defs/optional_address" },
+        "size_bytes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "framebuffer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["physical_base", "byte_size", "width", "height", "pixels_per_scanline", "pixel_format"],
+      "properties": {
+        "physical_base": { "$ref": "#/$defs/optional_address" },
+        "byte_size": { "type": "integer", "minimum": 0 },
+        "width": { "type": "integer", "minimum": 0 },
+        "height": { "type": "integer", "minimum": 0 },
+        "pixels_per_scanline": { "type": "integer", "minimum": 0 },
+        "pixel_format": { "enum": ["none", "rgb565", "xrgb8888", "bgrx8888"] }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "string", "maxLength": 512 },
+        "version": { "type": "string", "maxLength": 128 },
+        "signature_verified": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "physical_address": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{1,16}$"
+    },
+    "optional_address": {
+      "oneOf": [
+        { "$ref": "#/$defs/physical_address" },
+        { "type": "null" }
+      ]
+    }
+  }
+}
