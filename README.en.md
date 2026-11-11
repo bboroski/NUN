@@ -13,9 +13,8 @@
 - Readiness gates for reproducible builds, emulator and target qualification.
 
 ## Quick start and verification
-```bash
-Review the specifications and contracts before implementation; a complete build/boot pipeline is not currently claimed.
-```
+
+This repository currently contains specifications and architecture contracts. Review the documents and readiness gates before implementation. An executable build/boot pipeline is not currently claimed.
 
 ## Architecture and verified scope
 NUN is not a bootable OS. A verified kernel boot path and driver stack are not present. Failed integration checks in open PRs are not part of main and are not represented as implemented features.
