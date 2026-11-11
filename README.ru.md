@@ -10,16 +10,14 @@
 
 ## Целевые системные контракты
 
-- **Boot contract:** версионированный handoff от launcher, карта памяти и правила проверки.
+- **Boot contract:** версионированный handoff от launcher, memory map и правила проверки.
 - **Architecture layer:** CPU entry, privilege transition, exception и interrupt vectors.
 - **Memory layer:** физические страницы, ранний allocator, виртуальная адресация и защита.
 - **Execution layer:** task/context model и явная синхронизация.
-- **Device boundary:** определённые bus/driver interfaces без предположений о конкретной плате.
-- **Diagnostics:** ранний serial/framebuffer output и структурированные panic records.
+- **Device boundary:** bus/driver interfaces без предположений о конкретной плате.
+- **Diagnostics:** ранний serial/framebuffer output и структурированный panic record.
 
 ## Текущий статус
-
-<badge>SPECIFICATION ONLY</badge>
 
 В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. NUN **не является загружаемой ОС** и не предназначен для запуска на физическом оборудовании. Ни одна архитектура, включая Elbrus/E2K, не обозначена как проверенная.
 
