@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
+<p align="center"><img src="https://img.shields.io/badge/STATUS-HOST%20TESTED%20CONTRACT-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-C11%20HANDOFF%20VALIDATOR-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 
 ---
@@ -19,7 +19,17 @@
 
 ## Текущий статус
 
-В репозитории пока нет исходного кода ядра, boot path, linker script, build system, драйверов или тестов. NUN **не является загружаемой ОС** и не предназначен для запуска на физическом оборудовании. Ни одна архитектура, включая Elbrus/E2K, не обозначена как проверенная.
+В репозитории появился первый host-tested C11 boot-info contract: версионированная handoff-структура и проверка архитектуры, границ kernel image, entry point и memory map. Это **ещё не загружаемая ОС**: architecture entry, linker script, boot path, scheduler, драйверы и bootable binary отсутствуют. E2K указан только как идентификатор целевой архитектуры в контракте, а не как подтверждённая поддержка.
+
+## Первый реализованный системный контракт
+
+```sh
+cmake -S . -B build -DBUILD_TESTING=ON
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure
+```
+
+`include/nun/boot_info.h` и `src/boot_info.c` проверяют handoff-метаданные без доступа к оборудованию, allocation, relocation или передачи управления на entry point. Это host-tested основа, а не kernel loader.
 
 ## План реализации и readiness gates
 
