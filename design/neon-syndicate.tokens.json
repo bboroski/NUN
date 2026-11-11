@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "brand": "NEON SYNDICATE",
+  "repository": "NUN",
+  "theme": "Cyberpunk / Industrial / Dystopian Noir",
+  "colors": {
+    "void_black": "#050505",
+    "warning_yellow": "#FCEE0A",
+    "system_red": "#FF003C",
+    "data_blue": "#00F0FF",
+    "interface_white": "#FFFFFF",
+    "carbon": "#0D1115",
+    "raised_carbon": "#11171C",
+    "muted": "#A6B2BC"
+  },
+  "typography": {
+    "headlines": [
+      "Orbitron",
+      "Rajdhani"
+    ],
+    "body": "Rajdhani",
+    "technical": [
+      "Roboto Mono",
+      "Share Tech Mono"
+    ],
+    "fallbacks": [
+      "Arial Narrow",
+      "Segoe UI",
+      "Consolas",
+      "monospace"
+    ]
+  },
+  "geometry": {
+    "panel": "chamfered",
+    "corner_cut_px": 16,
+    "grid_unit_px": 8,
+    "hex_pattern": true
+  },
+  "motion": {
+    "fast_ms": 120,
+    "standard_ms": 180,
+    "slow_ms": 260,
+    "reduced_motion": "disable non-essential motion"
+  },
+  "accessibility": {
+    "minimum_control_height_px": 40,
+    "touch_target_px": 44,
+    "focus": "#00F0FF",
+    "state_needs_label_or_icon": true
+  },
+  "preview_policy": "Vector art is a design/architecture preview, never a runtime screenshot."
+}
