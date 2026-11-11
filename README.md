@@ -66,8 +66,8 @@ NUN наразі є специфікаційною основою ядра, а �
 **Створено з любов'ю до інженерії, системності та людей.**
 
 
-## Kernel Architecture Explorer
+## Графічний інтерфейс Kernel Architecture Explorer
 
-The [NUN Architecture Explorer](docs/gui/index.html) and [1600×900 vector preview](docs/gui/preview.svg) provide a navigable view of boot, CPU, memory and execution contracts. **NUN remains a specification/documentation scaffold; this interface does not boot a kernel and is not evidence of a working operating system.**
+[Обозреватель архітектури NUN](docs/gui/index.html) та [векторне прев'ю 1600 × 900](docs/gui/preview.svg) надають навігацію за контрактами boot, CPU, memory та execution. **NUN залишається специфікаційним і документаційним каркасом: цей інтерфейс не завантажує ядро й не є доказом наявності робочої операційної системи.**
 
-The prototype is responsive, keyboard-operable and reduced-motion aware. See [capability composition](docs/architecture/capability-composition.md), [ecosystem integration](docs/ECOSYSTEM_INTEGRATION.md) and [technical debt register](docs/TECHNICAL_DEBT_REGISTER.md).
+Прототип адаптивний, підтримує клавіатурну навігацію та reduced motion. Дивіться [композицію можливостей](docs/architecture/capability-composition.md), [інтеграцію екосистеми](docs/ECOSYSTEM_INTEGRATION.md) та [реєстр технічного боргу](docs/TECHNICAL_DEBT_REGISTER.md).
