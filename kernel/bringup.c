@@ -5,6 +5,7 @@
 #define PAGE_SIZE 4096u
 #define MAX_TRACKED_PAGES (1024u * 1024u * 1024u / PAGE_SIZE)
 #define BITMAP_BYTES (MAX_TRACKED_PAGES / 8u)
+#define PIT_HZ 1000u
 #define MB2_TAG_END 0u
 #define MB2_TAG_MMAP 6u
 
@@ -79,20 +80,21 @@ static void pic_init(void) {
     outb(0x21,0x20); outb(0xa1,0x28);
     outb(0x21,0x04); outb(0xa1,0x02);
     outb(0x21,0x01); outb(0xa1,0x01);
+    /* Only IRQ0 is enabled until the other devices have handlers. */
     outb(0x21,0xfe); outb(0xa1,0xff);
 }
 static void pit_init(void) {
-    uint16_t divisor=(uint16_t)(1193182u/100u);
+    uint16_t divisor=(uint16_t)(1193182u/PIT_HZ);
     outb(0x43,0x36); outb(0x40,(uint8_t)divisor); outb(0x40,(uint8_t)(divisor>>8));
 }
 void interrupt_dispatch(struct interrupt_frame *frame) {
     if (frame->vector==32u) {
         ++pit_ticks;
-        if ((pit_ticks%100u)==0u) serial_write("NUN: PIT interrupt received (100 Hz)\n");
+        if ((pit_ticks%PIT_HZ)==0u) serial_write("NUN: PIT interrupt received (1000 Hz)\n");
         outb(0x20,0x20);
         return;
     }
-    serial_write("NUN: exception vector="); serial_hex(frame->vector);
+    serial_write("NUN: kernel exception vector="); serial_hex(frame->vector);
     serial_write(" error="); serial_hex(frame->error);
     serial_write(" rip="); serial_hex(frame->rip); serial_write("\n");
     halt_forever();
@@ -103,26 +105,29 @@ static void bit_clear(uint32_t page) { page_bitmap[page>>3] &= (uint8_t)~(1u<<(p
 static int bit_test(uint32_t page) { return (page_bitmap[page>>3]>>(page&7u))&1u; }
 static uint64_t pmm_init(uint32_t mbi) {
     for (size_t i=0;i<sizeof(page_bitmap);i++) page_bitmap[i]=0xffu;
-    if (!mbi) return 0;
+    if (!mbi || (uint64_t)mbi>=((uint64_t)MAX_TRACKED_PAGES*PAGE_SIZE)) return 0;
     uint32_t total=*(volatile uint32_t *)(uintptr_t)mbi;
+    if (total<16u || (uint64_t)mbi+(uint64_t)total>((uint64_t)MAX_TRACKED_PAGES*PAGE_SIZE)) return 0;
     uint32_t offset=8u;
     uint64_t kernel_first=(uint64_t)(uintptr_t)&__kernel_start/PAGE_SIZE;
     uint64_t kernel_last=((uint64_t)(uintptr_t)&__kernel_end+PAGE_SIZE-1u)/PAGE_SIZE;
     uint64_t mbi_first=(uint64_t)mbi/PAGE_SIZE;
     uint64_t mbi_last=((uint64_t)mbi+total+PAGE_SIZE-1u)/PAGE_SIZE;
-    while (offset+8u<=total) {
+    int mmap_seen=0;
+    while ((uint64_t)offset+8u<=total) {
         uint32_t *tag=(uint32_t *)(uintptr_t)(mbi+offset);
         uint32_t type=tag[0], size=tag[1];
-        if (size<8u || offset+size>total) break;
+        if (size<8u || (uint64_t)offset+size>total) return 0;
         if (type==MB2_TAG_MMAP && size>=16u) {
             uint32_t entry_size=*(uint32_t *)(uintptr_t)(mbi+offset+8u);
-            if (entry_size<24u) break;
-            for (uint32_t pos=offset+16u; pos+entry_size<=offset+size; pos+=entry_size) {
-                uint64_t base=*(uint64_t *)(uintptr_t)(mbi+pos);
-                uint64_t length=*(uint64_t *)(uintptr_t)(mbi+pos+8u);
-                uint32_t region_type=*(uint32_t *)(uintptr_t)(mbi+pos+16u);
-                if (region_type!=1u || length==0u || base+length<base) continue;
-                uint64_t first=(base+PAGE_SIZE-1u)/PAGE_SIZE;
+            if (entry_size<24u || entry_size>size-16u) return 0;
+            mmap_seen=1;
+            for (uint64_t pos=(uint64_t)offset+16u; pos+entry_size<=(uint64_t)offset+size; pos+=entry_size) {
+                uint64_t base=*(uint64_t *)(uintptr_t)(mbi+(uint32_t)pos);
+                uint64_t length=*(uint64_t *)(uintptr_t)(mbi+(uint32_t)pos+8u);
+                uint32_t region_type=*(uint32_t *)(uintptr_t)(mbi+(uint32_t)pos+16u);
+                if (region_type!=1u || !length || base+length<base) continue;
+                uint64_t first=base/PAGE_SIZE+((base%PAGE_SIZE)!=0u);
                 uint64_t last=(base+length)/PAGE_SIZE;
                 if (first<256u) first=256u;
                 if (last>MAX_TRACKED_PAGES) last=MAX_TRACKED_PAGES;
@@ -133,8 +138,9 @@ static uint64_t pmm_init(uint32_t mbi) {
             }
         }
         if (type==MB2_TAG_END) break;
-        offset=(offset+size+7u)&~7u;
+        offset=(uint32_t)(((uint64_t)offset+size+7u)&~7ull);
     }
+    if (!mmap_seen) return 0;
     uint64_t free_pages=0;
     for (uint32_t p=256u;p<MAX_TRACKED_PAGES;p++) if (!bit_test(p)) ++free_pages;
     return free_pages;
@@ -145,6 +151,40 @@ static uintptr_t pmm_alloc_page(void) {
     }
     return 0;
 }
+static int pmm_self_test(void) {
+    volatile uint64_t *page=(volatile uint64_t *)pmm_alloc_page();
+    if (!page) return 0;
+    for (size_t i=0;i<PAGE_SIZE/sizeof(uint64_t);i++)
+        page[i]=0x4e554e5041474500ull^(uint64_t)i;
+    for (size_t i=0;i<PAGE_SIZE/sizeof(uint64_t);i++)
+        if (page[i]!=(0x4e554e5041474500ull^(uint64_t)i)) return 0;
+    for (size_t i=0;i<PAGE_SIZE/sizeof(uint64_t);i++) page[i]=0;
+    return 1;
+}
+static int command_is(const char *line,size_t length,const char *word) {
+    size_t i=0;
+    while (word[i]) { if (i>=length || line[i]!=word[i]) return 0; ++i; }
+    return i==length;
+}
+/* Serial RX is polled after each timer wake until a UART IRQ handler exists. */
+static void serial_poll(void) {
+    static char line[16];
+    static size_t length;
+    while (inb(COM1+5)&1u) {
+        char c=(char)inb(COM1);
+        if (c=='\r' || c=='\n') {
+            if (command_is(line,length,"ping")) serial_write("NUN: pong\n");
+            else if (command_is(line,length,"help")) serial_write("NUN serial commands: ping, help\n");
+            else if (length) serial_write("NUN: unknown command; send help\n");
+            length=0;
+        } else if ((c=='\b' || (uint8_t)c==0x7fu) && length) {
+            --length;
+        } else if ((uint8_t)c>=0x20u && (uint8_t)c<=0x7eu) {
+            if (length<sizeof(line)) line[length++]=c;
+            else length=0;
+        }
+    }
+}
 
 void kernel_main(uint32_t mbi) {
     serial_init();
@@ -152,13 +192,20 @@ void kernel_main(uint32_t mbi) {
     serial_write("NUN: Multiboot2 info at "); serial_hex(mbi); serial_write("\n");
     uint64_t free_pages=pmm_init(mbi);
     serial_write("NUN: usable physical pages below 1 GiB: "); serial_hex(free_pages); serial_write("\n");
-    uintptr_t page=pmm_alloc_page();
-    serial_write("NUN: physical page allocator probe: "); serial_hex(page); serial_write("\n");
+    if (!free_pages || !pmm_self_test()) {
+        serial_write("NUN: physical memory self-test FAILED\n");
+        halt_forever();
+    }
+    serial_write("NUN: physical memory self-test passed\n");
     idt_init();
     pic_init();
     pit_init();
-    serial_write("NUN: IDT installed; PIC remapped; PIT configured\n");
-    serial_write("NUN: enabling interrupts\n");
+    serial_write("NUN: IDT installed; PIC remapped; PIT configured at 1000 Hz\n");
+    serial_write("NUN Kernel Ready\n");
+    serial_write("NUN serial console: send ping or help\n");
     __asm__ volatile ("sti");
-    halt_forever();
+    for (;;) {
+        __asm__ volatile ("hlt");
+        serial_poll();
+    }
 }
