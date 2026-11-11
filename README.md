@@ -1,7 +1,9 @@
 <!-- Title: NUN — minimal kernel substrate and C11 system integration -->
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="Логотип NUN" width="76"></p>
 
-# NUN — системна основа ядра та C11 runtime composition
+# NUN
+
+> **Visual identity:** Duck Black / Yellow — accent `#FFD600`, primary ink `#111111`.
 
 [![CI](https://github.com/bboroski/NUN/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bboroski/NUN/actions/workflows/ci.yml)
 
