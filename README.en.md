@@ -32,7 +32,7 @@ NUN is not a bootable OS. A verified kernel boot path and driver stack are not p
 Each repository retains its canonical name, code, APIs, release lifecycle and ownership boundaries. Integration means versioned contracts, not automatic merging of independent runtimes.
 
 ## Design and documentation
-The shared interface direction is **Duck Black / Yellow**: dark surfaces, yellow accents for actions and state, readable typography, accessible contrast, keyboard navigation and reduced-motion support. See [design/DUCK_UI_SYSTEM.md](design/DUCK_UI_SYSTEM.md) when present.
+The shared ecosystem interface direction is **Duck Black / Yellow**: dark surfaces, yellow accents, readable typography, accessible contrast, keyboard navigation and reduced-motion support. This is a visual guideline for documentation and future tools, not a claim that NUN already includes a GUI.
 
 ## License
 License not declared; no LICENSE file is present.
