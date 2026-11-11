@@ -1,48 +1,41 @@
 <p align="center"><img src="assets/duck-ui/duck-mark.svg" alt="NUN mark" width="92"></p>
 <h1 align="center">NUN</h1>
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
-<p align="center"><img src="https://img.shields.io/badge/STATUS-SPECIFICATION%20ONLY-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/IMPLEMENTATION-DOCUMENTATION%20SCAFFOLD-FFD600?style=for-the-badge&labelColor=111111"><img src="https://img.shields.io/badge/LICENSE-NOT%20DECLARED-FFD600?style=for-the-badge&labelColor=111111"></p>
+<p align="center"><strong>Specification only · documentation scaffold</strong></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
 
----
+> **NUN** — NUN is a specification foundation for a future minimal system kernel, defining architecture, boot, memory and execution contracts.
 
-**NUN is the specification foundation for a future minimal system kernel.** The repository defines architecture, memory, execution, and handoff boundaries before a complete implementation begins.
+## Current capabilities
+- Versioned boot handoff contract with NUNLauncher.
+- Architecture layer for CPU entry, privilege transitions, exceptions and interrupt vectors.
+- Memory model, early allocation, virtual addressing and protection requirements.
+- Readiness gates for reproducible builds, emulator and target qualification.
 
-## Target system contracts
+## Quick start and verification
+```bash
+Review the specifications and contracts before implementation; a complete build/boot pipeline is not currently claimed.
+```
 
-- **Boot contract:** versioned launcher handoff, memory map, and validation rules.
-- **Architecture layer:** CPU entry, privilege transition, exception, and interrupt vectors.
-- **Memory layer:** physical pages, early allocator, virtual addressing, and protection.
-- **Execution layer:** task/context model and explicit synchronization.
-- **Device boundary:** bus/driver interfaces without assumptions about a specific board.
-- **Diagnostics:** early serial/framebuffer output and structured panic records.
+## Architecture and verified scope
+NUN is not a bootable OS. A verified kernel boot path and driver stack are not present. Failed integration checks in open PRs are not part of main and are not represented as implemented features.
 
-## Current status
+## Engineering quality
+- Run the checks appropriate to the target platform; host CI is not hardware qualification.
+- Mark capabilities as implemented, partial or planned according to code, tests and evidence.
+- A mockup, specification or open pull request is not proof of a production-ready feature.
+- External integrations must be explicit, versioned, isolated and testable.
 
-The repository currently contains no kernel source, boot path, linker script, build system, drivers, or tests. NUN is **not a bootable OS** and is not intended to run on physical hardware. No architecture, including Elbrus/E2K, is marked as verified.
+## NUN Mesh and related repositories
+[SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUN](https://github.com/bboroski/NUN) · [NUNLauncher](https://github.com/bboroski/NUNLauncher) · [Fragile-Baby](https://github.com/bboroski/Fragile-Baby) · [Luci](https://github.com/bboroski/Luci)
 
-## Implementation plan and readiness gates
+Each repository retains its canonical name, code, APIs, release lifecycle and ownership boundaries. Integration means versioned contracts, not automatic merging of independent runtimes.
 
-| Stage | Required evidence |
-|---|---|
-| Architecture baseline | CPU architecture, ABI, and privilege model are defined |
-| Boot contract | Versioned handoff, memory map, and validation rules |
-| Reproducible build | Repeatable build, linker map, and image validation |
-| Emulator validation | Serial smoke test, exception/interrupt, and memory tests |
-| Target qualification | Separate verification on the specific CPU and board |
+## Design and documentation
+The shared interface direction is **Duck Black / Yellow**: dark surfaces, yellow accents for actions and state, readable typography, accessible contrast, keyboard navigation and reduced-motion support. See [design/DUCK_UI_SYSTEM.md](design/DUCK_UI_SYSTEM.md) when present.
 
-The first code milestone must deliver a minimal build, linker map, serial smoke test, and automated image validation. Host tests do not replace emulator or physical-platform validation.
-
-## NUNLauncher contract
-
-[NUNLauncher](https://github.com/bboroski/NUNLauncher) is expected to validate the kernel image and prepare handoff data. NUN must validate the received context independently before initialization. Memory management, the scheduler, and drivers belong to the kernel, not the launcher layer.
-
-## Ecosystem and license
-
-Related components: [SAMBU](https://github.com/bboroski/SAMBU), [Kloz](https://github.com/bboroski/Kloz), [CO](https://github.com/bboroski/CO), [SaintSI](https://github.com/bboroski/SaintSI), [ReaperCripple](https://github.com/bboroski/ReaperCripple), and [NUNLauncher](https://github.com/bboroski/NUNLauncher).
-
-No <code>LICENSE</code> file is present; no license is declared. Define the terms before redistribution.
+## License
+License not declared; no LICENSE file is present.
 
 ---
-
-**Built with love for systems programming and people.**
+**Built with care for engineering, clarity and people.**
