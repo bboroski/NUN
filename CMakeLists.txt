@@ -8,6 +8,7 @@ if(NOT NUN_BUILD_TESTS)
 endif()
 add_subdirectory(modules/ReaperCripple)
 add_subdirectory(modules/ToolNG)
+add_subdirectory(modules/NUNLauncher)
 
 add_library(NUN.Kloz STATIC
     modules/Kloz/src/arena.c
@@ -58,6 +59,19 @@ else()
     target_compile_options(NUN.BootContract PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wshadow)
 endif()
 
+# Host-side admission adapter: translate NUN memory/architecture metadata into
+# NUNLauncher's independently versioned image-header validation contract.
+# This is not linked into the freestanding kernel or a firmware boot path.
+add_library(NUN.BootAdmission STATIC src/integrations/nunlauncher.c)
+target_include_directories(NUN.BootAdmission PUBLIC include)
+target_link_libraries(NUN.BootAdmission PUBLIC NUN.BootContract NUNLauncher.Contract)
+target_compile_features(NUN.BootAdmission PUBLIC c_std_11)
+if(MSVC)
+    target_compile_options(NUN.BootAdmission PRIVATE /W4 /utf-8)
+else()
+    target_compile_options(NUN.BootAdmission PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wshadow)
+endif()
+
 if(NUN_BUILD_TESTS)
     enable_testing()
 
@@ -67,6 +81,10 @@ if(NUN_BUILD_TESTS)
         target_compile_options(NUN.BootInfoTests PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wshadow)
     endif()
     add_test(NAME nun_boot_info_contract COMMAND NUN.BootInfoTests)
+
+    add_executable(NUN.BootAdmissionTests tests/test_boot_admission.c)
+    target_link_libraries(NUN.BootAdmissionTests PRIVATE NUN.BootAdmission)
+    add_test(NAME nun_boot_admission_adapter COMMAND NUN.BootAdmissionTests)
 
     add_executable(NUN.RuntimeTests tests/runtime_tests.c)
     target_link_libraries(NUN.RuntimeTests PRIVATE NUN.Runtime)
@@ -105,4 +123,4 @@ if(NUN_BUILD_TESTS)
     add_test(NAME nun_saintsi_compat_tests COMMAND NUN.SaintSICompatTests)
 endif()
 
-message(STATUS "NUN integrates seven pinned source repositories. This host build is not a bootable OS image.")
+message(STATUS "NUN integrates pinned source repositories. Host integration is not a bootable OS image.")

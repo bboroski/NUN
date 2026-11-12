@@ -1,0 +1,49 @@
+{
+  "schema_version": "nun.ecosystem.pins.v1",
+  "repositories": [
+    {
+      "name": "NUNLauncher",
+      "path": "modules/NUNLauncher",
+      "url": "https://github.com/bboroski/NUNLauncher",
+      "commit": "4a3142bdf94a939590218a7181b61c11e2084ed0",
+      "integration": "host C11 image-admission contract",
+      "license_status": "No root LICENSE found; retain upstream notices and review before redistribution",
+      "build_target": "NUNLauncher.Contract",
+      "runtime": "host-only; no firmware handoff"
+    },
+    {
+      "name": "Luci",
+      "path": "modules/Luci",
+      "url": "https://github.com/bboroski/Luci",
+      "commit": "ff9568d2d0082d858e2220f326f88299f07f6d37",
+      "integration": "read-only Python registry and contract validation",
+      "license_status": "No root LICENSE found; review before redistribution",
+      "runtime": "host-only; never linked into kernel"
+    },
+    {
+      "name": "Fragile-Baby",
+      "path": "modules/Fragile-Baby",
+      "url": "https://github.com/bboroski/Fragile-Baby",
+      "commit": "37a2bad53c83019173ef6f774bfa539a58b58fc7",
+      "integration": "E2K evidence advisor and tests",
+      "license_status": "No root LICENSE found; review before redistribution",
+      "runtime": "research-only; no ISA backend or target qualification claimed"
+    },
+    {
+      "name": "Hellduck",
+      "path": "federation/Hellduck",
+      "url": "https://github.com/bboroski/Hellduck",
+      "commit": "9920ef3cafd0b24e32eb77ec32929d2175173180",
+      "integration": "offline federation metadata validation",
+      "license_status": "No root LICENSE found; metadata validator only; review before redistribution",
+      "runtime": "host-side metadata only; never boot-critical"
+    }
+  ],
+  "invariants": [
+    "Every external repository is pinned to an immutable commit through a Git submodule gitlink.",
+    "No host-side Python tool is linked into or required by the freestanding kernel.",
+    "NUNLauncher admission validates metadata and ranges only; it does not authenticate publishers or execute images.",
+    "Fragile-Baby evidence is research metadata and does not qualify physical E2K hardware.",
+    "Hellduck metadata is advisory and does not grant execution or update authority."
+  ]
+}
