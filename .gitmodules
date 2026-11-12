@@ -19,3 +19,15 @@
 [submodule "modules/Klipot"]
 	path = modules/Klipot
 	url = https://github.com/bboroski/Klipot.git
+[submodule "modules/NUNLauncher"]
+	path = modules/NUNLauncher
+	url = https://github.com/bboroski/NUNLauncher.git
+[submodule "modules/Luci"]
+	path = modules/Luci
+	url = https://github.com/bboroski/Luci.git
+[submodule "modules/Fragile-Baby"]
+	path = modules/Fragile-Baby
+	url = https://github.com/bboroski/Fragile-Baby.git
+[submodule "federation/Hellduck"]
+	path = federation/Hellduck
+	url = https://github.com/bboroski/Hellduck.git
