@@ -1,0 +1,14 @@
+name: NUN bounded event history
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bounded-event-history:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run fixed-capacity ledger contract
+        run: cc -std=c11 -Wall -Wextra -Werror -pedantic -Iinclude tests/test_fault_history.c -o /tmp/event-history-test && /tmp/event-history-test
