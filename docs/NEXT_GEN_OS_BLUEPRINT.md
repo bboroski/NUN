@@ -88,7 +88,8 @@ All public contracts require a version, compatibility statement, schema/header, 
 - Consolidate boot metadata without silently merging the independent boot paths.
 - Add architecture-neutral kernel interfaces and explicit x86_64 implementation.
 - Implement memory map normalization, physical allocator tests, virtual memory mapping and page-fault diagnostics.
-- Add timer abstraction, interrupt controller abstraction and a minimal preemptive single-core scheduler.
+- Add a deterministic fixed-capacity scheduling policy core with priority, quantum, round-robin tie-breaking and optional aging; keep it host-tested until kernel context switching is ready.
+- Integrate timer-driven preemption only after context-switch assembly, per-task stacks, interrupt-frame ownership and FPU/SIMD state handling are implemented and tested.
 - Establish QEMU regression tests and serial-log artifacts.
 
 ### Phase 2 — Process and isolation foundation
@@ -176,7 +177,7 @@ A requirement is complete only when all applicable evidence exists:
 1. Make the requirement registry machine-readable and traceable to IDs 1–666.
 2. Complete the NUN subsystem ownership and dependency graph.
 3. Establish kernel interfaces for memory, interrupts, timers, scheduling, processes and devices.
-4. Build the first testable scheduler and user-mode transition on x86_64.
+4. Build the first testable scheduler policy core, then integrate it with a separately tested x86_64 context-switch and user-mode transition.
 5. Keep PQC, NPU, spatial desktop, broad compatibility and autonomous agents behind explicit capability gates until their prerequisites exist.
 
 **North star:** one coherent OS, many independently testable subsystems, explicit contracts, no fabricated readiness claims.
