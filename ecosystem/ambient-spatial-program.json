@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "program": "NUN Ambient Intelligence OS",
+  "status": "proposal",
+  "target_repositories": [
+    "NUN", "NUNLauncher", "Kloz", "CO", "SaintSI", "SAMBU",
+    "Luci", "Klipot", "ToolNG", "Hellduck", "ReaperCripple", "Fragile-Baby"
+  ],
+  "proposed_product": "STaas",
+  "items_per_repository_target": 666,
+  "workstreams_per_repository": 18,
+  "items_per_workstream": 37,
+  "total_target_items": 7992,
+  "maturity_states": [
+    "proposed", "specified", "implemented", "tested", "integrated", "hardware-qualified"
+  ],
+  "workstreams": [
+    "context-event-model",
+    "notification-lifecycle",
+    "emergency-provenance-expiry",
+    "media-session-integration",
+    "clock-calendar-context-providers",
+    "widget-component-contracts",
+    "spatial-coordinate-model",
+    "image-frame-buffer-pipeline",
+    "camera-sensor-capabilities",
+    "lighting-photometric-analysis",
+    "reflection-surface-cues",
+    "material-object-metadata",
+    "scene-graph-geometry",
+    "optional-3d-reconstruction",
+    "privacy-permission-boundaries",
+    "resource-limits-degraded-mode",
+    "diagnostics-simulation-evidence",
+    "federation-packaging-compatibility"
+  ],
+  "safety_invariants": [
+    "missing_or_stale_emergency_data_is_never_rendered_as_clear",
+    "camera_access_is_explicit_visible_and_revocable",
+    "no_face_identification_or_covert_capture",
+    "kernel_has_no_dependency_on_ui_ai_or_cloud_services",
+    "all_queues_and_payloads_are_bounded",
+    "hardware_capabilities_must_be_discovered_and_qualified"
+  ]
+}
