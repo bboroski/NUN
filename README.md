@@ -3,8 +3,23 @@
 <p align="center"><strong>Minimal Kernel Substrate</strong></p>
 <p align="center"><img src="https://img.shields.io/badge/STATUS-EARLY%20x86_64%20KERNEL%20BRING--UP%20%C2%B7%20NOT%20A%20COMPLETE%20OS-FFD600?style=for-the-badge&labelColor=111111" alt="Early x86_64 kernel bring-up · not a complete OS"></p>
 <p align="center"><a href="README.md">🇺🇦 Українська</a> · <a href="README.en.md">🇬🇧 English</a> · <a href="README.ru.md">🇷🇺 Русский</a></p>
-<sub>Оновлено: 2026-11-12</sub>
+<sub>Оновлено: 2026-11-11</sub>
 
+
+## Навігація
+
+- [Поточні можливості](#поточні-можливості)
+- [Швидкий старт і перевірка](#швидкий-старт-і-перевірка)
+- [Додатковий Limine boot target](#додатковий-limine-boot-target)
+- [Архітектура, межі та достовірність](#архітектура-межі-та-достовірність)
+- [Інтерфейс і візуальні матеріали](#інтерфейс-і-візуальні-матеріали)
+- [Інженерна якість](#інженерна-якість)
+- [Карта документації](#карта-документації)
+- [NUN Mesh та пов'язані репозиторії](#nun-mesh-та-повязані-репозиторії)
+- [Дизайн і документація](#дизайн-і-документація)
+- [Ліцензія](#ліцензія)
+
+> **NUN** — NUN — специфікаційна основа майбутнього мінімального системного ядра. Репозиторій визначає архітектурні, boot, memory та execution contracts.
 
 ## Поточні можливості
 - Boot contract і versioned handoff від NUNLauncher.
@@ -27,6 +42,24 @@
 ## Архітектура, межі та достовірність
 NUN має ранній x86_64 Multiboot2 boot path із serial-консоллю, обмеженим physical-page bitmap allocator, IDT exception stubs і PIT IRQ0. Додатковий незалежний Limine target формує BIOS/UEFI ISO та перевіряє початковий kernel entry у QEMU. Ці два bring-up paths залишаються окремими; повноцінний scheduler, SMP, ACPI, драйвери, VFS, мережа, userspace та GUI ще не реалізовані.
 
+## Інтерфейс і візуальні матеріали
+
+NUN наразі є специфікаційною основою ядра, а не графічним застосунком. GUI-скриншотів немає; зображення нижче демонструє лише спільну візуальну мову документації Duck Black / Yellow.
+
+<p align="center"><img src="assets/duck-ui/duck-ui-preview.svg" alt="Спільний дизайн Duck Black Yellow; не інтерфейс NUN" width="960"></p>
+
+
+
+### Версіонований boot-info контракт
+
+Додатково реалізовано host-tested C11 контракт передачі boot-метаданих: `include/nun/boot_info.h` та `src/boot_info.c` перевіряють версію структури, ідентифікатор архітектури, межі образу ядра, entry point і карту пам’яті. Це перевірка вхідних даних; вона не замінює завантажувач, перехід до ядра, тестування в емуляторі чи кваліфікацію на цільовому обладнанні.
+
+```sh
+cmake -S . -B build -DNUN_BUILD_TESTS=ON
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure
+```
+
 ## Інженерна якість
 - Перевіряйте збірку й тести саме для цільової платформи; host CI не замінює hardware qualification.
 - Статуси **implemented**, **partial**, **planned** мають підтверджуватися кодом, тестами та документацією.
@@ -44,24 +77,24 @@ NUN має ранній x86_64 Multiboot2 boot path із serial-консоллю
 - [Інтеграція екосистеми](docs/ECOSYSTEM_INTEGRATION.md)
 - [Технічний борг і межі](docs/TECHNICAL_DEBT_REGISTER.md)
 
+## NUN Mesh та пов'язані репозиторії
+[SAMBU](https://github.com/bboroski/SAMBU) · [ToolNG](https://github.com/bboroski/ToolNG) · [ReaperCripple](https://github.com/bboroski/ReaperCripple) · [Kloz](https://github.com/bboroski/Kloz) · [CO](https://github.com/bboroski/CO) · [SaintSI](https://github.com/bboroski/SaintSI) · [Klipot](https://github.com/bboroski/Klipot) · [NUN](https://github.com/bboroski/NUN) · [NUNLauncher](https://github.com/bboroski/NUNLauncher)
+
+Репозиторії зберігають власні назви, код, API, цикли випуску та межі відповідальності. Інтеграція означає узгоджені контракти, а не автоматичне злиття незалежних runtime.
+
+## Дизайн і документація
+Базовий інтерфейсний напрям екосистеми — **Duck Black / Yellow**: чорні поверхні, жовті акценти, читабельна типографіка, доступний контраст, клавіатурна навігація та підтримка reduced motion. Це візуальна рекомендація для документації й майбутніх інструментів, а не твердження про наявність GUI в NUN.
+
 ## Ліцензія
 Ліцензію не оголошено; файл LICENSE відсутній.
 
 ---
+**Створено з любов'ю до інженерії, системності та людей.**
 
-## Статус інтеграцій
+## Федерація Hellduck
 
-- Репозиторій зберігає власні API, збірку, тести та цикл випуску; міжпроєктна взаємодія відбувається через явні версіоновані контракти.
-- STaas (SaaS integration control plane) і MoonTreach (CI/test acceleration) розвиваються окремими Pull Requests. Їх не слід вважати можливостями `main` або production-ready до злиття та проходження обов'язкових перевірок.
-- Правила федерації та інтеграції: [Hellduck Integration Playbook](https://github.com/bboroski/Hellduck/blob/main/docs/INTEGRATION_PLAYBOOK.md).
+Цей репозиторій входить до федерації [Hellduck](https://github.com/bboroski/Hellduck) — спільного каталогу проєктів, контрактних зв’язків і станів інтеграції. Вихідний код, API, тести та цикл випуску залишаються відповідальністю цього репозиторію; Hellduck індексує зв’язки й не завантажує та не виконує код учасників. Практичні сценарії взаємодії, типи адаптерів і межі сумісності: [Integration Playbook](https://github.com/bboroski/Hellduck/blob/main/docs/INTEGRATION_PLAYBOOK.md).
 
-## Інженерний стандарт
-Індекс аудиту, тестових воріт, безпеки, супроводу та критеріїв інтеграції: [Engineering Improvement Index](docs/ENGINEERING_IMPROVEMENT_INDEX.md).
+## Engineering improvement index
 
-## Інтеграційні межі
-Зберігайте незалежні API, runtime та цикли випуску; інтегруйте через версіоновані контракти. [Hellduck Integration Playbook](https://github.com/bboroski/Hellduck/blob/main/docs/INTEGRATION_PLAYBOOK.md).
-
----
-**「在天愿作比翼鸟，在地愿为连理枝。」**
-
-*«У небі — птахами-нерозлучниками, на землі — гілками одного дерева».*
+[Repository-specific engineering roadmap and verification boundaries](docs/ENGINEERING_IMPROVEMENT_INDEX.md).
