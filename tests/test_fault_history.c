@@ -23,7 +23,7 @@ int main(void)
             7u, 0u, 1000u, NUN_FAULT_FLAG_OBSERVED, 0u) == 1);
     assert(ledger.count == NUN_FAULT_CAPACITY && ledger.dropped == 5u);
     count = nun_fault_history_snapshot(&ledger, rows, NUN_FAULT_CAPACITY);
-    assert(count == NUN_FAULT_CAPACITY && rows[0].sequence == 8u);
+    assert(count == NUN_FAULT_CAPACITY && rows[0].sequence == 6u);
     puts("bounded event history tests passed");
     return 0;
 }
