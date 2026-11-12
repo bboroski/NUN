@@ -54,6 +54,34 @@ static void aging_and_clock_guard(void)
     assert(d.task_id == 1u && d.effective_priority == 7u);
     assert(nun_scheduler_pick_next(&s, 6u, &d) == NUN_SCHEDULER_ECLOCK);
 }
+static void invalid_transitions_and_inputs(void)
+{
+    nun_scheduler_t s;
+    nun_schedule_decision_t d;
+    nun_scheduler_task_state_t state;
+
+    assert(nun_scheduler_init(&s, 3u, 0u) == NUN_SCHEDULER_OK);
+    assert(nun_scheduler_add_task(&s, 0u, 1u, 0u) == NUN_SCHEDULER_EINVAL);
+    assert(nun_scheduler_add_task(&s, 1u, 8u, 0u) == NUN_SCHEDULER_EINVAL);
+    assert(nun_scheduler_wake(&s, 1u, 0u) == NUN_SCHEDULER_ENOTFOUND);
+    assert(nun_scheduler_yield(&s, 1u, 0u) == NUN_SCHEDULER_ENOTFOUND);
+    assert(nun_scheduler_pick_next(&s, 0u, &d) == NUN_SCHEDULER_ENO_RUNNABLE);
+
+    assert(nun_scheduler_add_task(&s, 1u, 2u, 1u) == NUN_SCHEDULER_OK);
+    assert(nun_scheduler_wake(&s, 1u, 1u) == NUN_SCHEDULER_ESTATE);
+    assert(nun_scheduler_yield(&s, 1u, 1u) == NUN_SCHEDULER_ESTATE);
+    assert(nun_scheduler_pick_next(&s, 1u, &d) == NUN_SCHEDULER_OK);
+    assert(d.task_id == 1u);
+    assert(nun_scheduler_wake(&s, 1u, 2u) == NUN_SCHEDULER_ESTATE);
+    assert(nun_scheduler_query_task(&s, 1u, &state) == NUN_SCHEDULER_OK);
+    assert(state == NUN_TASK_RUNNING);
+
+    assert(nun_scheduler_terminate(&s, 1u, 0u) == NUN_SCHEDULER_ECLOCK);
+    assert(nun_scheduler_query_task(&s, 1u, &state) == NUN_SCHEDULER_OK);
+    assert(state == NUN_TASK_RUNNING);
+    assert(nun_scheduler_terminate(&s, 1u, 2u) == NUN_SCHEDULER_OK);
+    assert(nun_scheduler_pick_next(&s, 2u, &d) == NUN_SCHEDULER_ENO_RUNNABLE);
+}
 static void fixed_capacity(void)
 {
     nun_scheduler_t s; nun_schedule_decision_t d; uint32_t i;
@@ -70,6 +98,6 @@ int main(void)
     assert(nun_scheduler_init(NULL, 1u, 0u) == NUN_SCHEDULER_EINVAL);
     assert(nun_scheduler_init(&s, 0u, 0u) == NUN_SCHEDULER_EINVAL);
     priority_quantum(); round_robin_yield(); block_wake_terminate();
-    aging_and_clock_guard(); fixed_capacity();
+    aging_and_clock_guard(); invalid_transitions_and_inputs(); fixed_capacity();
     return 0;
 }
