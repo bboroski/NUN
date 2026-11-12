@@ -1,0 +1,59 @@
+{
+  "schema_version": "moontreach.repository.v1",
+  "repository": "bboroski/NUN",
+  "always_run": [
+    "host-tests"
+  ],
+  "fallback_on_unmapped": true,
+  "full_suite_on_merge_group": true,
+  "max_changed_files": 250,
+  "commands": {
+    "host-tests": {
+      "argv": [
+        "make",
+        "test"
+      ],
+      "timeout_seconds": 1200
+    }
+  },
+  "rules": [
+    {
+      "id": "kernel-and-build-contracts",
+      "paths": [
+        "**/*.c",
+        "**/*.h",
+        "**/*.cpp",
+        "**/*.hpp",
+        "**/*.S",
+        "**/*.s",
+        "**/*.cmake",
+        "**/CMakeLists.txt",
+        "CMakeLists.txt",
+        "Makefile",
+        "**/Makefile",
+        "**/*.ld",
+        "**/*.mk",
+        "**/*.json",
+        "**/*.py"
+      ],
+      "checks": [
+        "host-tests"
+      ]
+    },
+    {
+      "id": "docs-and-workflows",
+      "paths": [
+        "docs/**",
+        "README*",
+        ".github/**",
+        "moontreach.json"
+      ],
+      "checks": [
+        "host-tests"
+      ]
+    }
+  ],
+  "fallback_checks": [
+    "host-tests"
+  ]
+}
