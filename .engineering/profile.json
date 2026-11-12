@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "standard_id": "PERSONA-ENG-STD",
+  "repository": "bboroski/NUN",
+  "project": {
+    "domain": "Minimal x86_64 kernel substrate and boot contracts",
+    "mission": "Develop an early kernel bring-up foundation with explicit architecture, boot, memory, execution, and device boundaries.",
+    "maturity": "early-x86_64-kernel-bring-up-not-complete-os"
+  },
+  "architecture": {
+    "preserve_existing_boundaries": true,
+    "primary_technologies": [
+      "C/C++ kernel substrate",
+      "x86_64",
+      "Multiboot2 boot path",
+      "separate Limine BIOS/UEFI target",
+      "QEMU validation"
+    ],
+    "explicit_non_goals": [
+      "Not a complete operating system",
+      "Do not merge Multiboot2 and Limine paths without explicit design and evidence",
+      "Scheduler, SMP, ACPI, drivers, VFS, networking, userspace, and GUI are not implied to exist"
+    ]
+  },
+  "safety_boundaries": [
+    "Keep boot paths and their memory/entry contracts distinct until an explicit integration is qualified.",
+    "Host builds and QEMU smoke tests are not physical-hardware qualification.",
+    "USB/image writing is destructive and must retain exact-device confirmation and safety checks.",
+    "Do not claim unimplemented OS subsystems or target support."
+  ],
+  "native_validation": {
+    "status": "defined",
+    "commands": [
+      "make test",
+      "bash scripts/build-qemu.sh"
+    ],
+    "evidence_note": "QEMU/BIOS/UEFI checks are emulator evidence; physical-target qualification is a separate gate."
+  },
+  "required_gates": [
+    "profile-validation",
+    "native-project-checks",
+    "architecture-and-compatibility-review",
+    "security-and-privacy-review",
+    "documentation-review",
+    "human-review",
+    "target-qualification-when-applicable"
+  ],
+  "merge_policy": {
+    "pull_request_required": true,
+    "direct_main_push_policy": "enforce-with-branch-rules",
+    "bypass_required_checks": false,
+    "release_requires_separate_qualification": true
+  },
+  "status_vocabulary": [
+    "PROPOSED",
+    "PLANNED",
+    "IMPLEMENTED",
+    "TESTED",
+    "VERIFIED",
+    "MERGED",
+    "RELEASED",
+    "BLOCKED"
+  ]
+}
