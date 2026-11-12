@@ -1,8 +1,8 @@
 # Production Release Standard
 
-**Repository:** bboroski/NUN  
-**Default branch:** `main`  
-**Project profile:** C/C++ OS/kernel project with CMake, Makefile, submodules, and Python tooling  
+**Repository:** bboroski/NUN
+**Default branch:** `main`
+**Project profile:** C/C++ OS/kernel project with CMake, Makefile, submodules, and Python tooling
 **Existing workflow inventory:** 11 workflow file(s) were visible at the time this baseline was prepared.
 
 ## Purpose and scope
