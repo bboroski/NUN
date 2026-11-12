@@ -41,6 +41,8 @@ Build bottom-up and promote a capability only when source, automated tests, and 
 **Phase 1 acceptance:** reproducible kernel image; QEMU serial log contains the readiness marker; memory-map and allocator tests pass; a controlled timer interrupt is observed. This is not a claim of ARM64 support or production hardware qualification.
 
 ### Phase 2 — memory, interrupts and execution
+- Add the host-tested NUN.SchedulerPolicy core: fixed 64-task capacity, eight priority levels, quantum accounting, round-robin tie-breaking, optional aging, and explicit block/wake/yield transitions.
+- Keep policy selection separate from context switching; do not claim kernel scheduling or preemption until stacks, register frames, interrupt-return switching and FPU/SIMD state handling are implemented and QEMU-tested.
 - Page-frame allocator, page-table abstraction, kernel heap and guard-page tests.
 - IDT exception coverage (#PF, #GP, #DF), PIC/APIC timer and IRQ registration.
 - Kernel threads, context switch and preemption only after interrupt and stack invariants are tested.
