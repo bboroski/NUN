@@ -26,6 +26,8 @@
 - Architecture layer: CPU entry, privilege transitions, exceptions та interrupt vectors.
 - Memory model: physical pages, early allocator, virtual addressing і protection.
 - Execution model, synchronization, device boundaries та diagnostics.
+- Host-testable declarative service dependency graph with deterministic ordering and cycle rejection.
+- Versioned OS capability profile with evidence-backed implemented/partial/planned states.
 - Readiness gates для reproducible build, emulator і target qualification.
 
 ## Швидкий старт і перевірка
@@ -74,6 +76,9 @@ ctest --test-dir build --output-on-failure
 - [E2K Linux userspace profile](docs/ELBRUS_E2K.md)
 - [OS subsystem ownership](docs/architecture/OS_SUBSYSTEM_OWNERSHIP.md)
 - [Композиція можливостей](docs/architecture/capability-composition.md)
+- [NUN Declarative Service Graph](docs/architecture/service-graph.md)
+- [14-domain implementation roadmap](docs/architecture/14666-implementation-roadmap.md)
+- [OS capability profile](spec/os-capability-profile.json)
 - [Інтеграція екосистеми](docs/ECOSYSTEM_INTEGRATION.md)
 - [Технічний борг і межі](docs/TECHNICAL_DEBT_REGISTER.md)
 

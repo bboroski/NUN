@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "os": "NUN",
+  "profile_id": "nun-x86-64-bring-up",
+  "profile_version": "1.0.0",
+  "maturity": "bring-up",
+  "targets": [
+    {"architecture": "x86_64", "boot_protocol": "Multiboot2", "status": "partial", "firmware": ["unknown"]},
+    {"architecture": "x86_64", "boot_protocol": "Limine 12.9.6", "status": "partial", "firmware": ["bios", "uefi"]}
+  ],
+  "contracts": [
+    {"id": "nun.boot-info", "version": "1", "status": "implemented", "evidence": ["include/nun/boot_info.h", "src/boot_info.c", "tests/test_boot_info.c"], "notes": "Host-tested validation of a versioned handoff descriptor; not a complete firmware handoff."},
+    {"id": "nun.runtime-host", "version": "1", "status": "implemented", "evidence": ["include/nun/runtime.h", "src/runtime/runtime.c", "tests/runtime_tests.c"], "notes": "Host-testable C11 lifecycle/runtime composition; not yet linked into the freestanding kernel."},
+    {"id": "nun.service-graph", "version": "1", "status": "implemented", "evidence": ["include/nun/service_graph.h", "src/services/graph.c", "tests/test_service_graph.c"], "notes": "Bounded deterministic dependency planner; it does not start services."}
+  ],
+  "features": [
+    {"id": "boot.multiboot2.x86_64", "domain": "boot", "status": "partial", "evidence": ["scripts/build-qemu.sh", "scripts/run-qemu.sh", "docs/QEMU_KERNEL_BRINGUP.md"], "notes": "Early kernel bring-up path; not a complete OS boot."},
+    {"id": "boot.limine.iso", "domain": "boot", "status": "partial", "evidence": ["Makefile", "docs/BOOT.md"], "notes": "Independent BIOS/UEFI ISO target with separate readiness evidence."},
+    {"id": "memory.physical-page-bitmap", "domain": "memory", "status": "partial", "evidence": ["docs/architecture/OS_SUBSYSTEM_OWNERSHIP.md"], "notes": "Early allocator path exists; full VM, page-table policy, heap and isolation remain future gates."},
+    {"id": "interrupt.idt-pic-pit", "domain": "interrupts", "status": "partial", "evidence": ["docs/architecture/OS_SUBSYSTEM_OWNERSHIP.md"], "notes": "Early exception and timer path; APIC/IOAPIC, SMP and complete interrupt-safe synchronization remain future work."},
+    {"id": "services.dependency-graph", "domain": "services", "status": "implemented", "evidence": ["include/nun/service_graph.h", "src/services/graph.c", "tests/test_service_graph.c"], "notes": "Host-testable deterministic graph planning only; no service execution or supervisor."},
+    {"id": "abi.syscall-v1", "domain": "abi", "status": "planned", "evidence": [], "notes": "No stable user-mode syscall ABI is claimed."},
+    {"id": "scheduler.preemptive", "domain": "execution", "status": "planned", "evidence": [], "notes": "No preemptive task scheduler is claimed."},
+    {"id": "ipc.message-passing", "domain": "ipc", "status": "planned", "evidence": [], "notes": "No general process IPC is claimed."},
+    {"id": "storage.vfs", "domain": "storage", "status": "planned", "evidence": [], "notes": "No VFS or persistent storage subsystem is claimed."},
+    {"id": "drivers.iommu-isolation", "domain": "drivers", "status": "planned", "evidence": [], "notes": "No DMA isolation enforcement is claimed."},
+    {"id": "security.capability-enforcement", "domain": "security", "status": "planned", "evidence": [], "notes": "Manifest concepts and host policy integrations are not kernel capability enforcement."},
+    {"id": "networking.tcp-ip", "domain": "networking", "status": "planned", "evidence": [], "notes": "No kernel network stack is claimed."},
+    {"id": "graphics.vulkan-compositor", "domain": "graphics", "status": "planned", "evidence": [], "notes": "No graphical desktop or Vulkan compositor is claimed."},
+    {"id": "updates.atomic-a-b", "domain": "updates", "status": "planned", "evidence": [], "notes": "No transactional A/B OS updater is claimed."},
+    {"id": "toolchain.sambu-native-target", "domain": "toolchain", "status": "planned", "evidence": [], "notes": "SAMBU currently provides host-side language/tooling; no freestanding NUN target is claimed."}
+  ]
+}

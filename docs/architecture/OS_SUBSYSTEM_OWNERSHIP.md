@@ -52,3 +52,12 @@ This is not yet a verified boot until the QEMU workflow passes on the proposed c
 - Host tests do not prove firmware handoff, QEMU boot or physical-hardware support.
 - The kernel remains freestanding; host libraries must be explicitly audited for allocator, libc, threading and exception assumptions before any kernel linkage.
 - Each milestone is merged only after its target build and regression tests pass.
+
+
+## Implemented service-graph slice
+
+NUN now includes a bounded C11 dependency planner in `include/nun/service_graph.h` and `src/services/graph.c`. It validates service IDs and dependency edges, rejects missing/duplicate/cyclic dependencies, and returns a deterministic topological order using stable service-ID tie-breaking. The host test is registered as `nun_service_graph_tests` in CMake/CTest.
+
+This is deliberately narrower than the full declarative daemon manager: it does not spawn processes, create threads, execute service callbacks, grant capabilities, perform IPC, or activate a service set. Those operations remain blocked on the scheduler, process model, IPC, permission enforcement, isolation and supervisor milestones.
+
+The machine-readable status of each capability and its evidence pointers are published in [`spec/os-capability-profile.json`](../../spec/os-capability-profile.json), validated by [the profile schema](../../spec/os-capability-profile.schema.json). The SAMBU host tooling consumes that profile; it is never a kernel boot dependency.
