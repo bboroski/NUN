@@ -94,3 +94,8 @@ ctest --test-dir build --output-on-failure
 ## Федерація Hellduck
 
 Цей репозиторій входить до федерації [Hellduck](https://github.com/bboroski/Hellduck) — спільного каталогу проєктів, контрактних зв’язків і станів інтеграції. Вихідний код, API, тести та цикл випуску залишаються відповідальністю цього репозиторію; Hellduck індексує зв’язки й не завантажує та не виконує код учасників. Практичні сценарії взаємодії, типи адаптерів і межі сумісності: [Integration Playbook](https://github.com/bboroski/Hellduck/blob/main/docs/INTEGRATION_PLAYBOOK.md).
+
+
+## Motion and GUI system
+
+Repository-scoped animation, rendering, accessibility and interface contract: [docs/MOTION_GUI_SYSTEM.md](docs/MOTION_GUI_SYSTEM.md).
