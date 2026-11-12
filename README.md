@@ -26,6 +26,8 @@
 - Architecture layer: CPU entry, privilege transitions, exceptions та interrupt vectors.
 - Memory model: physical pages, early allocator, virtual addressing і protection.
 - Execution model, synchronization, device boundaries та diagnostics.
+- Host-testable declarative service dependency graph with deterministic ordering and cycle rejection.
+- Versioned OS capability profile with evidence-backed implemented/partial/planned states.
 - Readiness gates для reproducible build, emulator і target qualification.
 
 ## Швидкий старт і перевірка
