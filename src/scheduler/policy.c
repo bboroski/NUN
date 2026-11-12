@@ -13,6 +13,18 @@ static nun_scheduler_task_t *find_task(nun_scheduler_t *s, uint32_t id,
     }
     return NULL;
 }
+static const nun_scheduler_task_t *find_task_const(const nun_scheduler_t *s,
+                                                   uint32_t id)
+{
+    uint32_t i;
+    for (i = 0u; i < NUN_SCHEDULER_MAX_TASKS; ++i) {
+        if (s->tasks[i].state != (uint8_t)NUN_TASK_FREE &&
+            s->tasks[i].id == id) {
+            return &s->tasks[i];
+        }
+    }
+    return NULL;
+}
 static int observe_time(nun_scheduler_t *s, uint64_t now)
 {
     if (s->has_time != 0u && now < s->last_now) return 0;
@@ -183,7 +195,7 @@ nun_scheduler_result_t nun_scheduler_query_task(const nun_scheduler_t *s,
     const nun_scheduler_task_t *task;
     if (s == NULL || id == 0u || state_out == NULL) return NUN_SCHEDULER_EINVAL;
     if (s->initialized == 0u) return NUN_SCHEDULER_ESTATE;
-    task = find_task((nun_scheduler_t *)s, id, NULL);
+    task = find_task_const(s, id);
     if (task == NULL) return NUN_SCHEDULER_ENOTFOUND;
     *state_out = (nun_scheduler_task_state_t)task->state;
     return NUN_SCHEDULER_OK;
