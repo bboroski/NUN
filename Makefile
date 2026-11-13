@@ -22,7 +22,7 @@ run: iso
 	  -serial stdio -display none -monitor none -no-reboot
 
 usb: iso
-	@test -n "$(DEVICE)" -a -n "$(DEVICE)" || { echo 'Set DEVICE=/dev/sdX (whole disk)' >&2; exit 2; }
+	@test -n "$(DEVICE)" || { echo 'Set DEVICE=/dev/sdX (whole disk)' >&2; exit 2; }
 	bash scripts/install-usb.sh build/NUN.iso "$(DEVICE)"
 
 clean:
