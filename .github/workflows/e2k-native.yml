@@ -20,10 +20,13 @@ jobs:
         run: make e2k-host
       - name: Execute NUN E2K runtime self-test
         run: make e2k-host-test
-      - name: Upload native E2K runtime
+      - name: Run reproducible E2K microbenchmarks
+        run: make e2k-bench
+      - name: Upload native E2K runtime and benchmark evidence
         uses: actions/upload-artifact@v4
         with:
           name: NUN-E2K-native-runtime
           path: |
             build/e2k/NUN-E2K-host
             build/e2k/NUN-E2K-host.json
+            build/e2k/benchmark/results/**

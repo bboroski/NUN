@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-.PHONY: help iso build run usb clean check-tools test e2k-host e2k-host-test
+.PHONY: help iso build run usb clean check-tools test e2k-host e2k-host-test e2k-bench
 
 help:
 	@printf '%s\n' \
@@ -41,3 +41,7 @@ e2k-host:
 # Run only on native E2K Linux (or explicitly under qemu-e2k-user).
 e2k-host-test: e2k-host
 	bash scripts/test-e2k-host.sh
+
+# Reproducible user-space microbenchmarks; requires native E2K Linux and MCST LCC.
+e2k-bench:
+	python3 scripts/run_e2k_bench.py
