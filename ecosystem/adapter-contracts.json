@@ -1,0 +1,70 @@
+{
+  "schema_version": "jm.adapter-contracts.v1",
+  "repository": "bboroski/NUN",
+  "module_id": "nun-kernel",
+  "contracts": [
+    {
+      "id": "kloz-platform-abi-v1",
+      "provider_module_id": "kloz-platform",
+      "provider": "bboroski/Kloz",
+      "kind": "submodule-platform-contract",
+      "status": "adapter-ready",
+      "contract_version": "1",
+      "notes": "Pinned Git submodule reference; target-specific integration must be verified by kernel build."
+    },
+    {
+      "id": "co-lifecycle-runtime-v1",
+      "provider_module_id": "co-lifecycle",
+      "provider": "bboroski/CO",
+      "kind": "submodule-lifecycle-contract",
+      "status": "adapter-ready",
+      "contract_version": "1",
+      "notes": "Pinned source submodule; kernel scheduling and interrupt semantics remain NUN-owned."
+    },
+    {
+      "id": "saintsi-assurance-observation-v1",
+      "provider_module_id": "saintsi-assurance",
+      "provider": "bboroski/SaintSI",
+      "kind": "submodule-observation-contract",
+      "status": "adapter-ready",
+      "contract_version": "1",
+      "notes": "Observation-only contract; no watchdog actuation."
+    },
+    {
+      "id": "reapercripple-bootstrap-contract-v1",
+      "provider_module_id": "reapercripple-hardware",
+      "provider": "bboroski/ReaperCripple",
+      "kind": "submodule-platform-evidence-contract",
+      "status": "adapter-ready",
+      "contract_version": "1",
+      "notes": "Board-specific integration only after target evidence."
+    },
+    {
+      "id": "toolng-policy-contract-v1",
+      "provider_module_id": "toolng-diagnostics",
+      "provider": "bboroski/ToolNG",
+      "kind": "submodule-policy-contract",
+      "status": "adapter-ready",
+      "contract_version": "1",
+      "notes": "Policy semantics only; no desktop runtime in kernel."
+    },
+    {
+      "id": "sambu-module-manifest-v1",
+      "provider_module_id": "sambu-core",
+      "provider": "bboroski/SAMBU",
+      "kind": "host-metadata-contract",
+      "status": "adapter-ready",
+      "contract_version": "1",
+      "notes": "Host tooling and manifest semantics only."
+    },
+    {
+      "id": "klipot-registry-v1",
+      "provider_module_id": "klipot-control-plane",
+      "provider": "bboroski/Klipot",
+      "kind": "metadata-projection-contract",
+      "status": "adapter-ready",
+      "contract_version": "1",
+      "notes": "Registry projection only; no browser code in kernel."
+    }
+  ]
+}

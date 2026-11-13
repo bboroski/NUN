@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "ecosystem": "SAMBU",
+  "module_id": "nun-kernel",
+  "repository": "bboroski/NUN",
+  "display_name": "NUN",
+  "role": "early-x86_64-kernel-substrate-and-versioned-boot-memory-execution-contracts",
+  "runtime": [
+    "Freestanding C/C++ kernel targets",
+    "Host-side build and validation tooling"
+  ],
+  "maturity": "early-x86_64-kernel-bring-up",
+  "provides": [
+    "nun-kernel-image-v1",
+    "nun-boot-info-v1",
+    "nun-memory-map-contract-v1",
+    "nun-architecture-contracts-v1"
+  ],
+  "consumes": [
+    "kloz-platform-abi-v1",
+    "co-lifecycle-runtime-v1",
+    "saintsi-assurance-observation-v1",
+    "reapercripple-bootstrap-contract-v1",
+    "toolng-policy-contract-v1",
+    "sambu-module-manifest-v1",
+    "klipot-registry-v1"
+  ],
+  "dependencies": [
+    {
+      "module_id": "kloz-platform",
+      "relation": "required",
+      "status": "mirrored",
+      "scope": "Pinned source submodule for platform ABI and memory primitives; NUN kernel integration remains target-specific."
+    },
+    {
+      "module_id": "co-lifecycle",
+      "relation": "optional-adapter",
+      "status": "mirrored",
+      "scope": "Pinned source submodule for deterministic lifecycle composition; not an RTOS."
+    },
+    {
+      "module_id": "saintsi-assurance",
+      "relation": "optional-adapter",
+      "status": "mirrored",
+      "scope": "Pinned source submodule for bounded observation; no hardware reset authority."
+    },
+    {
+      "module_id": "reapercripple-hardware",
+      "relation": "optional-adapter",
+      "status": "mirrored",
+      "scope": "Pinned source submodule for board-specific bootstrap and evidence; no generic board qualification."
+    },
+    {
+      "module_id": "toolng-diagnostics",
+      "relation": "policy-port",
+      "status": "mirrored",
+      "scope": "Pinned source submodule for policy contracts; no device mutation or Python runtime linkage."
+    },
+    {
+      "module_id": "sambu-core",
+      "relation": "metadata-projection",
+      "status": "mirrored",
+      "scope": "Pinned host tooling and canonical manifest/registry conventions; no Python runtime in kernel image."
+    },
+    {
+      "module_id": "klipot-control-plane",
+      "relation": "metadata-projection",
+      "status": "mirrored",
+      "scope": "Pinned registry planner and documentation contracts; no browser runtime in kernel image."
+    }
+  ],
+  "boundaries": [
+    "Early x86_64 kernel bring-up is not a complete operating system.",
+    "Host builds and QEMU smoke tests do not prove physical hardware qualification.",
+    "Host Python tooling is not linked into the freestanding kernel image.",
+    "Only caller-supplied platform callbacks may access hardware.",
+    "A registry or submodule declaration is not proof of a linked runtime integration."
+  ],
+  "verification": {
+    "host_tests": "Run make test, host-contract-tests, and repository CI.",
+    "target_validation": "QEMU BIOS/UEFI smoke tests are separate from physical hardware qualification; E2K kernel support is not claimed.",
+    "evidence": [
+      "README.md",
+      "ecosystem/manifest.json",
+      "CMakeLists.txt",
+      "tests/"
+    ]
+  }
+}
