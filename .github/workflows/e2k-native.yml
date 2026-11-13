@@ -10,7 +10,7 @@ jobs:
   e2k-native:
     runs-on: [self-hosted, linux, e2k]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Verify native E2K Linux and LCC
         run: |
           test "$(uname -m)" = "e2k"
