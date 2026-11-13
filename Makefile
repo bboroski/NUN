@@ -4,21 +4,21 @@ SHELL := /bin/bash
 .PHONY: help iso build run usb clean check-tools test e2k-host e2k-host-test e2k-ecosystem-test
 
 help:
-	@printf '%s\\n' \\
-	  'NUN boot targets:' \\
-	  '  make iso                 Build the hybrid BIOS/UEFI ISO' \\
-	  '  make run                 Boot the ISO in QEMU' \\
-	  '  make usb DEVICE=/dev/sdX Write the ISO to a selected USB disk' \\
-	  '  make clean               Remove generated build files' \\
-	  '  make e2k-host            Build the MCST LCC E2K Linux userspace probe' \\
-	  '  make e2k-host-test       Run the E2K userspace self-test' \\
+	@printf '%s\n' \
+	  'NUN boot targets:' \
+	  '  make iso                 Build the hybrid BIOS/UEFI ISO' \
+	  '  make run                 Boot the ISO in QEMU' \
+	  '  make usb DEVICE=/dev/sdX Write the ISO to a selected USB disk' \
+	  '  make clean               Remove generated build files' \
+	  '  make e2k-host            Build the MCST LCC E2K Linux userspace probe' \
+	  '  make e2k-host-test       Run the E2K userspace self-test' \
 	  '  make e2k-ecosystem-test  Build and test integrated C11 modules on native E2K'
 
 iso build:
 	bash scripts/build.sh
 
 run: iso
-	qemu-system-x86_64 -machine q35 -m 512M -cdrom build/NUN.iso \\
+	qemu-system-x86_64 -machine q35 -m 512M -cdrom build/NUN.iso \
 	  -serial stdio -display none -monitor none -no-reboot
 
 usb: iso
