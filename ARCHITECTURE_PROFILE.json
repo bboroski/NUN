@@ -1,0 +1,122 @@
+{
+  "schema_version": "bboroski.modular-monolith-profile.v1",
+  "project": "NUN",
+  "maturity": "early-kernel-bringup",
+  "architecture": {
+    "mode": "freestanding-kernel",
+    "scope": "Early kernel substrate with explicit boot, memory, runtime and architecture boundaries; current target evidence is limited to documented bring-up profiles.",
+    "runtime_boundary": "Kernel image, host tests and platform-specific targets are separate build products.",
+    "composition_rule": "Compose only freestanding-compatible objects for a named architecture and linker profile; keep bootloader, launcher and kernel contracts explicit."
+  },
+  "entrypoints": [
+    {
+      "path": "kernel/main.c",
+      "kind": "kernel-entry"
+    },
+    {
+      "path": "src/boot_info.c",
+      "kind": "boot-contract-implementation"
+    },
+    {
+      "path": "src/runtime/runtime.c",
+      "kind": "host-testable-runtime"
+    }
+  ],
+  "components": [
+    {
+      "id": "boot-contract",
+      "responsibility": "Versioned boot information and handoff validation.",
+      "status": "implemented",
+      "integration": "versioned-contract"
+    },
+    {
+      "id": "kernel-bringup",
+      "responsibility": "Early x86_64 kernel entry and serial diagnostics.",
+      "status": "partial",
+      "integration": "isolated-target"
+    },
+    {
+      "id": "runtime-substrate",
+      "responsibility": "Host-testable runtime contracts and bounded state.",
+      "status": "partial",
+      "integration": "static-link"
+    },
+    {
+      "id": "e2k-platform-profile",
+      "responsibility": "Research and host-side platform boundary for E2K.",
+      "status": "specified",
+      "integration": "isolated-target"
+    }
+  ],
+  "dependencies": [
+    {
+      "project": "NUNLauncher",
+      "relationship": "image format and pre-handoff contract reference",
+      "runtime_dependency": false
+    },
+    {
+      "project": "Kloz",
+      "relationship": "potential platform substrate contract",
+      "runtime_dependency": false
+    },
+    {
+      "project": "Fragile-Baby",
+      "relationship": "E2K qualification evidence reference",
+      "runtime_dependency": false
+    }
+  ],
+  "preserved_boundaries": [
+    "Bootloader handoff, image admission and kernel execution are distinct phases.",
+    "Host tests do not prove bootability or physical hardware compatibility.",
+    "Architecture-specific entry, linker and interrupt code stays isolated by target."
+  ],
+  "forbidden_composition": [
+    "No loading host Python or Swift runtime into the freestanding kernel.",
+    "No claim of a complete operating system based on early kernel bring-up.",
+    "No E2K capability claims without target toolchain and hardware evidence."
+  ],
+  "build_profiles": [
+    {
+      "id": "host-contract-tests",
+      "status": "declared",
+      "commands": [
+        "cmake -S . -B build",
+        "cmake --build build --parallel",
+        "ctest --test-dir build --output-on-failure"
+      ],
+      "evidence": [
+        "CMakeLists.txt",
+        "src/boot_info.c",
+        "tests/test_boot_info.c"
+      ]
+    },
+    {
+      "id": "qemu-kernel",
+      "status": "declared",
+      "commands": [
+        "bash scripts/build-qemu.sh",
+        "bash scripts/run-qemu.sh"
+      ],
+      "evidence": [
+        "scripts/build-qemu.sh",
+        "scripts/run-qemu.sh",
+        "kernel/main.c"
+      ]
+    },
+    {
+      "id": "e2k-research",
+      "status": "declared",
+      "commands": [
+        "cmake -S . -B build-e2k -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/e2k-linux-lcc.cmake"
+      ],
+      "evidence": [
+        "cmake/toolchains/e2k-linux-lcc.cmake",
+        "platforms/e2k/nun_host.c"
+      ]
+    }
+  ],
+  "gaps": [
+    "Capture reproducible QEMU boot logs and compiler/linker hashes.",
+    "Treat physical E2K boot and qualification as pending until independently observed."
+  ]
+}
