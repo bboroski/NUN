@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "architecture": "NUN Mesh Multi-Axis Layer Fabric (MALF)",
+  "repository": "bboroski/NUN",
+  "role": "Minimal kernel substrate with distinct early x86_64 bring-up targets",
+  "maturity": "Early x86_64 kernel bring-up; Multiboot2 and Limine paths remain independent; not a complete OS.",
+  "layers": [
+    {
+      "id": "L0",
+      "name": "Human and operator surface",
+      "responsibility": "Operator tools, launch UI and diagnostics; not kernel privilege logic."
+    },
+    {
+      "id": "L1",
+      "name": "Boot and subsystem contracts",
+      "responsibility": "Boot handoff, syscall, ABI, image and subsystem data contracts."
+    },
+    {
+      "id": "L2",
+      "name": "System orchestration",
+      "responsibility": "Boot stages, subsystem initialization, admission and coordinated state transitions."
+    },
+    {
+      "id": "L3",
+      "name": "Kernel domain",
+      "responsibility": "Memory, execution, process, synchronization, fault and device models."
+    },
+    {
+      "id": "L4",
+      "name": "Privilege and capability policy",
+      "responsibility": "Address-space, privilege, resource and device-access authorization."
+    },
+    {
+      "id": "L5",
+      "name": "Architecture-independent ports",
+      "responsibility": "CPU, timer, interrupt controller, physical memory, console and device interfaces."
+    },
+    {
+      "id": "L6",
+      "name": "Architecture/platform adapters",
+      "responsibility": "x86_64/E2K or firmware-specific implementations, assembly entry, platform drivers."
+    },
+    {
+      "id": "L7",
+      "name": "Memory and persistent state",
+      "responsibility": "Memory maps, boot metadata, module tables and filesystem/storage state."
+    },
+    {
+      "id": "L8",
+      "name": "Boot/runtime and delivery",
+      "responsibility": "Build/link, image composition, bootloader integration, emulator and deployment."
+    },
+    {
+      "id": "L9",
+      "name": "Verification and target evidence",
+      "responsibility": "Host tests, boot tests, emulation, ABI checks, hardware qualification and logs."
+    }
+  ],
+  "placement": [
+    {
+      "layer": "L0",
+      "area": "Kernel diagnostics surface",
+      "components": [
+        "serial console",
+        "boot diagnostics",
+        "developer scripts"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L1",
+      "area": "Boot and subsystem contracts",
+      "components": [
+        "Multiboot2 handoff",
+        "Limine handoff",
+        "boot info schema",
+        "interrupt frame"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L2",
+      "area": "Boot orchestration",
+      "components": [
+        "entry sequence",
+        "init stages",
+        "boot target selection"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L3",
+      "area": "Kernel core models",
+      "components": [
+        "memory model",
+        "exception model",
+        "execution model"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L4",
+      "area": "Kernel protection policy",
+      "components": [
+        "memory protection policy",
+        "privilege contract",
+        "capability gates"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L5",
+      "area": "Architecture-neutral kernel ports",
+      "components": [
+        "console port",
+        "memory port",
+        "timer/interrupt ports"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L6",
+      "area": "Architecture and boot adapters",
+      "components": [
+        "x86_64 entry",
+        "IDT/PIT",
+        "Multiboot2",
+        "Limine adapter"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L7",
+      "area": "Memory and boot state",
+      "components": [
+        "memory map",
+        "page bitmap",
+        "boot metadata"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L8",
+      "area": "Kernel build and image delivery",
+      "components": [
+        "CMake/Make",
+        "linker scripts",
+        "QEMU scripts",
+        "ISO target"
+      ],
+      "status": "mapped-from-repository-scope"
+    },
+    {
+      "layer": "L9",
+      "area": "Kernel assurance",
+      "components": [
+        "host tests",
+        "QEMU workflows",
+        "serial logs",
+        "target matrix"
+      ],
+      "status": "mapped-from-repository-scope"
+    }
+  ],
+  "vertical_slices": [
+    {
+      "id": "slice-1",
+      "title": "Multiboot2 boot path",
+      "flow": "Firmware/bootloader handoff → Multiboot2 validation → x86_64 entry → early allocator/IDT/PIT → serial evidence."
+    },
+    {
+      "id": "slice-2",
+      "title": "Limine boot path",
+      "flow": "Limine image composition → BIOS/UEFI boot → independent kernel entry → QEMU smoke test; do not imply shared allocator/interrupt stack until integrated."
+    },
+    {
+      "id": "slice-3",
+      "title": "Memory initialization",
+      "flow": "Validated memory map → reserve kernel/boot ranges → initialize physical-page bitmap → expose only initialized allocation services."
+    }
+  ],
+  "dependency_rules": [
+    "boot-and-interface-inputs-validated-before-use",
+    "privileged-actions-require-explicit-capability-gate",
+    "architecture-neutral-core-does-not-import-isa-adapters",
+    "memory-state-owned-by-explicit-subsystems",
+    "boot-loader-kernel-contract-is-versioned",
+    "host-emulator-and-hardware-evidence-remain-distinct"
+  ],
+  "cross_cutting": [
+    "privilege-and-memory-safety",
+    "fault-recovery",
+    "architecture-portability",
+    "diagnostic-provenance",
+    "reproducible-builds",
+    "target-measured-performance"
+  ],
+  "guardrails": "Do not call NUN a complete OS. Scheduler, SMP, ACPI, drivers, VFS, network, userspace and GUI must remain labelled by actual implementation status. Multiboot2 and Limine remain separate paths until explicit integration and regression tests prove otherwise. Host/QEMU success is not physical hardware qualification.",
+  "status_note": "Architecture mapping only; a planned subsystem is not implemented by its documentation."
+}
