@@ -13,10 +13,14 @@ add_library(NUN.Kloz STATIC
     modules/Kloz/src/arena.c
     modules/Kloz/src/budget.c
     modules/Kloz/src/platform.c
+    modules/Kloz/src/arch.c
 )
 target_include_directories(NUN.Kloz PUBLIC modules/Kloz/include)
 
-add_library(NUN.CO STATIC modules/CO/src/runtime.c)
+add_library(NUN.CO STATIC
+    modules/CO/src/runtime.c
+    modules/CO/src/platform.c
+)
 target_include_directories(NUN.CO PUBLIC modules/CO/include)
 
 add_library(NUN.SaintSI STATIC
@@ -103,6 +107,20 @@ if(NUN_BUILD_TESTS)
     add_executable(NUN.SaintSICompatTests modules/SaintSI/tests/test_compat.c)
     target_link_libraries(NUN.SaintSICompatTests PRIVATE NUN.SaintSI)
     add_test(NAME nun_saintsi_compat_tests COMMAND NUN.SaintSICompatTests)
+
+    # The interop check is built only for the actual E2K target profile.
+    # The test source also rejects non-E2K compilation at preprocessing time.
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^[Ee]2[Kk]$")
+        add_executable(NUN.E2KInteropTests tests/e2k_interop_tests.c)
+        target_include_directories(NUN.E2KInteropTests PRIVATE modules/ToolNG/src)
+        target_link_libraries(NUN.E2KInteropTests PRIVATE
+            NUN.Kloz
+            NUN.CO
+            ToolNG.PolicyCore
+            reapercripple
+        )
+        add_test(NAME nun_e2k_interop_tests COMMAND NUN.E2KInteropTests)
+    endif()
 endif()
 
 message(STATUS "NUN integrates seven pinned source repositories. This host build is not a bootable OS image.")
