@@ -12,7 +12,7 @@
 
 #define REQUIRE(condition) do { \
     if (!(condition)) { \
-        (void)fprintf(stderr, "E2K interop qualification failed at %s:%d: %s\\n", \
+        (void)fprintf(stderr, "E2K interop qualification failed at %s:%d: %s", __FILE__, __LINE__, #condition); \
                       __FILE__, __LINE__, #condition); \
         return 1; \
     } \
