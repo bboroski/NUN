@@ -38,3 +38,37 @@ an arbitrary third-party kernel image. Do not flash or overwrite firmware.
 The runtime manifest validates ELF64/LE, `EM_MCST_ELBRUS=175`, entry point,
 file size and SHA-256. SHA-256 does not authenticate the publisher. Secure Boot
 and a signed publisher trust chain are not implemented.
+
+
+## Integrated native C11 qualification (added 2026-11-13)
+
+The NUN workspace already composes the portable C11 components from Kloz,
+CO, SaintSI, ReaperCripple and ToolNG PolicyCore. The E2K build now also
+compiles the existing Kloz and CO architecture probes into their corresponding
+static libraries. On an E2K build, CTest includes
+`nun_e2k_interop_tests`, which requires the independently implemented
+Kloz, CO, ToolNG and ReaperCripple probes to agree on:
+
+- the `__e2k__` compiler target;
+- 64-bit pointers and little-endian execution;
+- ELF machine `EM_MCST_ELBRUS = 175`.
+
+Run the complete native qualification sequence on an actual E2K Linux host:
+
+```sh
+make e2k-ecosystem-test
+```
+
+This command rejects non-E2K hosts, configures the root NUN CMake project with
+the MCST LCC toolchain, builds the integrated C11 targets and runs the complete
+CTest suite. It writes
+`build/e2k-ecosystem/e2k-ecosystem-qualification.txt` only after all tests
+pass. The report records host identity, compiler version and source commit.
+The GitHub Actions workflow is manually dispatched and requires a self-hosted
+runner labelled `linux,e2k`.
+
+The interop test is a consistency/ABI-target check, not proof of optimized
+instruction scheduling, cache behavior, performance gain, bare-metal boot,
+or full hardware qualification of every attached device. Performance claims
+still require workload-specific baselines, repeated measurements and recorded
+compiler/CPU/firmware details.
