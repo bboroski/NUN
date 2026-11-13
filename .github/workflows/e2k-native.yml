@@ -21,7 +21,7 @@ jobs:
       - name: Execute NUN E2K runtime self-test
         run: make e2k-host-test
       - name: Upload native E2K runtime
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: NUN-E2K-native-runtime
           path: |
