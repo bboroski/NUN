@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 BUILD_DIR="$ROOT/build/e2k-ecosystem"
-CC="${E2K_CC:-lcc}"
+CC_REQUESTED="${E2K_CC:-lcc}"
 JOBS="${NUN_E2K_BUILD_JOBS:-2}"
 
 if [[ "$(uname -m)" != "e2k" ]]; then
@@ -12,10 +12,12 @@ if [[ "$(uname -m)" != "e2k" ]]; then
     exit 3
 fi
 
-command -v "$CC" >/dev/null 2>&1 || {
-    echo "MCST E2K LCC compiler not found: $CC" >&2
+command -v "$CC_REQUESTED" >/dev/null 2>&1 || {
+    echo "MCST E2K LCC compiler not found: $CC_REQUESTED" >&2
     exit 2
 }
+CC="$(command -v "$CC_REQUESTED")"
+
 command -v cmake >/dev/null 2>&1 || {
     echo "CMake is required for the integrated NUN build." >&2
     exit 2
